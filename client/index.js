@@ -7,13 +7,16 @@ const canvas = document.getElementById('mycanvas')
 
 const app = new PIXI.Application({
   view: canvas,
-  width: window.innerWidth,
-  height: window.innerHeight
+  width: window.outerWidth,
+  height: window.outerHeight
 })
 
 //Making texture from image files
-const tileTexture = PIXI.Texture.from('/images/terrain_plains.png')
-const unitTexture = PIXI.Texture.from('/images/unit_rifleman.png')
+const plainTile = PIXI.Texture.from('/images/terrain_plains.png')
+const mtTile = PIXI.Texture.from('/images/terrain_mountains.png')
+const tileTextures = [plainTile, mtTile]
+const rifleUnit = PIXI.Texture.from('/images/unit_rifleman.png')
+const unitTextures = [rifleUnit]
 
 //creating and appending container
 let GameContainer = new PIXI.Container()
@@ -39,7 +42,7 @@ function renderBoard() {
     //going through each column of current row
     for (let x = 0; x < gameboard[y].length; x++) {
       //make a new sprite
-      let tileSprite = new PIXI.Sprite(tileTexture)
+      let tileSprite = new PIXI.Sprite(tileTextures[gameboard[y][x]])
 
       //pass reference to tile into sprite
       // TYPES
@@ -93,7 +96,7 @@ export function renderUnit(unit) {
     offset = SCALE / 2
   }
 
-  let unitSprite = new PIXI.Sprite(unitTexture)
+  let unitSprite = new PIXI.Sprite(unitTextures[0])
 
   unitSprite.data = unit
 
@@ -110,8 +113,8 @@ export function renderUnit(unit) {
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE
 
-  unitSprite.height = SCALE
-  unitSprite.width = SCALE / 2
+  unitSprite.height = SCALE / 1.5
+  unitSprite.width = SCALE / 1.5
 
   unitSprite.type = 'unit'
 
