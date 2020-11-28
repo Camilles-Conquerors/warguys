@@ -1,19 +1,8 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
-import {Router} from 'react-router-dom'
-import history from './history'
-import store from './store'
-import App from './app'
+import * as PIXI from 'pixi.js'
+const canvas = document.getElementById('mycanvas')
 
-// establishes socket connection
-import './socket'
-
-ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <App />
-    </Router>
-  </Provider>,
-  document.getElementById('app')
-)
+const app = new PIXI.Application({
+  view: canvas,
+  width: window.innerWidth,
+  height: window.innerHeight
+})
