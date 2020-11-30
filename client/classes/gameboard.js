@@ -1,109 +1,74 @@
+import {plain, mountain} from '../hardcoded-terrain'
+import TileNode from './tile'
 //! utilize classes to generate graph/map (and methods to traverse and utilize them)
-
-export const testBoard = [
-  [0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
-  [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0],
-  [0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
-  [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0],
-  [0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1],
-  [1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0],
-  [0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0],
-  [0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0],
-  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
 
 // Gameboard args
 // map - a matrix (grid) of tiles
 // when we make a new gameboard, take in an array of numbers representing tile types
-// convert the array into an array of objects - each object contains info about the tile as well as that tile's id ('a1', 'a2', 'b1')
-// generate an adjacency list - object that lists each node as a key and an array of adjacent nodes as their value
+// convert the array into an array of objects - each object contains info about the tile as well as that tile's id
+//method that creates associates between nodes
 
-const plain = {
-  moveCost: 1,
-  passable: true,
-  defenseBonus: 0,
-  visionCost: 1,
-  visionBonus: 0,
-  seeThrough: true
-}
-
-const mountain = {
-  moveCost: 2,
-  passable: false,
-  defenseBonus: 3,
-  visionCost: 3,
-  visionBonus: 3,
-  seeThrough: false
-}
-
-class Gameboard {
+export default class Gameboard {
   constructor(map) {
-    this.map = map
-    this.objsMap = this.generateObjsMap(this.map)
-    this.adjList = this.generateAdjList(this.objsMap)
+    this.board = this.generateBoard(map)
+    this.assignNeighbors(this.board)
   }
 
-  generateObjsMap(map) {
-    let objsMap = []
+  generateBoard(map) {
+    let newBoard = []
     let idCount = 0
     for (let y = 0; y < map.length; y++) {
       let objsMapRow = []
       for (let x = 0; x < map[y].length; x++) {
+        const newTile = new TileNode()
+        newTile.id = idCount
         switch (map[y][x]) {
           case 0:
-            objsMapRow.push({...plain, id: idCount})
+            newTile.value = plain
+            objsMapRow.push(newTile)
             break
           case 1:
-            objsMapRow.push({...mountain, id: idCount})
+            newTile.value = mountain
+            objsMapRow.push(newTile)
             break
           default:
             break
         }
         idCount++
       }
-      objsMap.push(objsMapRow)
+      newBoard.push(objsMapRow)
     }
-    console.log('objsMap', objsMap)
+    console.log('objsMap', newBoard)
     // return an array of objects converted from our map input
-    return objsMap
+    return newBoard
   }
 
-  generateAdjList(objsMap) {
-    let adjList = {}
+  assignNeighbors(board) {
+    for (let y = 0; y < board.length; y++) {
+      for (let x = 0; x < board[y].length; x++) {
+        const currentTile = board[y][x]
 
-    for (let y = 0; y < objsMap.length; y++) {
-      for (let x = 0; x < objsMap[y].length; x++) {
-        const adjTiles = []
+        // checking if tile is on an edge to avoid errors
+        let availableSides = {
+          up: y > 0,
+          left: x > 0,
+          right: x < board[y].length - 1,
+          down: y < board.length - 1
+        }
 
-        // !! NOT DRY REFACTOR ASAP
-        if (objsMap[y - 1] && objsMap[x - 1])
-          adjTiles.push(objsMap[y - 1][x - 1].id)
-        if (objsMap[y - 1] && objsMap[x]) adjTiles.push(objsMap[y - 1][x].id)
-        if (objsMap[y] && objsMap[x + 1]) adjTiles.push(objsMap[y][x + 1].id)
-        if (objsMap[y + 1] && objsMap[x]) adjTiles.push(objsMap[y + 1][x].id)
-        if (objsMap[y + 1] && objsMap[x - 1])
-          adjTiles.push(objsMap[y + 1][x - 1].id)
-        if (objsMap[y] && objsMap[x - 1]) adjTiles.push(objsMap[y][x - 1].id)
+        //even y-rows look diagonally right / odds, left
+        let directionToShift = y % 0 ? 'left' : 'right'
 
-        adjList[objsMap[y][x].id] = adjTiles
+        //assigning neighbors based on above criteria
+        if (availableSides.left) currentTile.neighbors.push(board[y][x - 1])
+        if (availableSides.up) currentTile.neighbors.push(board[y - 1][x])
+        if (availableSides.right) currentTile.neighbors.push(board[y][x + 1])
+        if (availableSides.down) currentTile.neighbors.push(board[y + 1][x])
+        if (availableSides.up && availableSides[directionToShift])
+          currentTile.neighbors.push(board[y - 1][x + 1])
+        if (availableSides.down && availableSides[directionToShift])
+          currentTile.neighbors.push(board[y + 1][x + 1])
       }
     }
-    console.log('adjList', adjList)
-    // return adjacency list that lists each node id an it's adjacent tiles
-    return adjList
-  }
-
-  findRange(coordinates, magnitude) {
-    // return possible nodes in range
   }
 }
-
-export default Gameboard
-
-// console.log('building game', gameboard);
