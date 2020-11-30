@@ -1,6 +1,10 @@
 import * as PIXI from 'pixi.js'
 import Unit from './classes/unit'
-import gameboard from './classes/gameboard'
+import Gameboard, {testBoard} from './classes/gameboard'
+
+// create the test board
+const gameboard = new Gameboard(testBoard)
+console.log('gameboard.map', gameboard.map)
 
 //mounting PIXI to DOM
 const canvas = document.getElementById('mycanvas')
@@ -26,7 +30,7 @@ app.stage.addChild(GameContainer)
 let tileSprites = []
 let unitSprites = []
 
-const SCALE = app.renderer.screen.height / gameboard.length
+const SCALE = app.renderer.screen.height / gameboard.map.length
 
 let selectedUnit = {}
 
@@ -34,15 +38,15 @@ const unit = new Unit({x: 1, y: 1})
 
 function renderBoard() {
   //going through each row of board
-  for (let y = 0; y < gameboard.length; y++) {
+  for (let y = 0; y < gameboard.map.length; y++) {
     //offset for hex-style pattern
     let offset = 0
     if (y % 2 === 0) offset = SCALE / 2
 
     //going through each column of current row
-    for (let x = 0; x < gameboard[y].length; x++) {
+    for (let x = 0; x < gameboard.map[y].length; x++) {
       //make a new sprite
-      let tileSprite = new PIXI.Sprite(tileTextures[gameboard[y][x]])
+      let tileSprite = new PIXI.Sprite(tileTextures[gameboard.map[y][x]])
 
       //pass reference to tile into sprite
       // TYPES
@@ -50,7 +54,7 @@ function renderBoard() {
       // 1 = impassible
       //? Key-value data structure to id tile types
       tileSprite.data = {
-        type: gameboard[y][x],
+        type: gameboard.map[y][x],
         coordinates: {x, y}
       }
 
@@ -61,8 +65,8 @@ function renderBoard() {
       tileSprite.y = y * SCALE
 
       //rendering based on tile type
-      if (gameboard[y][x] === 0) tileSprite.tint = 0x008000
-      else if (gameboard[y][x] === 1) tileSprite.tint = 0xa52a2a
+      if (gameboard.map[y][x] === 0) tileSprite.tint = 0x008000
+      else if (gameboard.map[y][x] === 1) tileSprite.tint = 0xa52a2a
 
       //setting event handlers
       tileSprite.interactive = true
