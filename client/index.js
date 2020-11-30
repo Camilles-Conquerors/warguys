@@ -22,7 +22,7 @@ const unitTextures = [rifleUnit]
 let GameContainer = new PIXI.Container()
 app.stage.addChild(GameContainer)
 
-//keeping rendered sprites
+//keeping track rendered sprites
 let tileSprites = []
 let unitSprites = []
 
