@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import Unit from './classes/unit'
 import gameboard from './classes/gameboard'
+import socket from './socket'
 
 //mounting PIXI to DOM
 const canvas = document.getElementById('mycanvas')
@@ -104,8 +105,6 @@ export function renderUnit(unit) {
   unitSprite.interactive = true
   unitSprite.buttonMode = true
   unitSprite.on('click', e => {
-    console.log('Sprite: ', unitSprite)
-    console.log('unit clicked!\n Event: ', e)
     selectedUnit = unitSprite.data
   })
 
@@ -117,6 +116,8 @@ export function renderUnit(unit) {
   unitSprite.width = SCALE / 1.5
 
   unitSprite.type = 'unit'
+
+  socket.emit('unitRender', unit)
 
   GameContainer.addChild(unitSprite)
   unitSprites.push(unitSprite)
