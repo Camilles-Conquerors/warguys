@@ -2,12 +2,12 @@ import * as PIXI from 'pixi.js'
 import Unit from './classes/unit'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
+import socket from './socket'
 
 // create the test board
 const gameboard = new Gameboard(testBoard)
 
 //console.log('gameboard.map', gameboard.map)
-
 
 //mounting PIXI to DOM
 const canvas = document.getElementById('mycanvas')
@@ -32,12 +32,13 @@ const unitTextures = [rifleUnit]
 let GameContainer = new PIXI.Container()
 app.stage.addChild(GameContainer)
 
-const unit1 = new Unit({x: 2, y: 0})
-const unit2 = new Unit({x: 5, y: 0})
+const unit1 = new Unit('bobby', {x: 2, y: 0})
+const unit2 = new Unit('henry', {x: 5, y: 0})
 
 //keeping rendered sprites
 let tileSprites = []
-let unitSprites = [unit1, unit2]
+let unitSprites = []
+let defaultUnits = [unit1, unit2]
 
 const SCALE = app.renderer.screen.height / gameboard.board.length
 
@@ -87,27 +88,13 @@ function renderBoard() {
 
       //onClick, call selectedUnit's move fn to clicked tile coord
       tileSprite.on('click', e => {
-
         if (selectedUnit.data.coordinates) {
-          console.log(
-            'tile clicked, coordinates: ',
-            tileSprite.data.coordinates
-          )
           handleMove(selectedUnit, tileSprite.data.coordinates)
           //selectedUnit.move(tileSprite.data.coordinates)
 
           selectedUnit = {}
         }
       })
-
-      //DELETE ME LATER
-      // tileSprite.on('click', e => {
-      //   if (selectedUnit.coordinates) {
-      //     // console.log('tile clicked, coordinates: ', tileSprite.data.coordinates)
-      //     selectedUnit.move(tileSprite.data.coordinates)
-      //     selectedUnit = {}
-      //   }
-      // })
 
       //recording sprite's type to tile
       tileSprite.type = 'tile'
@@ -118,44 +105,6 @@ function renderBoard() {
     }
   }
 }
-
-// export function renderUnit(unit) {
-//   // console.log(unit)
-//   unitSprites.forEach(sprite => GameContainer.removeChild(sprite))
-
-//   let offset = 0
-
-//   if (unit.coordinates.y % 2 == 0) {
-//     offset = SCALE / 2
-//   }
-
-//   let unitSprite = new PIXI.Sprite(unitTextures[0])
-
-//   unitSprite.data = unit
-
-//   //setting events
-//   unitSprite.interactive = true
-//   unitSprite.buttonMode = true
-//   unitSprite.on('click', e => {
-//     console.log('Sprite: ', unitSprite)
-//     console.log('unit clicked!\n Event: ', e)
-//     selectedUnit = unitSprite.data
-//   })
-
-//   // setting position
-//   unitSprite.x = unit.coordinates.x * SCALE + offset
-//   unitSprite.y = unit.coordinates.y * SCALE
-
-//   unitSprite.height = SCALE / 1.5
-//   unitSprite.width = SCALE / 1.5
-
-//   unitSprite.type = 'unit'
-
-//   GameContainer.addChild(unitSprite)
-//   unitSprites.push(unitSprite)
-
-//   // console.log(container)
-// }
 
 //unitArr is an array of unit objects
 export function renderUnits(unitArr) {
@@ -186,14 +135,10 @@ export function renderUnits(unitArr) {
     //setting events
     unitSprite.interactive = true
     unitSprite.buttonMode = true
-    unitSprite.on('click', e => {
-      //console.log('Sprite: ', unitSprite)
-      console.log('unit clicked!\n Event: ', e.target)
+    unitSprite.on('click', () => {
       selectedUnit = unitSprite
     })
   })
-
-  // console.log(container)
 }
 
 /*
@@ -202,22 +147,34 @@ export function renderUnits(unitArr) {
 *     sprite object -- use unitSprite.data to access class methods
 *  - newCoordinates is an object containing the coordinates of the tile the
       unit is trying to move to
-* - unitSprite.x & .y are updated using the unitSprite.data to ensure only valid
 */
 function handleMove(unitSprite, newCoordinates) {
   // update coords on unitSprite
-  unitSprite.data.move(newCoordinates)
-  //update sprite's x amd y position
-  let offset = unitSprite.data.coordinates.y % 2 === 0 ? SCALE / 2 : 0
-  unitSprite.x = unitSprite.data.coordinates.x * SCALE + offset
-  unitSprite.y = unitSprite.data.coordinates.y * SCALE
-  console.log('updating unit view', unitSprite)
+  if (unitSprite.data.move(newCoordinates)) {
+    //update sprite's x amd y position on view
+    updateUnits(unitSprite.data)
+    //sends move to socket server
+    socket.emit('updateUnits', unitSprite.data)
+  }
+}
+
+// - unitSprite.x & .y are updated using the unitSprite.data to ensure only valid
+export function updateUnits(unit) {
+  let offset = unit.coordinates.y % 2 === 0 ? SCALE / 2 : 0
+
+  //filters through current unitSprites array to find unit based off of unique name
+  let unitSprite = unitSprites.filter(unitsprite => {
+    return unitsprite.data.name === unit.name
+  })
+
+  unitSprite = unitSprite[0]
+  unitSprite.x = unit.coordinates.x * SCALE + offset
+  unitSprite.y = unit.coordinates.y * SCALE
 }
 
 renderBoard()
 
 //renderUnit(unit)
-renderUnits(unitSprites)
+renderUnits(defaultUnits)
 
 //move unit
-
