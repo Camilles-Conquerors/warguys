@@ -1,13 +1,13 @@
 import * as PIXI from 'pixi.js'
-import Unit from './classes/unit'
+import Unit from './classes/units/unit'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
+import Riflemen from './classes/units/riflemen'
 
 // create the test board
 const gameboard = new Gameboard(testBoard)
 
 //console.log('gameboard.map', gameboard.map)
-
 
 //mounting PIXI to DOM
 const canvas = document.getElementById('mycanvas')
@@ -32,8 +32,8 @@ const unitTextures = [rifleUnit]
 let GameContainer = new PIXI.Container()
 app.stage.addChild(GameContainer)
 
-const unit1 = new Unit({x: 2, y: 0})
-const unit2 = new Unit({x: 5, y: 0})
+const unit1 = new Riflemen(gameboard.board[0][2])
+const unit2 = new Riflemen(gameboard.board[0][5])
 
 //keeping rendered sprites
 let tileSprites = []
@@ -65,10 +65,7 @@ function renderBoard() {
       // 0 = clear
       // 1 = impassible
       //? Key-value data structure to id tile types
-      tileSprite.data = {
-        type: gameboard.board[y][x],
-        coordinates: {x, y}
-      }
+      tileSprite.data = gameboard.board[y][x]
 
       //scale & position
       tileSprite.width = SCALE
@@ -87,13 +84,9 @@ function renderBoard() {
 
       //onClick, call selectedUnit's move fn to clicked tile coord
       tileSprite.on('click', e => {
-
-        if (selectedUnit.data.coordinates) {
-          console.log(
-            'tile clicked, coordinates: ',
-            tileSprite.data.coordinates
-          )
-          handleMove(selectedUnit, tileSprite.data.coordinates)
+        if (selectedUnit.data) {
+          console.log('tile clicked, tile data: ', tileSprite.data)
+          handleMove(selectedUnit, tileSprite.data)
           //selectedUnit.move(tileSprite.data.coordinates)
 
           selectedUnit = {}
@@ -163,7 +156,7 @@ export function renderUnits(unitArr) {
   unitArr.forEach(unit => {
     let offset = 0
 
-    if (unit.coordinates.y % 2 == 0) {
+    if (unit.currentTile.coordinates.y % 2 == 0) {
       offset = SCALE / 2
     }
 
@@ -172,8 +165,8 @@ export function renderUnits(unitArr) {
     unitSprite.data = unit
 
     // setting position
-    unitSprite.x = unit.coordinates.x * SCALE + offset
-    unitSprite.y = unit.coordinates.y * SCALE
+    unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
+    unitSprite.y = unit.currentTile.coordinates.y * SCALE
 
     unitSprite.height = SCALE / 1.5
     unitSprite.width = SCALE / 1.5
@@ -190,6 +183,7 @@ export function renderUnits(unitArr) {
       //console.log('Sprite: ', unitSprite)
       console.log('unit clicked!\n Event: ', e.target)
       selectedUnit = unitSprite
+      unitSprite.data.toggleSelected()
     })
   })
 
@@ -204,13 +198,14 @@ export function renderUnits(unitArr) {
       unit is trying to move to
 * - unitSprite.x & .y are updated using the unitSprite.data to ensure only valid
 */
-function handleMove(unitSprite, newCoordinates) {
+function handleMove(unitSprite, newTile) {
   // update coords on unitSprite
-  unitSprite.data.move(newCoordinates)
+  unitSprite.data.move(newTile)
   //update sprite's x amd y position
-  let offset = unitSprite.data.coordinates.y % 2 === 0 ? SCALE / 2 : 0
-  unitSprite.x = unitSprite.data.coordinates.x * SCALE + offset
-  unitSprite.y = unitSprite.data.coordinates.y * SCALE
+  let offset =
+    unitSprite.data.currentTile.coordinates.y % 2 === 0 ? SCALE / 2 : 0
+  unitSprite.x = unitSprite.data.currentTile.coordinates.x * SCALE + offset
+  unitSprite.y = unitSprite.data.currentTile.coordinates.y * SCALE
   console.log('updating unit view', unitSprite)
 }
 
@@ -220,4 +215,3 @@ renderBoard()
 renderUnits(unitSprites)
 
 //move unit
-

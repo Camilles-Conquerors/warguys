@@ -2,9 +2,10 @@
 // This is a graph node
 // this.value is expected to take in the whole terrain object
 export default class TileNode {
-  constructor(tile, id) {
+  constructor(tile, id, coordinates) {
     this.id = id
     this.tile = tile
+    this.coordinates = coordinates
     this.neighbors = []
   }
 
