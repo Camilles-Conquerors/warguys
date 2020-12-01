@@ -20,16 +20,12 @@ export default class Gameboard {
     for (let y = 0; y < map.length; y++) {
       let objsMapRow = []
       for (let x = 0; x < map[y].length; x++) {
-        const newTile = new TileNode()
-        newTile.id = idCount
         switch (map[y][x]) {
           case 0:
-            newTile.value = plain
-            objsMapRow.push(newTile)
+            objsMapRow.push(new TileNode(plain, idCount))
             break
           case 1:
-            newTile.value = mountain
-            objsMapRow.push(newTile)
+            objsMapRow.push(new TileNode(mountain, idCount))
             break
           default:
             break

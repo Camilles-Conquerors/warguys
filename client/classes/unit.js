@@ -7,6 +7,6 @@ export default class Unit {
 
   move(newCoordinates) {
     this.coordinates = newCoordinates
-    renderUnit(this)
+    // renderUnit(this)
   }
 }
