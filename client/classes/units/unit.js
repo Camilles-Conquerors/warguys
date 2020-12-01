@@ -1,5 +1,3 @@
-import {renderUnit} from '../../index.js'
-
 export default class Unit {
   constructor(currentTile, unitStats) {
     this.currentTile = currentTile
@@ -15,9 +13,10 @@ export default class Unit {
 
   findMovementRange() {
     const nodesInRange = this.currentTile.findAllNodesInRange(this.movement)
-    console.log(`nodes in range of ${this.currentTile.id}`, nodesInRange)
+    // console.log(`nodes in range of ${this.currentTile.id}`, nodesInRange)
 
     for (let node in nodesInRange) {
+      //! check if terrain is impassible rather than if the name matches mountain
       if (nodesInRange[node].tile.name === 'plain') {
         this.possibleMoves = {...this.possibleMoves, [node]: nodesInRange[node]}
       }
@@ -27,7 +26,7 @@ export default class Unit {
     //   if (node.tile.name === "mountain") return false
     //   return true
     // })
-    console.log('possibleMoves', this.possibleMoves)
+    // console.log('possibleMoves', this.possibleMoves)
     return this.possibleMoves
   }
 

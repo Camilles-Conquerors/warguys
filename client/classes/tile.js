@@ -16,6 +16,8 @@ export default class TileNode {
   findAllNodesInRange(magnitude, nodesInRange = {}) {
     nodesInRange[this.id] = this
 
+    // check each magnitude, filter out mountain?
+
     if (magnitude > 0) {
       --magnitude
       this.neighbors.forEach(node => {

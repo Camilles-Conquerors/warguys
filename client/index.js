@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js'
-import Unit from './classes/units/unit'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
 import Riflemen from './classes/units/riflemen'
