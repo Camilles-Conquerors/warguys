@@ -8,6 +8,8 @@ export default class Unit {
   move(newCoordinates) {
     console.log('new coords', newCoordinates)
     this.coordinates = newCoordinates
+
     //renderUnits(this)
+
   }
 }

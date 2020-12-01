@@ -5,7 +5,9 @@ import {testBoard} from './hardcoded-maps'
 
 // create the test board
 const gameboard = new Gameboard(testBoard)
+
 //console.log('gameboard.map', gameboard.map)
+
 
 //mounting PIXI to DOM
 const canvas = document.getElementById('mycanvas')
@@ -51,9 +53,11 @@ function renderBoard() {
     //going through each column of current row
     for (let x = 0; x < gameboard.board[y].length; x++) {
       //make a new sprite
+
       //console.log(gameboard.board[y][x].value.name)
+
       let tileSprite = new PIXI.Sprite(
-        tileTextures[gameboard.board[y][x].value.name]
+        tileTextures[gameboard.board[y][x].tile.name]
       )
 
       //pass reference to tile into sprite
@@ -73,9 +77,9 @@ function renderBoard() {
       tileSprite.y = y * SCALE
 
       //rendering based on tile type
-      if (gameboard.board[y][x].value.name === 'plain')
+      if (gameboard.board[y][x].tile.name === 'plain')
         tileSprite.tint = 0x008000
-      else if (gameboard.board[y][x].value.name === 'mountain')
+      else if (gameboard.board[y][x].tile.name === 'mountain')
         tileSprite.tint = 0xa52a2a
 
       //setting event handlers
@@ -83,6 +87,7 @@ function renderBoard() {
 
       //onClick, call selectedUnit's move fn to clicked tile coord
       tileSprite.on('click', e => {
+
         if (selectedUnit.data.coordinates) {
           console.log(
             'tile clicked, coordinates: ',
@@ -90,6 +95,7 @@ function renderBoard() {
           )
           handleMove(selectedUnit, tileSprite.data.coordinates)
           //selectedUnit.move(tileSprite.data.coordinates)
+
           selectedUnit = {}
         }
       })
@@ -209,7 +215,9 @@ function handleMove(unitSprite, newCoordinates) {
 }
 
 renderBoard()
+
 //renderUnit(unit)
 renderUnits(unitSprites)
 
 //move unit
+
