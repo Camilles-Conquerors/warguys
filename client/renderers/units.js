@@ -16,8 +16,8 @@ export function renderUnit(unit) {
   unitSprite.interactive = true
   unitSprite.buttonMode = true
   unitSprite.on('click', e => {
-    console.log('Sprite: ', unitSprite)
-    console.log('unit clicked!\n Event: ', e)
+    //console.log('Sprite: ', unitSprite)
+    //console.log('unit clicked!\n Event: ', e)
     selectedUnit = unitSprite.data
   })
 

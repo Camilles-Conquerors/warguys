@@ -1,4 +1,4 @@
-import {renderUnit} from '../index.js'
+import {renderUnits} from '../index.js'
 
 export default class Unit {
   constructor(coordinates) {
@@ -6,7 +6,10 @@ export default class Unit {
   }
 
   move(newCoordinates) {
+    console.log('new coords', newCoordinates)
     this.coordinates = newCoordinates
-    // renderUnit(this)
+
+    //renderUnits(this)
+
   }
 }

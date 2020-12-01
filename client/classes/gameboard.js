@@ -34,7 +34,7 @@ export default class Gameboard {
       }
       newBoard.push(objsMapRow)
     }
-    console.log('objsMap', newBoard)
+    //console.log('objsMap', newBoard)
     // return an array of objects converted from our map input
     return newBoard
   }
