@@ -1,9 +1,10 @@
 export default class Unit {
-  constructor(currentTile, unitStats) {
+  constructor(name, currentTile, unitStats) {
     this.currentTile = currentTile
     this.movement = unitStats.movement
     this.possibleMoves = {}
     this.isSelected = false
+    this.name = name
   }
 
   toggleSelected() {
@@ -21,12 +22,6 @@ export default class Unit {
         this.possibleMoves = {...this.possibleMoves, [node]: nodesInRange[node]}
       }
     }
-
-    // this.possibleMoves = nodesInRange.filter(node => {
-    //   if (node.tile.name === "mountain") return false
-    //   return true
-    // })
-    // console.log('possibleMoves', this.possibleMoves)
     return this.possibleMoves
   }
 
@@ -37,21 +32,10 @@ export default class Unit {
       this.possibleMoves = {}
       this.isSelected = false
       console.log('unit moved')
-    } else {
-      console.log('this is an invalid move')
+      return true
     }
-
-    // for (let i = 0; i < this.possibleMoves; i++) {
-    //   if (newTileId === this.possibleMoves[i].id) {
-    //     this.coordinates = newCoordinates
-    //     this.possibleMoves = []
-    //     this.isSelected = false
-    //     console.log('unit moved')
-    //     break
-    //   }
-    // }
-
+    console.log('this is an invalid move')
     this.isSelected = false
-    // renderUnit(this)
+    return false
   }
 }
