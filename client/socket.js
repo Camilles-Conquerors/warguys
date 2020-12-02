@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-import {updateUnits} from './index'
+import {updateUnits} from './actions/move'
 
 const socket = io(window.location.origin)
 
