@@ -84,13 +84,10 @@ function renderBoard() {
       tileSprite.interactive = true
 
       //onClick, call selectedUnit's move fn to clicked tile coord
-      tileSprite.on('click', e => {
-        if (selectedUnit.data.coordinates) {
-          console.log('tile clicked, tile data: ', tileSprite.data)
+      tileSprite.on('click', () => {
+        console.log('tile clicked, tile data: ', tileSprite.data)
+        if (selectedUnit.data.currentTile.coordinates) {
           handleMove(selectedUnit, tileSprite.data)
-
-          //selectedUnit.move(tileSprite.data.coordinates)
-
           selectedUnit = {}
         }
       })
@@ -135,9 +132,11 @@ export function renderUnits(unitArr) {
     unitSprite.interactive = true
     unitSprite.buttonMode = true
     unitSprite.on('click', () => {
+      console.log('unit clicked!')
       selectedUnit = unitSprite
-      console.log('unit clicked! selectedUnit set to: ', unitSprite)
+      console.log('selectedUnit set to: ', unitSprite)
       unitSprite.data.toggleSelected()
+      console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
     })
   })
 }
@@ -152,16 +151,22 @@ export function renderUnits(unitArr) {
 function handleMove(unitSprite, newTile) {
   // update coords on unitSprite
   if (unitSprite.data.move(newTile)) {
+    console.log('unit move success')
     //update sprite's x amd y position on view
-    updateUnits(unitSprite.data)
+    let coordinates = unitSprite.data.currentTile.coordinates
+    let name = unitSprite.data.name
+    let unit = {coordinates, name}
+    updateUnits(unit)
+    console.log('update view success')
     //sends move to socket server
-    socket.emit('updateUnits', unitSprite.data)
+    console.log('emitting move to socket server', unit)
+    socket.emit('updateUnits', unit)
   }
 }
 
 // - unitSprite.x & .y are updated using the unitSprite.data to ensure only valid
 export function updateUnits(unit) {
-  let offset = unit.currentTile.coordinates.y % 2 === 0 ? SCALE / 2 : 0
+  let offset = unit.coordinates.y % 2 === 0 ? SCALE / 2 : 0
 
   //filters through current unitSprites array to find unit based off of unique name
   let unitSprite = unitSprites.filter(unitsprite => {
@@ -169,8 +174,8 @@ export function updateUnits(unit) {
   })
 
   unitSprite = unitSprite[0]
-  unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
-  unitSprite.y = unit.currentTile.coordinates.y * SCALE
+  unitSprite.x = unit.coordinates.x * SCALE + offset
+  unitSprite.y = unit.coordinates.y * SCALE
 }
 
 renderBoard()
