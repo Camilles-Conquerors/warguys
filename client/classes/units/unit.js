@@ -13,7 +13,10 @@ export default class Unit {
   }
 
   findMovementRange() {
-    const nodesInRange = this.currentTile.findAllNodesInRange(this.movement)
+    const nodesInRange = this.currentTile.findAllNodesInRange(
+      this.movement,
+      checkPassible
+    )
     // console.log(`nodes in range of ${this.currentTile.id}`, nodesInRange)
 
     for (let node in nodesInRange) {
@@ -38,4 +41,8 @@ export default class Unit {
     this.isSelected = false
     return false
   }
+}
+
+function checkPassible(tile) {
+  return tile.passable
 }
