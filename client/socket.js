@@ -12,4 +12,8 @@ socket.on('actionBroadcast', unit => {
   updateUnits(unit)
 })
 
+socket.on('roomFull', msg => {
+  console.log(msg)
+})
+
 export default socket
