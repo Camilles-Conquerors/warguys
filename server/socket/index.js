@@ -10,9 +10,9 @@ module.exports = io => {
 
   // every time we render a view, we need to emit
   // joinLobby
-  //   emit: payload indicating player1 sent to lobby
-  //   listener: renderLobby with text from payload once it recieves the emit
-  // renderGame
+  //   emit: indicate player1 sent to lobby
+  //   listener: render the lobbyContainer
+  // startGame
   //   emit: indicate the game is ready to start
   //   listener: render the gameBoard
 
@@ -25,6 +25,7 @@ module.exports = io => {
       console.log('roomName', roomName)
       // if the room does not already exist
       if (!rooms[roomName]) {
+        // if room doesn't exist, create the room as player1
         rooms[roomName] = {
           name: roomName,
           players: {
@@ -33,7 +34,13 @@ module.exports = io => {
           }
         }
         socket.join(roomName).emit('joinLobby')
+      } else if (rooms[roomName] && !rooms[roomName].players.player2) {
+        // if room exists and has 1 player inside, join room and start the game
+        rooms[roomName].players.player2 = socket.id
+        socket.join(roomName).emit('startGame')
+        socket.to(roomName).emit('startGame')
       }
+      //! handle case if room is full
       console.log('rooms', rooms)
     })
 
@@ -44,6 +51,8 @@ module.exports = io => {
       console.log(`Connection ${socket.id} has left the building`)
     })
   })
+
+  //! reimplement updating units over socket on movement
 
   // const nsp1 = io.of('/room1')
 

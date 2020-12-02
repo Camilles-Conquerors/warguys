@@ -65,20 +65,6 @@ export function renderSplash() {
   })
 }
 
-// var scene1 = new PIXI.DisplayObjectContainer(),
-// scene2 = new PIXI.DisplayObjectContainer(),
-// scene3 = new PIXI.DisplayObjectContainer();
-// //add some stuff to scene 1
-// scene1.addChild(new PIXI.Sprite(myTexture));
-// //add some stuff to scene 2
-// scene2.addChild(new PIXI.Sprite(anotherTexture));
-// //add some stuff to scene 3
-// scene3.addChild(new PIXI.Sprite(moarTexture));
-// //add all the scenes to the stagestage.addChild(scene1);stage.addChild(scene2);stage.addChild(scene3);
-// //show only scene1
-// scene2.visible = false;
-// scene3.visible = false;
-
 // renderSplash()
 
 export function renderLobby() {
@@ -119,7 +105,9 @@ export function getOffset(y) {
   return y % 2 === 0 ? SCALE / 2 : 0
 }
 
-//run initial renders
-renderBoard()
-renderUnits(defaultUnits)
-// GameContainer.addChild(BoardContainer)
+export function renderGame() {
+  //run renders for the board and unit, which will add them to BoardContainer
+  renderBoard()
+  renderUnits(defaultUnits)
+  GameContainer.addChild(BoardContainer)
+}

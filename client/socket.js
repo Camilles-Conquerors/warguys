@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 import {updateUnits} from './actions/move'
-import {unrender, renderSplash, renderLobby} from './index'
+import {unrender, renderSplash, renderLobby, renderGame} from './index'
 
 const socket = io(window.location.origin)
 
@@ -18,6 +18,12 @@ socket.on('joinLobby', () => {
   unrender()
   renderLobby()
   console.log(`${socket.id} Joined the lobby`)
+})
+
+socket.on('startGame', () => {
+  unrender()
+  renderGame()
+  console.log('game starting!')
 })
 
 socket.on('roomFull', msg => {
