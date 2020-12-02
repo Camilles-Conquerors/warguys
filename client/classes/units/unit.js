@@ -64,9 +64,8 @@ export default class Unit {
             }
           })
         })
-        console.log('layer to be pushed: ', nextLayer)
+        // console.log('layer to be pushed: ', nextLayer)
         queue.push(nextLayer)
-        console.log('queue: ', queue)
       }
 
       //process each node of currentLayer
@@ -76,29 +75,40 @@ export default class Unit {
         let minAngle = (H - 1) * (360 / (6 * N))
         let maxAngle = minAngle + 360 / (6 * N)
 
-        // console.log(`Hex: ${H}\nminAngle: ${minAngle}\nmaxAngle: ${maxAngle}`)
-
+        let isCovered = false
         // if node is not in view, skip
+
+        console.log(
+          `Hex: ${H} (id ${node.id}), height: ${
+            node.tile.height
+          }\nmin-max angles: ${minAngle}, ${maxAngle}`
+        )
         for (let i = 0; i < shadowRanges.length; i++) {
+          console.log('checking aginst ranges: ', shadowRanges[i])
           if (minAngle > shadowRanges[i][0] && maxAngle < shadowRanges[i][1]) {
+            isCovered = true
             H++
             return
           }
         }
+        // console.log('if this value is true, something went wrong: ', isCovered)
         // other wise, it is visible
         visibleTiles[node.id] = node
 
         //check if it will cast a shadow in our view
         //if the tile is heigher than we are, it will block the view behind it
-        if (node.tile.height > this.currentTile.height) {
+        // console.log('shadow ranges before: ', ...shadowRanges)
+        // console.log('our height: ', this.currentTile.tile.height, `Node ${node.id}'s height: `, node.tile.height)
+        if (node.tile.height > this.currentTile.tile.height) {
           //stash the angles this tile is blocking
           shadowRanges.push([minAngle, maxAngle])
         }
+        // console.log('shadow ranges after: ', ...shadowRanges)
 
         H++
       })
       // The layer inside queue is returning empty, why???
-      console.log('queue: ', queue)
+      // console.log('queue: ', ...queue)
       N++
     }
 
@@ -106,7 +116,7 @@ export default class Unit {
 
     //process the queue
 
-    console.log(visibleTiles)
+    console.log('visisbleNodes: ', visibleTiles)
 
     return visibleTiles
   }
