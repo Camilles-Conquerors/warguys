@@ -7,7 +7,8 @@ export const plain = {
   defenseBonus: 0,
   visionCost: 1,
   visionBonus: 0,
-  seeThrough: true
+  seeThrough: true,
+  height: 0
 }
 
 export const mountain = {
@@ -17,5 +18,6 @@ export const mountain = {
   defenseBonus: 3,
   visionCost: 3,
   visionBonus: 3,
-  seeThrough: false
+  seeThrough: false,
+  height: 3
 }
