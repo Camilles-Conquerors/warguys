@@ -20,6 +20,9 @@ const tileTextures = {
 //stores rendered sprites added to gameboard
 let tileSprites = []
 
+// create container for the board
+export const BoardContainer = new PIXI.Container()
+
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
  renderBoard external Dependencies:
@@ -34,6 +37,7 @@ let tileSprites = []
   TileSprites
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
+
 export function renderBoard() {
   //going through each row of board
   for (let y = 0; y < gameboard.board.length; y++) {
@@ -86,7 +90,7 @@ export function renderBoard() {
       tileSprite.type = 'tile'
 
       //mounting sprite to pixi & saving
-      GameContainer.addChild(tileSprite)
+      BoardContainer.addChild(tileSprite)
       tileSprites.push(tileSprite)
     }
   }

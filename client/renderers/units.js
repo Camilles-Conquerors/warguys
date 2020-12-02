@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
+import {BoardContainer} from './board'
 
 //Making texture from image files
 const rifleUnit = PIXI.Texture.from('/images/unit_rifleman.png')
@@ -37,7 +38,7 @@ export function renderUnits(unitArr) {
 
     unitSprite.type = 'unit'
 
-    GameContainer.addChild(unitSprite)
+    BoardContainer.addChild(unitSprite)
     unitSprites.push(unitSprite)
 
     //setting events
