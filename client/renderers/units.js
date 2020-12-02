@@ -1,37 +1,54 @@
-export function renderUnit(unit) {
-  // console.log(unit)
-  unitSprites.forEach(sprite => GameContainer.removeChild(sprite))
+import * as PIXI from 'pixi.js'
+import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
 
-  let offset = 0
+//Making texture from image files
+const rifleUnit = PIXI.Texture.from('/images/unit_rifleman.png')
+const unitTextures = [rifleUnit]
 
-  if (unit.coordinates.y % 2 == 0) {
-    offset = SCALE / 2
-  }
+//stores rendered unitSprites added to gameboard
+export let unitSprites = []
 
-  let unitSprite = new PIXI.Sprite(unitTextures[0])
+/*
+* * * * * * * * * * * * * * * * * * * * * * * * *
+  renderUnits Dependencies:
+    offset()
+    unitTextures
+    PIXI
+    SCALE
+    GameContainer
+    unitSprites
+    selectedUnit
+* * * * * * * * * * * * * * * * * * * * * * * * *
+*/
+export function renderUnits(unitArr) {
+  unitArr.forEach(unit => {
+    let offset = getOffset(unit.currentTile.coordinates.y)
 
-  unitSprite.data = unit
+    let unitSprite = new PIXI.Sprite(unitTextures[0])
 
-  //setting events
-  unitSprite.interactive = true
-  unitSprite.buttonMode = true
-  unitSprite.on('click', e => {
-    //console.log('Sprite: ', unitSprite)
-    //console.log('unit clicked!\n Event: ', e)
-    selectedUnit = unitSprite.data
+    unitSprite.data = unit
+
+    // setting position
+    unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
+    unitSprite.y = unit.currentTile.coordinates.y * SCALE
+
+    unitSprite.height = SCALE / 1.5
+    unitSprite.width = SCALE / 1.5
+
+    unitSprite.type = 'unit'
+
+    GameContainer.addChild(unitSprite)
+    unitSprites.push(unitSprite)
+
+    //setting events
+    unitSprite.interactive = true
+    unitSprite.buttonMode = true
+    unitSprite.on('click', () => {
+      console.log('unit clicked!')
+      updateSelectedUnit(unitSprite)
+      console.log('selectedUnit set to: ', unitSprite)
+      unitSprite.data.toggleSelected()
+      console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
+    })
   })
-
-  // setting position
-  unitSprite.x = unit.coordinates.x * SCALE + offset
-  unitSprite.y = unit.coordinates.y * SCALE
-
-  unitSprite.height = SCALE / 1.5
-  unitSprite.width = SCALE / 1.5
-
-  unitSprite.type = 'unit'
-
-  GameContainer.addChild(unitSprite)
-  unitSprites.push(unitSprite)
-
-  // console.log(container)
 }
