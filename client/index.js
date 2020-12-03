@@ -119,9 +119,11 @@ export const gameboard = new Gameboard(testBoard)
 //console.log('gameboard.map', gameboard.map)
 
 // create initial unit placement with hardcoded riflemen
-const unit1 = new Riflemen('bobby', gameboard.board[0][2])
-const unit2 = new Riflemen('henry', gameboard.board[0][5])
-let defaultUnits = [unit1, unit2]
+const unitGreen1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
+const unitGreen2 = new Riflemen('player1', 'bobby', gameboard.board[3][2])
+const unitBlue1 = new Riflemen('player2', 'henry', gameboard.board[13][11])
+const unitBlue2 = new Riflemen('player2', 'hienrik', gameboard.board[11][12])
+let defaultUnits = [unitGreen1, unitGreen2, unitBlue1, unitBlue2]
 
 // initialize global variables
 export const SCALE = app.renderer.screen.height / gameboard.board.length
