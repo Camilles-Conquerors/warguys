@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable no-loop-func */
 export default class Unit {
   constructor(name, currentTile, unitStats) {
@@ -84,20 +85,8 @@ export default class Unit {
         let maxAngle = minAngle + 360 / (6 * N)
 
         //converting out-of-bounds values to 0-to-360 value
-        //Min Angle
-        if (minAngle < 0) {
-          minAngle = 360 + minAngle
-        }
-        if (minAngle > 360) {
-          minAngle = minAngle - 360
-        }
-        //MaxAngle
-        if (maxAngle < 0) {
-          maxAngle = 360 + maxAngle
-        }
-        if (maxAngle > 360) {
-          maxAngle = maxAngle - 360
-        }
+        minAngle = get360Agnle(minAngle)
+        maxAngle = get360Agnle(maxAngle)
 
         let isCovered = false
         // if node is not in view, skip
@@ -165,6 +154,7 @@ export default class Unit {
     if (this.tilesInView[this.chosenUnit.currentTile.id]) {
       chosenUnit.health--
       this.isSelected = false
+      console.log('')
       return true
     }
     console.log()
@@ -175,4 +165,10 @@ export default class Unit {
 
 function checkPassable(tile) {
   return tile.passable
+}
+
+function get360Agnle(num) {
+  if (num < 0) return 360 + num
+  if (num > 360) return num - 360
+  return num
 }
