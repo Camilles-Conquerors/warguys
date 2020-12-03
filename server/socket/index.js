@@ -35,13 +35,13 @@ module.exports = io => {
         }
         //updates socket info
         socket.roomName = roomName
-        socket.player = rooms[roomName].players.player1
+        socket.player = 'player1'
         socket.join(roomName).emit('joinLobby')
       } else if (rooms[roomName] && !rooms[roomName].players.player2) {
         // if room exists and has 1 player inside, join room and start the game
         rooms[roomName].players.player2 = socket.id
         socket.roomName = roomName
-        socket.player = rooms[roomName].players.player2
+        socket.player = 'player2'
         socket.join(roomName).emit('startGame')
         socket.to(roomName).emit('startGame')
       }
@@ -62,11 +62,9 @@ module.exports = io => {
         if (rooms[roomName]) {
           const players = rooms[roomName].players
           if (socket.id === players.player1) {
-            delete players.player1
             console.log('remaining', players.player2)
             winner = players.player2
           } else if (socket.id === players.player2) {
-            delete players.player2
             console.log('remaining', players.player1)
             winner = players.player1
           }

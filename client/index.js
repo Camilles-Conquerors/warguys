@@ -132,7 +132,7 @@ export function renderGameOver(winner) {
 
   // create text obj and add it to GameOverContainer
   let text = new PIXI.Text(
-    `${winner} wins the Game! \n Click join to play again!`,
+    `${winner} wins the Game! \n Refresh page to play again!`,
     {
       fontFamily: 'Arial',
       fontSize: 24,
@@ -141,20 +141,21 @@ export function renderGameOver(winner) {
     }
   )
   GameOverContainer.addChild(text)
+  // !add join button to gameover splash to allow user to enter another room
+  // !find and fix issue with implementation - not working as is
+  // //! add button texture and create sprite from it
+  // const joinButton = PIXI.Texture.from('/images/join_button_placeholder.png')
+  // const buttonTextures = [joinButton]
+  // let joinButtonSprite = new PIXI.Sprite(buttonTextures[0])
+  // joinButtonSprite.y = 200
+  // GameOverContainer.addChild(joinButtonSprite)
 
-  // add button texture and create sprite from it
-  const joinButton = PIXI.Texture.from('/images/join_button_placeholder.png')
-  const buttonTextures = [joinButton]
-  let joinButtonSprite = new PIXI.Sprite(buttonTextures[0])
-  joinButtonSprite.y = 200
-  GameOverContainer.addChild(joinButtonSprite)
-
-  // on click event for clicking join room
-  joinButtonSprite.interactive = true
-  joinButtonSprite.buttonMode = true
-  joinButtonSprite.on('click', () => {
-    const roomName = 'room1'
-    console.log("you're about to another game")
-    socket.emit('joinRoom', roomName)
-  })
+  // // on click event for clicking join room
+  // joinButtonSprite.interactive = true
+  // joinButtonSprite.buttonMode = true
+  // joinButtonSprite.on('click', () => {
+  //   const roomName = 'room1'
+  //   console.log("you're about to another game")
+  //   socket.emit('joinRoom', roomName)
+  // })
 }
