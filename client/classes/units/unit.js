@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 export default class Unit {
   constructor(name, currentTile, unitStats) {
     this.currentTile = currentTile
@@ -70,17 +71,33 @@ export default class Unit {
 
       //process each node of currentLayer
       // eslint-disable-next-line no-loop-func
+      // eslint-disable-next-line complexity
+      //! This func is very big, but we need something working, not looking nice. To make prettier later
       currentLayer.forEach(node => {
         // get current node's angle range
 
         //!! I think we really need to understand this, and make it constant. feels like there's some inconsistencies going on between "layers"
         let minAngle = H * (360 / (6 * N))
+        if (N % 2 === 0) {
+          minAngle -= 360 / (12 * N)
+        }
         let maxAngle = minAngle + 360 / (6 * N)
 
-        // if(N % 2 === 0){
-        //   minAngle += (360 / (3 * N))
-        //   maxAngle += (360 / (3 * N))
-        // }
+        //converting out-of-bounds values to 0-to-360 value
+        //Min Angle
+        if (minAngle < 0) {
+          minAngle = 360 + minAngle
+        }
+        if (minAngle > 360) {
+          minAngle = minAngle - 360
+        }
+        //MaxAngle
+        if (maxAngle < 0) {
+          maxAngle = 360 + maxAngle
+        }
+        if (maxAngle > 360) {
+          maxAngle = maxAngle - 360
+        }
 
         let isCovered = false
         // if node is not in view, skip
