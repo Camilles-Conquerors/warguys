@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /* eslint-disable no-loop-func */
 export default class Unit {
   constructor(name, currentTile, unitStats) {
@@ -16,7 +15,8 @@ export default class Unit {
   toggleSelected() {
     this.isSelected = !this.isSelected
     if (Object.keys(this.possibleMoves).length < 1) this.findMovementRange()
-    if (Object.keys(this.tilesInView).length < 1) this.findVisibleTiles()
+    if (Object.keys(this.tilesInView).length < 1)
+      this.tilesInView = this.findVisibleTiles()
   }
 
   findMovementRange() {
@@ -85,19 +85,19 @@ export default class Unit {
         let maxAngle = minAngle + 360 / (6 * N)
 
         //converting out-of-bounds values to 0-to-360 value
-        minAngle = get360Agnle(minAngle)
-        maxAngle = get360Agnle(maxAngle)
+        minAngle = get360Angle(minAngle)
+        maxAngle = get360Angle(maxAngle)
 
         let isCovered = false
         // if node is not in view, skip
 
-        console.log(
+        /* console.log(
           `Hex: ${H} (id ${node.id}), height: ${
             node.tile.height
           }\nmin-max angles: ${minAngle}, ${maxAngle}`
-        )
+        ) */
         for (let i = 0; i < shadowRanges.length; i++) {
-          console.log('checking aginst ranges: ', shadowRanges[i])
+          //  console.log('checking aginst ranges: ', shadowRanges[i])
           if (minAngle > shadowRanges[i][0] && maxAngle < shadowRanges[i][1]) {
             isCovered = true
             H++
@@ -126,11 +126,11 @@ export default class Unit {
       N++
     }
 
-    console.log(`nodesQueued: `, alreadyQueued)
+    // console.log(`nodesQueued: `, alreadyQueued)
 
     //process the queue
 
-    console.log('visisbleNodes: ', visibleTiles)
+    // console.log('visisbleNodes: ', visibleTiles)
 
     return visibleTiles
   }
@@ -154,10 +154,18 @@ export default class Unit {
     if (this.tilesInView[this.chosenUnit.currentTile.id]) {
       chosenUnit.health--
       this.isSelected = false
-      console.log('')
+      console.log(
+        `We hit the unit for 1 health: ${chosenUnit.health + 1} --> ${
+          chosenUnit.health
+        }`
+      )
       return true
     }
-    console.log()
+    if (chosenUnit.name) {
+      console.log('Unit was out of range!')
+    } else {
+      console.log('No unit was selected to be attacked!')
+    }
     this.isSelected = false
     return false
   }
@@ -166,8 +174,7 @@ export default class Unit {
 function checkPassable(tile) {
   return tile.passable
 }
-
-function get360Agnle(num) {
+function get360Angle(num) {
   if (num < 0) return 360 + num
   if (num > 360) return num - 360
   return num
