@@ -72,8 +72,15 @@ export default class Unit {
       // eslint-disable-next-line no-loop-func
       currentLayer.forEach(node => {
         // get current node's angle range
-        let minAngle = (H - 1) * (360 / (6 * N))
+
+        //!! I think we really need to understand this, and make it constant. feels like there's some inconsistencies going on between "layers"
+        let minAngle = H * (360 / (6 * N))
         let maxAngle = minAngle + 360 / (6 * N)
+
+        // if(N % 2 === 0){
+        //   minAngle += (360 / (3 * N))
+        //   maxAngle += (360 / (3 * N))
+        // }
 
         let isCovered = false
         // if node is not in view, skip
@@ -107,6 +114,7 @@ export default class Unit {
 
         H++
       })
+      H = 0
       // The layer inside queue is returning empty, why???
       // console.log('queue: ', ...queue)
       N++
