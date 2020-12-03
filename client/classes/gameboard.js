@@ -57,24 +57,38 @@ export default class Gameboard {
         let directionToShift = y % 2 === 0 ? 'right' : 'left'
 
         //assigning neighbors based on above criteria
-        if (availableSides.left) currentTile.neighbors.push(board[y][x - 1])
-        if (availableSides.up) currentTile.neighbors.push(board[y - 1][x])
-        if (availableSides.right) currentTile.neighbors.push(board[y][x + 1])
-        if (availableSides.down) currentTile.neighbors.push(board[y + 1][x])
 
-        if (availableSides.up && availableSides[directionToShift]) {
-          if (directionToShift === 'right') {
+        // We have to do this in the same order, clock-wise to do angle calculations properly
+        if (directionToShift === 'right') {
+          //top right
+          if (availableSides.up && availableSides[directionToShift])
             currentTile.neighbors.push(board[y - 1][x + 1])
-          } else {
-            currentTile.neighbors.push(board[y - 1][x - 1])
-          }
-        }
-        if (availableSides.down && availableSides[directionToShift]) {
-          if (directionToShift === 'right') {
+          //right
+          if (availableSides.right) currentTile.neighbors.push(board[y][x + 1])
+          //bottom right
+          if (availableSides.down && availableSides[directionToShift])
             currentTile.neighbors.push(board[y + 1][x + 1])
-          } else {
+          //bottom left
+          if (availableSides.down) currentTile.neighbors.push(board[y + 1][x])
+          //left
+          if (availableSides.left) currentTile.neighbors.push(board[y][x - 1])
+          //topleft
+          if (availableSides.up) currentTile.neighbors.push(board[y - 1][x])
+        } else {
+          //top right
+          if (availableSides.up) currentTile.neighbors.push(board[y - 1][x])
+          //right
+          if (availableSides.right) currentTile.neighbors.push(board[y][x + 1])
+          //bottom right
+          if (availableSides.down) currentTile.neighbors.push(board[y + 1][x])
+          //bottom left
+          if (availableSides.down && availableSides[directionToShift])
             currentTile.neighbors.push(board[y + 1][x - 1])
-          }
+          //left
+          if (availableSides.left) currentTile.neighbors.push(board[y][x - 1])
+          //topleft
+          if (availableSides.up && availableSides[directionToShift])
+            currentTile.neighbors.push(board[y - 1][x - 1])
         }
       }
     }
