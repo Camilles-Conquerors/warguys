@@ -36,13 +36,17 @@ module.exports = io => {
         //updates socket info
         socket.roomName = roomName
         socket.player = 'player1'
-        socket.join(roomName).emit('joinLobby')
+        socket
+          .join(roomName)
+          .emit('joinLobby', rooms[roomName].players, socket.player)
       } else if (rooms[roomName] && !rooms[roomName].players.player2) {
         // if room exists and has 1 player inside, join room and start the game
         rooms[roomName].players.player2 = socket.id
         socket.roomName = roomName
         socket.player = 'player2'
-        socket.join(roomName).emit('startGame')
+        socket
+          .join(roomName)
+          .emit('startGame', rooms[roomName].players, socket.player)
         socket.to(roomName).emit('startGame')
       }
       //! handle case if room is full

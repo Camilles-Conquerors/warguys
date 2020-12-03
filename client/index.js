@@ -16,17 +16,11 @@ import socket from './socket'
 // figure out logic for when to render each view, once room is full start the game
 // figure out what data we're passing between server and the gameboard
 
-// initialize a gameState object to keep track of player turns
-const gameState = {
-  currentTurn: 'player1'
-}
-
 // turn order flow
 // assign units to respective players
-// e.g. unit has a property faction: "player1" || "player2"
-// unit also a property hasActed: true || false
+// e.g. unit has a property player: "player1" || "player2"
 // if true, unit cannot be clicked and cannot perform actions
-// keep an array containing all unit objects for a player
+// keep an array/some data structure containing all unit objects for a player
 // upon performing an action, set hasActed = true
 // once all units in the array have hasActed: true, switch gameState.currentTurn to next player
 // on turn start, all of that player's units become hasActed: false
@@ -119,11 +113,11 @@ export const gameboard = new Gameboard(testBoard)
 //console.log('gameboard.map', gameboard.map)
 
 // create initial unit placement with hardcoded riflemen
-const unitGreen1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
-const unitGreen2 = new Riflemen('player1', 'bobby', gameboard.board[3][2])
+const unitRed1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
+const unitRed2 = new Riflemen('player1', 'bobby', gameboard.board[3][2])
 const unitBlue1 = new Riflemen('player2', 'henry', gameboard.board[13][11])
 const unitBlue2 = new Riflemen('player2', 'hienrik', gameboard.board[11][12])
-let defaultUnits = [unitGreen1, unitGreen2, unitBlue1, unitBlue2]
+export let defaultUnits = [unitRed1, unitRed2, unitBlue1, unitBlue2]
 
 // initialize global variables
 export const SCALE = app.renderer.screen.height / gameboard.board.length

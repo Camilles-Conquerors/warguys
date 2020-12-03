@@ -50,7 +50,7 @@ export function renderUnits(unitArr) {
 
     //setting events
     unitSprite.interactive = true
-    unitSprite.buttonMode = true
+    unitSprite.buttonMode = true //! set this true/false depending on the turn
     unitSprite.on('click', () => {
       // check if this unit is already selected and is on your team
       //! this is bugged as of now, clicking directly on another unit before making a move locks out previous unit

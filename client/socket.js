@@ -21,15 +21,21 @@ socket.on('actionBroadcast', unit => {
   updateUnits(unit)
 })
 
-socket.on('joinLobby', () => {
+socket.on('joinLobby', (playersObj, player) => {
   unrender()
   renderLobby()
+  //! create a new Game instance
+  //! call Game.addPlayer to add player1
+  console.log(`you are ${player}`)
   console.log(`${socket.id} Joined the lobby`)
 })
 
-socket.on('startGame', () => {
+socket.on('startGame', (playersObj, player) => {
   unrender()
   renderGame()
+  //! call Game.addPlayer to add player2
+  console.log(`you are ${player}`)
+  console.log('playersObj', playersObj)
   console.log('game starting!')
 })
 
