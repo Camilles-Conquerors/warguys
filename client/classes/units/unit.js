@@ -13,8 +13,8 @@ export default class Unit {
     this.name = name
   }
 
-  toggleSelected() {
-    this.isSelected = !this.isSelected
+  toggleSelected(selected = !this.Selecter) {
+    this.isSelected = selected
     if (Object.keys(this.possibleMoves).length < 1) this.findMovementRange()
     if (Object.keys(this.tilesInView).length < 1)
       this.tilesInView = this.findVisibleTiles()
