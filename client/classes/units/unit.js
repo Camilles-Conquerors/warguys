@@ -141,6 +141,7 @@ export default class Unit {
     if (this.possibleMoves[newTile.id]) {
       this.currentTile = newTile
       this.possibleMoves = {}
+      this.tilesInView = {}
       this.isSelected = false
       this.findVisibleTiles()
       console.log('unit moved')
@@ -152,7 +153,13 @@ export default class Unit {
   }
 
   shoot(chosenUnit) {
-    if (this.tilesInView[this.chosenUnit.currentTile.id]) {
+    console.log(
+      'tiles in range: ',
+      this.tilesInView,
+      '\ntarget tile: ',
+      chosenUnit.currentTile.id
+    )
+    if (this.tilesInView[chosenUnit.currentTile.id]) {
       chosenUnit.health--
       this.isSelected = false
       console.log(

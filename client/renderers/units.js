@@ -64,9 +64,8 @@ export function renderUnits(unitArr) {
           console.log('unselected unit: ', unitSprite.data)
           selectedUnit.data.toggleSelected(false)
           updateSelectedUnit({})
-        }
-        //if you click on a team unit, change select to that unit
-        if (unitSprite.data.player === selectedUnit.data.player) {
+        } else if (unitSprite.data.player === selectedUnit.data.player) {
+          //if you click on a team unit, change select to that unit
           console.log('changed selected unit!: ', unitSprite.data)
           selectedUnit.data.toggleSelected(false)
           updateSelectedUnit(unitSprite)
@@ -74,8 +73,7 @@ export function renderUnits(unitArr) {
         } else {
           //if you click enemy unit, attempt attack
           console.log('trying to attack: ', unitSprite.data, '!')
-          let successful = selectedUnit.data.shoot(unitSprite.data)
-          if (successful) {
+          if (selectedUnit.data.shoot(unitSprite.data)) {
             selectedUnit.data.toggleSelected(false)
             updateSelectedUnit({})
           }
