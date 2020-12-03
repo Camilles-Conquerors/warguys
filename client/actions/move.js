@@ -25,6 +25,7 @@ export function handleMove(unitSprite, newTile) {
     console.log('update view success')
     //sends move to socket server
     console.log('emitting move to socket server', unit)
+    //emit only to people in room
     socket.emit('updateUnits', unit)
   }
 }
