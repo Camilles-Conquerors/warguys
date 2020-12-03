@@ -33,7 +33,7 @@ export function unrender() {
   GameContainer.removeChildAt(0)
 }
 
-// splash screen
+// Splash screen
 export function renderSplash() {
   // create SplashContainer
   let SplashContainer = new PIXI.Container()
@@ -110,4 +110,51 @@ export function renderGame() {
   renderBoard()
   renderUnits(defaultUnits)
   GameContainer.addChild(BoardContainer)
+}
+// let me = player1
+// //need to pass
+// export function takeTurn(player) {
+//   let myTurn = (player === me)
+//   if(myTurn) {
+//     //enable clicking abilities
+//     //start clock
+//   } else {
+//     //disable clicking abilities
+
+//   }
+// }
+
+//gameOver screen
+export function renderGameOver(winner) {
+  // create GameOverContainer
+  let GameOverContainer = new PIXI.Container()
+  GameContainer.addChild(GameOverContainer)
+
+  // create text obj and add it to GameOverContainer
+  let text = new PIXI.Text(
+    `${winner} wins the Game! \n Click join to play again!`,
+    {
+      fontFamily: 'Arial',
+      fontSize: 24,
+      fill: 0xffffff,
+      align: 'center'
+    }
+  )
+  GameOverContainer.addChild(text)
+
+  // add button texture and create sprite from it
+  const joinButton = PIXI.Texture.from('/images/join_button_placeholder.png')
+  const buttonTextures = [joinButton]
+  let joinButtonSprite = new PIXI.Sprite(buttonTextures[0])
+  joinButtonSprite.y = 200
+  GameOverContainer.addChild(joinButtonSprite)
+
+  // on click event for clicking join room
+  joinButtonSprite.interactive = true
+  joinButtonSprite.buttonMode = true
+  joinButtonSprite.on('click', () => {
+    const roomName = 'room1'
+    console.log("you're about to another game")
+    socket.emit('joinRoom', roomName)
+  })
 }

@@ -33,22 +33,54 @@ module.exports = io => {
             player1: socket.id
           }
         }
+        //updates socket info
+        socket.roomName = roomName
+        socket.player = rooms[roomName].players.player1
         socket.join(roomName).emit('joinLobby')
       } else if (rooms[roomName] && !rooms[roomName].players.player2) {
         // if room exists and has 1 player inside, join room and start the game
         rooms[roomName].players.player2 = socket.id
+        socket.roomName = roomName
+        socket.player = rooms[roomName].players.player2
         socket.join(roomName).emit('startGame')
         socket.to(roomName).emit('startGame')
       }
       //! handle case if room is full
       console.log('rooms', rooms)
-    })
 
-    //! handle player leaving the room by first popping up a warning message in their window
-    // ask them to confirm if they wanna leave page
-    // if they leave the other player wins the game by default
-    socket.on('disconnect', () => {
-      console.log(`Connection ${socket.id} has left the building`)
+      socket.to(socket.roomName).on('updateUnits', unit => {
+        console.log('enemy has acted!: ', unit)
+        socket.to(socket.roomName).broadcast.emit('actionBroadcast', unit)
+      })
+
+      //! handle player leaving the room by first popping up a warning message in their window
+      // ask them to confirm if they wanna leave page
+      // if they leave the other player wins the game by default
+      socket.to(socket.roomName).on('disconnect', () => {
+        //console.log(`Connection ${socket.id} has left the building`)
+        let winner = ''
+        if (rooms[roomName]) {
+          const players = rooms[roomName].players
+          if (socket.id === players.player1) {
+            delete players.player1
+            console.log('remaining', players.player2)
+            winner = players.player2
+          } else if (socket.id === players.player2) {
+            delete players.player2
+            console.log('remaining', players.player1)
+            winner = players.player1
+          }
+          console.log('the winner by default is:', winner)
+          socket.to(socket.roomName).emit('gameOver', winner)
+          console.log(rooms)
+          delete rooms[roomName]
+          console.log('rooms after someone leaves:', rooms)
+        }
+      })
+
+      socket.on('disconnect', () => {
+        console.log(`Connection ${socket.id} has left the building`)
+      })
     })
   })
 

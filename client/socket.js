@@ -1,6 +1,12 @@
 import io from 'socket.io-client'
 import {updateUnits} from './actions/move'
-import {unrender, renderSplash, renderLobby, renderGame} from './index'
+import {
+  unrender,
+  renderSplash,
+  renderLobby,
+  renderGame,
+  renderGameOver
+} from './index'
 
 const socket = io(window.location.origin)
 
@@ -10,7 +16,8 @@ socket.on('connect', () => {
 })
 
 socket.on('actionBroadcast', unit => {
-  console.log('bcast recieved from server', unit)
+  console.log('bcast recieved from server:', unit)
+  console.log()
   updateUnits(unit)
 })
 
@@ -28,6 +35,12 @@ socket.on('startGame', () => {
 
 socket.on('roomFull', msg => {
   console.log(msg)
+})
+
+socket.on('gameOver', winner => {
+  console.log(winner, 'wins the game')
+  unrender()
+  renderGameOver(winner)
 })
 
 export default socket
