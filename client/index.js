@@ -6,6 +6,7 @@ import {renderUnits} from './renderers/units'
 import Riflemen from './classes/units/riflemen'
 import socket from './socket'
 
+// room/lobby system
 // create a view that just has a button to join room
 // click to join the room if not full
 // if full give a message saying room is full
@@ -14,6 +15,35 @@ import socket from './socket'
 // third view renders the game board once both players joined
 // figure out logic for when to render each view, once room is full start the game
 // figure out what data we're passing between server and the gameboard
+
+// initialize a gameState object to keep track of player turns
+const gameState = {
+  currentTurn: 'player1'
+}
+
+// turn order flow
+// assign units to respective players
+// e.g. unit has a property faction: "player1" || "player2"
+// unit also a property hasActed: true || false
+// if true, unit cannot be clicked and cannot perform actions
+// keep an array containing all unit objects for a player
+// upon performing an action, set hasActed = true
+// once all units in the array have hasActed: true, switch gameState.currentTurn to next player
+// on turn start, all of that player's units become hasActed: false
+
+// have a gameState object that keeps track of current player's turn
+// let me = player1
+// //need to pass
+// export function takeTurn(player) {
+//   let myTurn = (player === me)
+//   if(myTurn) {
+//     //enable clicking abilities
+//     //start clock
+//   } else {
+//     //disable clicking abilities
+
+//   }
+// }
 
 //mount PIXI to DOM
 const canvas = document.getElementById('mycanvas')
@@ -111,18 +141,6 @@ export function renderGame() {
   renderUnits(defaultUnits)
   GameContainer.addChild(BoardContainer)
 }
-// let me = player1
-// //need to pass
-// export function takeTurn(player) {
-//   let myTurn = (player === me)
-//   if(myTurn) {
-//     //enable clicking abilities
-//     //start clock
-//   } else {
-//     //disable clicking abilities
-
-//   }
-// }
 
 //gameOver screen
 export function renderGameOver(winner) {
