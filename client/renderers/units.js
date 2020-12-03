@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
 import {BoardContainer} from './board'
 import {selectedUnit} from '../index'
+import {updateUnitsHealth} from '../actions/move'
 
 //Making texture from image files
 const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
@@ -74,6 +75,7 @@ export function renderUnits(unitArr) {
           //if you click enemy unit, attempt attack
           console.log('trying to attack: ', unitSprite.data, '!')
           if (selectedUnit.data.shoot(unitSprite.data)) {
+            updateUnitsHealth(unitSprite.data)
             selectedUnit.data.toggleSelected(false)
             updateSelectedUnit({})
           }
