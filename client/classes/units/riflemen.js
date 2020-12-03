@@ -8,7 +8,7 @@ const stats = {
 }
 
 export default class Riflemen extends Unit {
-  constructor(name, currentTile) {
-    super(name, currentTile, stats)
+  constructor(player, name, currentTile) {
+    super(player, name, currentTile, stats)
   }
 }

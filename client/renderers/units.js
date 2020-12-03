@@ -3,8 +3,9 @@ import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
 import {BoardContainer} from './board'
 
 //Making texture from image files
-const rifleUnit = PIXI.Texture.from('/images/unit_rifleman.png')
-const unitTextures = [rifleUnit]
+const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
+const rifleUnitBlue = PIXI.Texture.from('/images/unit_rifleman_ger.png')
+const unitTextures = [rifleUnitRed, rifleUnitBlue]
 
 //stores rendered unitSprites added to gameboard
 export let unitSprites = []
@@ -25,7 +26,13 @@ export function renderUnits(unitArr) {
   unitArr.forEach(unit => {
     let offset = getOffset(unit.currentTile.coordinates.y)
 
-    let unitSprite = new PIXI.Sprite(unitTextures[0])
+    let unitSprite = {}
+
+    if (unit.player === 'player1') {
+      unitSprite = new PIXI.Sprite(unitTextures[0])
+    } else {
+      unitSprite = new PIXI.Sprite(unitTextures[1])
+    }
 
     unitSprite.data = unit
 
@@ -45,11 +52,20 @@ export function renderUnits(unitArr) {
     unitSprite.interactive = true
     unitSprite.buttonMode = true
     unitSprite.on('click', () => {
-      console.log('unit clicked!')
-      updateSelectedUnit(unitSprite)
-      console.log('selectedUnit set to: ', unitSprite)
-      unitSprite.data.toggleSelected()
-      console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
+      // check if this unit is already selected and is on your team
+      //! this is bugged as of now, clicking directly on another unit before making a move locks out previous unit
+      if (
+        !unitSprite.data
+          .isSelected /*&& unitSprite.playerThisUnitBelongsTo === e.playerWhoclicked*/
+      ) {
+        console.log('new unit selected!')
+        updateSelectedUnit(unitSprite)
+        console.log('selectedUnit set to: ', unitSprite)
+        unitSprite.data.toggleSelected()
+        console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
+      } else {
+        updateSelectedUnit({})
+      }
     })
   })
 }

@@ -69,9 +69,9 @@ export function renderBoard() {
 
       //rendering based on tile type
       if (gameboard.board[y][x].tile.name === 'plain')
-        tileSprite.tint = 0x008000
+        tileSprite.tint = 0x388004
       else if (gameboard.board[y][x].tile.name === 'mountain')
-        tileSprite.tint = 0xa52a2a
+        tileSprite.tint = 0xb5651d /*0xa52a2a*/
 
       //setting event handlers
       tileSprite.interactive = true
