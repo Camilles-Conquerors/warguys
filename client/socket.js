@@ -20,6 +20,7 @@ socket.on('connect', () => {
 socket.on('actionBroadcast', (unit, roomObj, currentTurn) => {
   let actionType = 'unknown'
   console.log('bcast recieved from server:', unit)
+  console.log('emitting to all users in the room, roomObj:', roomObj)
   if (unit.coordinates) {
     actionType = 'move'
     updateUnits(unit)
