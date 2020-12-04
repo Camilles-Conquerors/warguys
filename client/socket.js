@@ -1,5 +1,5 @@
 import io from 'socket.io-client'
-import {updateUnits} from './actions/move'
+import {updateUnits, updateUnitsHealth} from './actions/move'
 import {
   unrender,
   renderSplash,
@@ -16,9 +16,16 @@ socket.on('connect', () => {
 })
 
 socket.on('actionBroadcast', unit => {
+  let actionType = 'unknown'
   console.log('bcast recieved from server:', unit)
-  console.log()
-  updateUnits(unit)
+  if (unit.coordinates) {
+    actionType = 'move'
+    updateUnits(unit)
+  } else if (unit.health > -1) {
+    actionType = 'attack'
+    updateUnitsHealth(unit)
+  }
+  console.log(`recieved a(n) ${actionType} action`)
 })
 
 socket.on('joinLobby', () => {
