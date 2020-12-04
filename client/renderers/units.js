@@ -30,7 +30,7 @@ export function renderUnits(unitArr) {
 
     let unitSprite = {}
 
-    if (unit.player === 'player1') {
+    if (unit.playerName === 'player1') {
       unitSprite = new PIXI.Sprite(unitTextures[0])
     } else {
       unitSprite = new PIXI.Sprite(unitTextures[1])
@@ -52,7 +52,7 @@ export function renderUnits(unitArr) {
 
     //setting events
     unitSprite.interactive = true
-    unitSprite.buttonMode = true
+    unitSprite.buttonMode = true //! set this true/false depending on the turn
     unitSprite.on('click', () => {
       //if no unit selected, select this unit
       if (!selectedUnit.data) {
