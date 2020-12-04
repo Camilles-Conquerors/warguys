@@ -1,6 +1,6 @@
 import socket from '../socket'
 import {unitSprites} from '../renderers/units'
-import {SCALE, getOffset, GameContainer} from '../index'
+import {SCALE, getOffset, GameContainer, gameboard} from '../index'
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -48,6 +48,9 @@ export function updateUnits(unit) {
   })
 
   unitSprite = unitSprite[0]
+  unitSprite.data.currentTile = gameboard.findTileByCoordinates(
+    unit.coordinates
+  )
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE
 }
