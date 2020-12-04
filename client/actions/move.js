@@ -1,6 +1,7 @@
 import socket, {takeTurn} from '../socket'
 import {unitSprites} from '../renderers/units'
 import {SCALE, getOffset, gameboard, gameState} from '../index'
+import {BoardContainer} from '../renderers/board'
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -89,6 +90,6 @@ export function updateUnitsHealth(unit) {
       )}AM`
     )
     console.log('unitSprit.parent', unitSprite.parent)
-    unitSprite.parent.removeChild(unitSprite)
+    BoardContainer.removeChild(unitSprite)
   }
 }

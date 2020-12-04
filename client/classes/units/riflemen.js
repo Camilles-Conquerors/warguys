@@ -3,7 +3,7 @@ import Unit from './unit'
 const stats = {
   movement: 2,
   vision: 4,
-  health: 10,
+  health: 4,
   accuracy: 75 // out of 100
 }
 
