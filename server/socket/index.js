@@ -74,6 +74,7 @@ module.exports = io => {
           'gameState',
           gameState
         )
+        console.log(room)
         if (
           room.currentPlayers[socket.myName].victoryPoints >= room.pointsToWin
         ) {

@@ -65,7 +65,9 @@ export function renderUnits(unitArr) {
           console.log('unselected unit: ', unitSprite.data)
           selectedUnit.data.toggleSelected(false)
           updateSelectedUnit({})
-        } else if (unitSprite.data.player === selectedUnit.data.player) {
+        } else if (
+          unitSprite.data.playerName === selectedUnit.data.playerName
+        ) {
           //if you click on a team unit, change select to that unit
           console.log('changed selected unit!: ', unitSprite.data)
           selectedUnit.data.toggleSelected(false)
