@@ -43,8 +43,7 @@ export default class Gameboard {
       }
       newBoard.push(objsMapRow)
     }
-    //console.log('objsMap', newBoard)
-    // return an array of objects converted from our map input
+
     return newBoard
   }
 
@@ -64,8 +63,6 @@ export default class Gameboard {
 
         //even y-rows look diagonally right / odds, left
         let directionToShift = y % 2 === 0 ? 'right' : 'left'
-
-        //assigning neighbors based on above criteria
 
         // We have to do this in the same order, clock-wise to do angle calculations properly
         if (directionToShift === 'right') {
@@ -101,5 +98,9 @@ export default class Gameboard {
         }
       }
     }
+  }
+
+  findTileByCoordinates(coordinates) {
+    return this.board[coordinates.y][coordinates.x]
   }
 }

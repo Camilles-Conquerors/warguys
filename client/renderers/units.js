@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
 import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
 import {BoardContainer} from './board'
+import {selectedUnit} from '../index'
+import {handleAttack, updateUnitsHealth} from '../actions/move'
 
 //Making texture from image files
 const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
@@ -52,20 +54,31 @@ export function renderUnits(unitArr) {
     unitSprite.interactive = true
     unitSprite.buttonMode = true //! set this true/false depending on the turn
     unitSprite.on('click', () => {
-      // check if this unit is already selected and is on your team
-      //! this is bugged as of now, clicking directly on another unit before making a move locks out previous unit
-      if (
-        !unitSprite.data
-          .isSelected /*&& unitSprite.playerThisUnitBelongsTo === e.playerWhoclicked*/
-      ) {
-        console.log('new unit selected!')
+      //if no unit selected, select this unit
+      if (!selectedUnit.data) {
+        console.log('new unit selected!', unitSprite.data)
         updateSelectedUnit(unitSprite)
-        console.log('selectedUnit set to: ', unitSprite)
-        unitSprite.data.toggleSelected()
-        console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
+        selectedUnit.data.toggleSelected(true)
       } else {
-        updateSelectedUnit({})
+        //if you click on unit that's already selected, unselect it
+        if (unitSprite === selectedUnit) {
+          console.log('unselected unit: ', unitSprite.data)
+          selectedUnit.data.toggleSelected(false)
+          updateSelectedUnit({})
+        } else if (unitSprite.data.player === selectedUnit.data.player) {
+          //if you click on a team unit, change select to that unit
+          console.log('changed selected unit!: ', unitSprite.data)
+          selectedUnit.data.toggleSelected(false)
+          updateSelectedUnit(unitSprite)
+          selectedUnit.data.toggleSelected(true)
+        } else {
+          //if you click enemy unit, attempt attack
+          handleAttack(selectedUnit.data, unitSprite.data)
+          updateSelectedUnit({})
+        }
       }
+      // console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
+      //
     })
   })
 }

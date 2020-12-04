@@ -1,6 +1,6 @@
 import socket, {takeTurn} from '../socket'
 import {unitSprites} from '../renderers/units'
-import {SCALE, getOffset, gameState} from '../index'
+import {SCALE, getOffset, gameboard, gameState} from '../index'
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -40,6 +40,7 @@ export function handleMove(unitSprite, newTile) {
  * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function updateUnits(unit) {
+  //<-- Specifcally update movement
   let offset = getOffset(unit.coordinates.y)
 
   // filters unitSprites array returning the unitSprite with a matching name
@@ -48,6 +49,44 @@ export function updateUnits(unit) {
   })
 
   unitSprite = unitSprite[0]
+  unitSprite.data.currentTile = gameboard.findTileByCoordinates(
+    unit.coordinates
+  )
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE
+}
+
+export function handleAttack(attacker, defender) {
+  console.log('trying to attack: ', defender, '!')
+  if (attacker.shoot(defender)) {
+    let name = defender.name
+    let health = defender.health
+    let unit = {name, health}
+
+    updateUnitsHealth(unit)
+    attacker.toggleSelected(false)
+
+    socket.emit('updateUnits', unit)
+  }
+}
+
+//
+export function updateUnitsHealth(unit) {
+  //<-- Specifically update attack
+  console.log(`Updating ${unit.name}'s health`)
+  let [unitSprite] = unitSprites.filter(unitsprite => {
+    return unitsprite.data.name === unit.name
+  })
+
+  unitSprite.data.health = unit.health //update health
+
+  console.log('unitSprites health: ', unitSprite.data.health)
+  if (unitSprite.data.health <= 0) {
+    console.log(
+      `console has logged ${unit.name}'s death at ${Math.floor(
+        Math.random() * 13
+      )}AM`
+    )
+    unitSprite.parent.removeChild(unitSprite)
+  }
 }
