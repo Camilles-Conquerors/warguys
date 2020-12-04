@@ -28,7 +28,7 @@ export function renderUnits(unitArr) {
 
     let unitSprite = {}
 
-    if (unit.player === 'player1') {
+    if (unit.playerName === 'player1') {
       unitSprite = new PIXI.Sprite(unitTextures[0])
     } else {
       unitSprite = new PIXI.Sprite(unitTextures[1])

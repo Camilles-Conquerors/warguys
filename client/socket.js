@@ -5,7 +5,8 @@ import {
   renderSplash,
   renderLobby,
   renderGame,
-  renderGameOver
+  renderGameOver,
+  takeTurn
 } from './index'
 
 const socket = io(window.location.origin)
@@ -15,28 +16,29 @@ socket.on('connect', () => {
   console.log('Connected!')
 })
 
-socket.on('actionBroadcast', unit => {
+socket.on('actionBroadcast', (unit, roomObj, playerName) => {
   console.log('bcast recieved from server:', unit)
   console.log()
   updateUnits(unit)
+  takeTurn(roomObj, playerName)
 })
 
-socket.on('joinLobby', (playersObj, player) => {
+socket.on('joinLobby', () => {
   unrender()
   renderLobby()
   //! create a new Game instance
   //! call Game.addPlayer to add player1
-  console.log(`you are ${player}`)
   console.log(`${socket.id} Joined the lobby`)
 })
 
-socket.on('startGame', (playersObj, player) => {
+socket.on('startGame', (roomObj, playerName) => {
+  console.log(`you are ${playerName}`)
+  console.log('roomObj', roomObj)
   unrender()
   renderGame()
   //! call Game.addPlayer to add player2
-  console.log(`you are ${player}`)
-  console.log('playersObj', playersObj)
   console.log('game starting!')
+  takeTurn(roomObj, playerName)
 })
 
 socket.on('roomFull', msg => {

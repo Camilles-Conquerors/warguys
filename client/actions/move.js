@@ -1,6 +1,6 @@
 import socket from '../socket'
 import {unitSprites} from '../renderers/units'
-import {SCALE, getOffset} from '../index'
+import {SCALE, getOffset, takeTurn} from '../index'
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *

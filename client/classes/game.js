@@ -1,4 +1,5 @@
 import {renderBoard} from '../renderers/board'
+import Player from './player'
 
 // the Game class
 // Game has props activePlayers, currentTurn, timer
@@ -6,13 +7,15 @@ import {renderBoard} from '../renderers/board'
 
 export default class Game {
   constructor() {
-    this.activePlayers = []
+    //0 is player1
+    //1 is player2
+    this.activePlayers = {}
     this.currentTurn = 'player1'
   }
-
-  addPlayer() {}
-
-  renderBoard() {
-    renderBoard()
+  //@param is an instance of the Player class
+  addPlayer(PlayerInstance) {
+    this.activePlayers[PlayerInstance.playerName] = PlayerInstance
+    console.log('active players', this.activePlayers)
+    return PlayerInstance
   }
 }
