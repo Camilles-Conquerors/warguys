@@ -3,6 +3,7 @@ import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
 import {BoardContainer} from './board'
 import {selectedUnit} from '../index'
 import {handleAttack, updateUnitsHealth} from '../actions/move'
+import {getActionTiles, restoreTiles} from './action-tiles'
 
 //Making texture from image files
 const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
@@ -59,22 +60,27 @@ export function renderUnits(unitArr) {
         console.log('new unit selected!', unitSprite.data)
         updateSelectedUnit(unitSprite)
         selectedUnit.data.toggleSelected(true)
+        getActionTiles(selectedUnit)
       } else {
         //if you click on unit that's already selected, unselect it
+        // eslint-disable-next-line no-lonely-if
         if (unitSprite === selectedUnit) {
           console.log('unselected unit: ', unitSprite.data)
           selectedUnit.data.toggleSelected(false)
           updateSelectedUnit({})
+          restoreTiles()
         } else if (unitSprite.data.player === selectedUnit.data.player) {
           //if you click on a team unit, change select to that unit
           console.log('changed selected unit!: ', unitSprite.data)
           selectedUnit.data.toggleSelected(false)
           updateSelectedUnit(unitSprite)
           selectedUnit.data.toggleSelected(true)
+          getActionTiles()
         } else {
           //if you click enemy unit, attempt attack
           handleAttack(selectedUnit.data, unitSprite.data)
           updateSelectedUnit({})
+          restoreTiles()
         }
       }
       // console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)

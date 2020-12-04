@@ -2,15 +2,17 @@
 export default class Unit {
   constructor(player, name, currentTile, unitStats) {
     this.player = player
-    this.currentTile = currentTile
     this.movement = unitStats.movement
     this.health = unitStats.health
     this.visionRange = unitStats.vision
-    this.height = 0 //For future use, if we have planes or able to go up mountains, would let units see past tiles that are lower than them
+    this.height = 0
+    this.name = name
+
+    this.currentTile = currentTile
+
     this.possibleMoves = {}
     this.tilesInView = {}
     this.isSelected = false
-    this.name = name
   }
 
   toggleSelected(selected = !this.Selecter) {
@@ -72,8 +74,6 @@ export default class Unit {
       }
 
       //process each node of currentLayer
-      // eslint-disable-next-line no-loop-func
-      // eslint-disable-next-line complexity
       //! This func is very big, but we need something working, not looking nice. To make prettier later
       currentLayer.forEach(node => {
         // get current node's angle range

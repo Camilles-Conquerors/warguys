@@ -18,7 +18,7 @@ const tileTextures = {
 }
 
 //stores rendered sprites added to gameboard
-let tileSprites = []
+export let tileSprites = []
 
 // create container for the board
 export const BoardContainer = new PIXI.Container()
