@@ -21,7 +21,7 @@ export function handleMove(unitSprite, newTile) {
     let coordinates = unitSprite.data.currentTile.coordinates
     let name = unitSprite.data.name
     let unit = {coordinates, name}
-    updateUnits(unit)
+    // updateUnits(unit)
     takeTurn(gameState)
     console.log('update view success')
     //sends move to socket server
@@ -77,6 +77,7 @@ export function updateUnitsHealth(unit) {
   let [unitSprite] = unitSprites.filter(unitsprite => {
     return unitsprite.data.name === unit.name
   })
+  console.log('unitSprite destrcutured', unitSprite)
 
   unitSprite.data.health = unit.health //update health
 
@@ -87,6 +88,7 @@ export function updateUnitsHealth(unit) {
         Math.random() * 13
       )}AM`
     )
+    console.log('unitSprit.parent', unitSprite.parent)
     unitSprite.parent.removeChild(unitSprite)
   }
 }

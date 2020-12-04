@@ -80,7 +80,7 @@ module.exports = io => {
         ) {
           socket.to(socket.roomName).emit('gameOver', socket.myName)
         }
-        socket
+        io
           .to(socket.roomName)
           .emit('actionBroadcast', unit, room, room.currentTurn)
         //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )

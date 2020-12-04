@@ -18,27 +18,20 @@ import Game from './classes/game'
 // figure out what data we're passing between server and the gameboard
 
 // turn order flow
-// assign units to respective players
-// e.g. unit has a property player: "player1" || "player2"
-// if true, unit cannot be clicked and cannot perform actions
-// keep an array/some data structure containing all unit objects for a player
-// upon performing an action, set hasActed = true
-// once all units in the array have hasActed: true, switch gameState.currentTurn to next player
-// on turn start, all of that player's units become hasActed: false
+// in index.js, initialize a gameState object to manage state for the local user
+// in socket/index.js upon joining room, initialize a rooms[roomName] object, referred to as roomObj to manage state for all users in the room
+// Gameboard class has method pointsToWin which emits the number of points to win, setting the pointsToWin prop on roomObj
+// pointsToWin method also calls the setPointsToWin function from index.js, setting the pointsToWin prop on gameState object
+// on startGame emit, we call renderGame from index.js, passing in playerName - which will either be player1 or player2
+// we save assign the variable takeTurn = renderGame(playerName) in order to access the return function of renderGame, which will handle our turns switching over
 
-// have a gameState object that keeps track of current player's turn
-// let me = player1
-// //need to pass
-// export function takeTurn(player) {
-//   let myTurn = (player === me)
-//   if(myTurn) {
-//     //enable clicking abilities
-//     //start clock
-//   } else {
-//     //disable clicking abilities
-
-//   }
-// }
+// every time we wanna access the game state, we can send that roomObj over a socket
+// but we wanna store a shallow copy on the client side for quick access so that we don't need to keep pinging the server
+// only reference the the client side game state when we need to perform check
+// but when we update the state, we send the update to server
+// and then sync the server side state with the client side state
+// socket.to sends to just that client
+// io.to sends to all sockets in a room/connection
 
 //mount PIXI to DOM
 const canvas = document.getElementById('mycanvas')
