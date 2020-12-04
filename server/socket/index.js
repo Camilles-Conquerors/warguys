@@ -64,20 +64,25 @@ module.exports = io => {
         console.log('after setting pointsToWin', rooms[roomName])
       })
 
-      socket.to(socket.roomName).on('updateUnits', unit => {
+      socket.to(socket.roomName).on('updateUnits', (unit, gameState) => {
         console.log(`${roomName.currentTurn} has acted!: `, unit)
-        const room = rooms[roomName]
-        socket
-          .to(socket.roomName)
-          .emit('actionBroadcast', unit, room, socket.myName)
+        let room = rooms[roomName]
+        room = gameState
+        console.log(
+          'server updateUnits lister: roomObj',
+          room,
+          'gameState',
+          gameState
+        )
         if (
           room.currentPlayers[socket.myName].victoryPoints >= room.pointsToWin
         ) {
           socket.to(socket.roomName).emit('gameOver', socket.myName)
-        } else {
-          rooms[roomName].currentTurn =
-            rooms[roomName].currentTurn === 'player1' ? 'player2' : 'player1'
         }
+        socket
+          .to(socket.roomName)
+          .emit('actionBroadcast', unit, room, room.currentTurn)
+        //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
       })
 
       //! handle player leaving the room by first popping up a warning message in their window

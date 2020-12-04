@@ -112,6 +112,15 @@ export function renderLobby() {
 // initialize global variables
 export let SCALE = 0
 export let selectedUnit = {}
+export let gameState = {
+  currentTurn: 'player2',
+  pointsToWin: 0,
+  currentPlayers: {}
+}
+
+export function setPointsToWin(pointsToWin) {
+  gameState.pointsToWin = pointsToWin
+}
 
 export function updateSelectedUnit(newObject) {
   selectedUnit = newObject
@@ -121,7 +130,9 @@ export function getOffset(y) {
   return y % 2 === 0 ? SCALE / 2 : 0
 }
 
-export function renderGame() {
+export function renderGame(name) {
+  //set playerName locally
+  const playerName = name
   // create the gameboard using the hardcoded testBoard
   const gameboard = new Gameboard(testBoard)
   //console.log('gameboard.map', gameboard.map)
@@ -139,19 +150,34 @@ export function renderGame() {
   renderBoard(gameboard)
   renderUnits(defaultUnits)
   GameContainer.addChild(BoardContainer)
-}
 
-export function takeTurn(roomObj, playerName) {
-  console.log(`it is ${roomObj.currentTurn}'s turn`)
-  if (roomObj.currentTurn === playerName) {
-    console.log('enabling interaction with troops')
-  } else {
-    console.log('disabling interaction with troops')
+  return function(roomObj) {
+    //Global gameState stored locally
+    //socket object is owner of currentPlayers
+    gameState.currentPlayers = roomObj.currentPlayers
+    gameState.currentTurn =
+      gameState.currentTurn === 'player1' ? 'player2' : 'player1'
+    console.log(`it is ${gameState.currentTurn}'s turn`)
+    if (gameState.currentTurn === playerName) {
+      console.log('enabling interaction with troops')
+    } else {
+      console.log('disabling interaction with troops')
+    }
   }
-  //const player1 = currentGame.addPlayer();
-  // console.log('player1', player1)
-  // player1.createRiflemen()
 }
+//restrict click for player whose turn is not
+
+// export function takeTurn(roomObj, playerName) {
+//   console.log(`it is ${roomObj.currentTurn}'s turn`)
+//   if (roomObj.currentTurn === playerName) {
+//     console.log('enabling interaction with troops')
+//   } else {
+//     console.log('disabling interaction with troops')
+//   }
+//   //const player1 = currentGame.addPlayer();
+//   // console.log('player1', player1)
+//   // player1.createRiflemen()
+// }
 
 //gameOver screen
 export function renderGameOver(winner) {
