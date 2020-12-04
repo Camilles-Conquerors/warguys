@@ -66,7 +66,7 @@ export function handleAttack(attacker, defender) {
     updateUnitsHealth(unit)
     attacker.toggleSelected(false)
 
-    socket.emit('updateUnits', unit)
+    socket.emit('updateUnits', unit, gameState)
   }
 }
 

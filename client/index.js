@@ -112,6 +112,8 @@ export function renderLobby() {
 // initialize global variables
 export let SCALE = 0
 export let selectedUnit = {}
+export let gameboard = {}
+
 export let gameState = {
   currentTurn: 'player2',
   pointsToWin: 0,
@@ -134,8 +136,9 @@ export function renderGame(name) {
   //set playerName locally
   const playerName = name
   // create the gameboard using the hardcoded testBoard
-  const gameboard = new Gameboard(testBoard)
   //console.log('gameboard.map', gameboard.map)
+
+  gameboard = new Gameboard(testBoard)
 
   // create initial unit placement with hardcoded riflemen
   const unitRed1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
