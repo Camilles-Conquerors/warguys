@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
 import {renderBoard, BoardContainer} from './renderers/board'
-import {renderUnits} from './renderers/units'
+import {renderUnits, unitSprites} from './renderers/units'
 import Riflemen from './classes/units/riflemen'
 import socket from './socket'
 import Game from './classes/game'
@@ -154,11 +154,34 @@ export function renderGame(name) {
     gameState.currentTurn =
       gameState.currentTurn === 'player1' ? 'player2' : 'player1'
     console.log(`it is ${gameState.currentTurn}'s turn`)
-    if (gameState.currentTurn === playerName) {
-      console.log('enabling interaction with troops')
-    } else {
-      console.log('disabling interaction with troops')
-    }
+
+    // if not your turn, you cannot click on anything
+    // if it is your turn, you can click on your units to select them
+    // once you select a unit, you can click on any enemy unit within range
+
+    // console.log('BoardContainer', BoardContainer)
+    // console.log('unitSprites', unitSprites)
+
+    // unitSprites.map(unitSprite => {
+    //   BoardContainer.removeChild(unitSprite)
+
+    //   if (gameState.currentTurn === playerName) {
+    //     unitSprite.interactive = true
+    //     unitSprite.buttonMode = true
+    //   } else {
+    //     unitSprite.interactive = false
+    //     unitSprite.buttonMode = false
+    //   }
+
+    //   BoardContainer.addChild(unitSprite)
+    // })
+
+    // if (gameState.currentTurn === playerName) {
+    //   console.log('enabling interaction with troops')
+
+    // } else {
+    //   console.log('disabling interaction with troops')
+    // }
   }
 }
 //restrict click for player whose turn is not
