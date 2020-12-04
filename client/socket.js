@@ -10,12 +10,14 @@ import {
 
 const socket = io(window.location.origin)
 
+export let takeTurn
+
 socket.on('connect', () => {
   renderSplash()
   console.log('Connected!')
 })
 
-socket.on('actionBroadcast', unit => {
+socket.on('actionBroadcast', (unit, roomObj, currentTurn) => {
   let actionType = 'unknown'
   console.log('bcast recieved from server:', unit)
   if (unit.coordinates) {
@@ -25,19 +27,26 @@ socket.on('actionBroadcast', unit => {
     actionType = 'attack'
     updateUnitsHealth(unit)
   }
+  takeTurn(roomObj, currentTurn)
   console.log(`recieved a(n) ${actionType} action`)
 })
 
 socket.on('joinLobby', () => {
   unrender()
   renderLobby()
+  //! create a new Game instance
+  //! call Game.addPlayer to add player1
   console.log(`${socket.id} Joined the lobby`)
 })
 
-socket.on('startGame', () => {
+socket.on('startGame', (roomObj, playerName) => {
+  console.log(`you are ${playerName}`)
+  console.log('roomObj', roomObj)
   unrender()
-  renderGame()
+  takeTurn = renderGame(playerName)
+  //! call Game.addPlayer to add player2
   console.log('game starting!')
+  takeTurn(roomObj)
 })
 
 socket.on('roomFull', msg => {

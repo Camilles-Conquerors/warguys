@@ -28,29 +28,62 @@ module.exports = io => {
         // if room doesn't exist, create the room as player1
         rooms[roomName] = {
           name: roomName,
-          players: {
-            //? if needed, we can turn player1 into an object with mutliple props (id, display name, etc)
-            player1: socket.id
+          currentTurn: 'player1',
+          currentPlayers: {
+            //initializes player1 object in room object
+            player1: {
+              id: socket.id,
+              playerName: 'player1',
+              victoryPoints: 0
+            }
           }
         }
         //updates socket info
         socket.roomName = roomName
-        socket.player = 'player1'
+        socket.myName = 'player1'
         socket.join(roomName).emit('joinLobby')
-      } else if (rooms[roomName] && !rooms[roomName].players.player2) {
+      } else if (rooms[roomName] && !rooms[roomName].currentPlayers.player2) {
         // if room exists and has 1 player inside, join room and start the game
-        rooms[roomName].players.player2 = socket.id
+        rooms[roomName].currentPlayers.player2 = {
+          //initializes player2 object in room object
+          id: socket.id,
+          playerName: 'player2',
+          victoryPoints: 0
+        }
         socket.roomName = roomName
-        socket.player = 'player2'
-        socket.join(roomName).emit('startGame')
-        socket.to(roomName).emit('startGame')
+        socket.myName = 'player2'
+
+        socket.join(roomName).emit('startGame', rooms[roomName], 'player2')
+        socket.to(roomName).emit('startGame', rooms[roomName], 'player1')
       }
       //! handle case if room is full
       console.log('rooms', rooms)
 
-      socket.to(socket.roomName).on('updateUnits', unit => {
-        console.log('enemy has acted!: ', unit)
-        socket.to(socket.roomName).broadcast.emit('actionBroadcast', unit)
+      socket.to(socket.roomName).on('setPointsToWin', pointsToWin => {
+        rooms[roomName].pointsToWin = pointsToWin
+        console.log('after setting pointsToWin', rooms[roomName])
+      })
+
+      socket.to(socket.roomName).on('updateUnits', (unit, gameState) => {
+        console.log(`${roomName.currentTurn} has acted!: `, unit)
+        let room = rooms[roomName]
+        room = gameState
+        console.log(
+          'server updateUnits lister: roomObj',
+          room,
+          'gameState',
+          gameState
+        )
+        console.log(room)
+        if (
+          room.currentPlayers[socket.myName].victoryPoints >= room.pointsToWin
+        ) {
+          socket.to(socket.roomName).emit('gameOver', socket.myName)
+        }
+        socket
+          .to(socket.roomName)
+          .emit('actionBroadcast', unit, room, room.currentTurn)
+        //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
       })
 
       //! handle player leaving the room by first popping up a warning message in their window
@@ -60,13 +93,14 @@ module.exports = io => {
         //console.log(`Connection ${socket.id} has left the building`)
         let winner = ''
         if (rooms[roomName]) {
-          const players = rooms[roomName].players
-          if (socket.id === players.player1) {
-            console.log('remaining', players.player2)
-            winner = players.player2
-          } else if (socket.id === players.player2) {
-            console.log('remaining', players.player1)
-            winner = players.player1
+          const player1 = rooms[roomName].currentPlayers.player1
+          const player2 = rooms[roomName].currentPlayers.player2
+          if (socket.id === player1.id) {
+            console.log('remaining', player2.playerName, player2.id)
+            winner = player2.playerName
+          } else if (socket.id === player2.id) {
+            console.log('remaining', player1.playerName, player1.id)
+            winner = player1.playerName
           }
           console.log('the winner by default is:', winner)
           socket.to(socket.roomName).emit('gameOver', winner)
@@ -81,44 +115,4 @@ module.exports = io => {
       })
     })
   })
-
-  //! reimplement updating units over socket on movement
-
-  // const nsp1 = io.of('/room1')
-
-  // io.on('connection', socket => {
-  //   //console.log(socket.rooms)
-  //   console.log(`A socket connection to the server has been made: ${socket.id}`)
-  //   if (!room1.player1) {
-  //     room1.player1 = socket.id
-  //     socket.join('room1')
-  //     console.log(socket.id, 'has been assigned to player1', room1)
-  //   } else if (!room1.player2) {
-  //     room1.player2 = socket.id
-  //     socket.join('room1')
-  //     console.log(socket.id, 'has been assigned to player2', room1)
-  //     console.log('socket rooms', socket.rooms)
-  //   } else {
-  //     socket
-  //       .to(socket.id)
-  //       .emit('roomFull', 'please try another room, this one is full')
-  //     console.log(socket.id, 'is waiting for a room to open')
-  //   }
-  //   socket.on('disconnect', () => {
-  //     console.log(`Connection ${socket.id} has left the building`)
-  //     if (room1.player1 === socket.id || room1.player2 === socket.id) {
-  //       console.log(socket.id, 'is leaving room1')
-  //       room1.player1 === socket.id
-  //         ? delete room1.player1
-  //         : delete room1.player2
-  //       socket.leave('room1')
-  //     }
-  //   })
-  //   if (room1.player1 === socket.id || room1.player2 === socket.id) {
-  //     socket.on('updateUnits', unit => {
-  //       console.log('Enemy has acted!: ', unit)
-  //       socket.to('room1').broadcast.emit('actionBroadcast', unit)
-  //     })
-  //   }
-  // })
 }

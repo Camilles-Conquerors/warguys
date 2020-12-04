@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 export default class Unit {
-  constructor(player, name, currentTile, unitStats) {
-    this.player = player
+  constructor(playerName, name, currentTile, unitStats) {
+    this.playerName = playerName
     this.movement = unitStats.movement
     this.health = unitStats.health
     this.visionRange = unitStats.vision

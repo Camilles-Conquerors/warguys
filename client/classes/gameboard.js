@@ -1,5 +1,7 @@
 import {plain, mountain} from '../hardcoded-terrain'
 import TileNode from './tile'
+import socket from '../socket'
+import {setPointsToWin} from '../index'
 //! utilize classes to generate graph/map (and methods to traverse and utilize them)
 
 // Gameboard args
@@ -9,9 +11,16 @@ import TileNode from './tile'
 //method that creates associates between nodes
 
 export default class Gameboard {
-  constructor(map) {
+  constructor(map, pointsToWin = 1) {
     this.board = this.generateBoard(map)
     this.assignNeighbors(this.board)
+    this.pointsToWin(pointsToWin)
+  }
+
+  pointsToWin(pointsToWin) {
+    socket.emit('setPointsToWin', pointsToWin)
+    console.log('gameboard sets p2w', pointsToWin)
+    setPointsToWin(pointsToWin)
   }
 
   generateBoard(map) {

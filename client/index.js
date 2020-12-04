@@ -5,6 +5,7 @@ import {renderBoard, BoardContainer} from './renderers/board'
 import {renderUnits} from './renderers/units'
 import Riflemen from './classes/units/riflemen'
 import socket from './socket'
+import Game from './classes/game'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -16,17 +17,11 @@ import socket from './socket'
 // figure out logic for when to render each view, once room is full start the game
 // figure out what data we're passing between server and the gameboard
 
-// initialize a gameState object to keep track of player turns
-const gameState = {
-  currentTurn: 'player1'
-}
-
 // turn order flow
 // assign units to respective players
-// e.g. unit has a property faction: "player1" || "player2"
-// unit also a property hasActed: true || false
+// e.g. unit has a property player: "player1" || "player2"
 // if true, unit cannot be clicked and cannot perform actions
-// keep an array containing all unit objects for a player
+// keep an array/some data structure containing all unit objects for a player
 // upon performing an action, set hasActed = true
 // once all units in the array have hasActed: true, switch gameState.currentTurn to next player
 // on turn start, all of that player's units become hasActed: false
@@ -114,20 +109,20 @@ export function renderLobby() {
 
 // renderLobby()
 
-// create the gameboard using the hardcoded testBoard
-export const gameboard = new Gameboard(testBoard)
-//console.log('gameboard.map', gameboard.map)
-
-// create initial unit placement with hardcoded riflemen
-const unitGreen1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
-const unitGreen2 = new Riflemen('player1', 'bobby', gameboard.board[3][2])
-const unitBlue1 = new Riflemen('player2', 'henry', gameboard.board[13][11])
-const unitBlue2 = new Riflemen('player2', 'hienrik', gameboard.board[11][12])
-let defaultUnits = [unitGreen1, unitGreen2, unitBlue1, unitBlue2]
-
 // initialize global variables
-export const SCALE = app.renderer.screen.height / gameboard.board.length
+export let SCALE = 0
 export let selectedUnit = {}
+export let gameboard = {}
+
+export let gameState = {
+  currentTurn: 'player2',
+  pointsToWin: 0,
+  currentPlayers: {}
+}
+
+export function setPointsToWin(pointsToWin) {
+  gameState.pointsToWin = pointsToWin
+}
 
 export function updateSelectedUnit(newObject) {
   selectedUnit = newObject
@@ -137,12 +132,55 @@ export function getOffset(y) {
   return y % 2 === 0 ? SCALE / 2 : 0
 }
 
-export function renderGame() {
+export function renderGame(name) {
+  //set playerName locally
+  const playerName = name
+  // create the gameboard using the hardcoded testBoard
+  //console.log('gameboard.map', gameboard.map)
+
+  gameboard = new Gameboard(testBoard)
+
+  // create initial unit placement with hardcoded riflemen
+  const unitRed1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
+  const unitRed2 = new Riflemen('player1', 'bobby', gameboard.board[3][2])
+  const unitBlue1 = new Riflemen('player2', 'henry', gameboard.board[13][11])
+  const unitBlue2 = new Riflemen('player2', 'hienrik', gameboard.board[11][12])
+  let defaultUnits = [unitRed1, unitRed2, unitBlue1, unitBlue2]
+
+  SCALE = app.renderer.screen.height / gameboard.board.length
+
   //run renders for the board and unit, which will add them to BoardContainer
-  renderBoard()
+  renderBoard(gameboard)
   renderUnits(defaultUnits)
   GameContainer.addChild(BoardContainer)
+
+  return function(roomObj) {
+    //Global gameState stored locally
+    //socket object is owner of currentPlayers
+    gameState.currentPlayers = roomObj.currentPlayers
+    gameState.currentTurn =
+      gameState.currentTurn === 'player1' ? 'player2' : 'player1'
+    console.log(`it is ${gameState.currentTurn}'s turn`)
+    if (gameState.currentTurn === playerName) {
+      console.log('enabling interaction with troops')
+    } else {
+      console.log('disabling interaction with troops')
+    }
+  }
 }
+//restrict click for player whose turn is not
+
+// export function takeTurn(roomObj, playerName) {
+//   console.log(`it is ${roomObj.currentTurn}'s turn`)
+//   if (roomObj.currentTurn === playerName) {
+//     console.log('enabling interaction with troops')
+//   } else {
+//     console.log('disabling interaction with troops')
+//   }
+//   //const player1 = currentGame.addPlayer();
+//   // console.log('player1', player1)
+//   // player1.createRiflemen()
+// }
 
 //gameOver screen
 export function renderGameOver(winner) {

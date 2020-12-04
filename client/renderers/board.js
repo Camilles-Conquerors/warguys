@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js'
 import {
-  gameboard,
   SCALE,
   GameContainer,
   selectedUnit,
@@ -38,7 +37,7 @@ export const BoardContainer = new PIXI.Container()
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 
-export function renderBoard() {
+export function renderBoard(gameboard) {
   //going through each row of board
   for (let y = 0; y < gameboard.board.length; y++) {
     //offset for hex-style pattern
