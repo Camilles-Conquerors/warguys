@@ -16,7 +16,6 @@ export function getActionTiles(unit) {
     })
   )
 
-  console.log(actionTiles)
   //get attack
   actionTiles.push(
     tileSprites.filter(sprite => {
@@ -27,40 +26,48 @@ export function getActionTiles(unit) {
     })
   )
 
-  console.log(actionTiles)
-
   //render them
   renderActionTiles()
+
+  console.log('actionTiles after populating: ', actionTiles)
 }
 
 function renderActionTiles() {
   if (!actionTiles.length) {
-    console.log('woops! no Action Tiles queued for rendering')
+    console.warn('woops! no Action Tiles queued for rendering')
     return false
   }
-
-  //render moves
-  actionTiles[0].forEach(sprite => {
-    sprite.tint = 0xff0000
-  })
 
   //render attacks
   actionTiles[1].forEach(sprite => {
     sprite.tint = 0xff0000
   })
+
+  //render moves
+  actionTiles[0].forEach(sprite => {
+    sprite.tint = 0x0000ff
+  })
 }
 export function restoreTiles() {
   //remove tint from tiles
   //move tiles
-  for (let tileSprite in actionTiles[0]) {
-    if (tileSprite.data.name === 'plain') tileSprite.tint = 0x388004
-    else if (tileSprite.data.name === 'mountain') tileSprite.tint = 0xb5651d
+  console.log('action Tiles: ', actionTiles)
+
+  for (let index in actionTiles[0]) {
+    console.log('tileSprite: ', index)
+    if (actionTiles[0][index].data.tile.name === 'plain')
+      actionTiles[0][index].tint = 0x388004
+    else if (actionTiles[0][index].data.tile.name === 'mountain')
+      actionTiles[0][index].tint = 0xb5651d
   }
 
   //attack tiles
-  for (let tileSprite in actionTiles[1]) {
-    if (tileSprite.data.name === 'plain') tileSprite.tint = 0x388004
-    else if (tileSprite.data.name === 'mountain') tileSprite.tint = 0xb5651d
+  for (let index in actionTiles[1]) {
+    console.log('tileSprite: ', index)
+    if (actionTiles[1][index].data.tile.name === 'plain')
+      actionTiles[1][index].tint = 0x388004
+    else if (actionTiles[1][index].data.tile.name === 'mountain')
+      actionTiles[1][index].tint = 0xb5651d
   }
 
   //clear actionTiles

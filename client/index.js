@@ -6,6 +6,7 @@ import {renderUnits} from './renderers/units'
 import Riflemen from './classes/units/riflemen'
 import socket from './socket'
 import Game from './classes/game'
+import {getActionTiles, restoreTiles} from './renderers/action-tiles'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -125,7 +126,19 @@ export function setPointsToWin(pointsToWin) {
 }
 
 export function updateSelectedUnit(newObject) {
+  if (selectedUnit.data) {
+    selectedUnit.data.toggleSelected(false)
+  }
+
   selectedUnit = newObject
+  console.log('updateSelectedUnit: ', selectedUnit)
+
+  if (selectedUnit.data) {
+    selectedUnit.data.toggleSelected(true)
+    getActionTiles(selectedUnit.data)
+  } else {
+    restoreTiles()
+  }
 }
 
 export function getOffset(y) {

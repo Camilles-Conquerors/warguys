@@ -59,29 +59,22 @@ export function renderUnits(unitArr) {
       if (!selectedUnit.data) {
         console.log('new unit selected!', unitSprite.data)
         updateSelectedUnit(unitSprite)
-        selectedUnit.data.toggleSelected(true)
-        getActionTiles(selectedUnit)
       } else {
         //if you click on unit that's already selected, unselect it
         // eslint-disable-next-line no-lonely-if
         if (unitSprite === selectedUnit) {
           console.log('unselected unit: ', unitSprite.data)
-          selectedUnit.data.toggleSelected(false)
           updateSelectedUnit({})
         } else if (
           unitSprite.data.playerName === selectedUnit.data.playerName
         ) {
           //if you click on a team unit, change select to that unit
           console.log('changed selected unit!: ', unitSprite.data)
-          selectedUnit.data.toggleSelected(false)
           updateSelectedUnit(unitSprite)
-          selectedUnit.data.toggleSelected(true)
-          getActionTiles()
         } else {
           //if you click enemy unit, attempt attack
           handleAttack(selectedUnit.data, unitSprite.data)
           updateSelectedUnit({})
-          restoreTiles()
         }
       }
       // console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
