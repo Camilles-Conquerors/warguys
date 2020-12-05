@@ -1,4 +1,4 @@
-import socket, {takeTurn} from '../socket'
+import socket from '../socket'
 import {unitSprites} from '../renderers/units'
 import {SCALE, getOffset, gameboard, gameState} from '../index'
 import {BoardContainer} from '../renderers/board'
@@ -22,9 +22,6 @@ export function handleMove(unitSprite, newTile) {
     let coordinates = unitSprite.data.currentTile.coordinates
     let name = unitSprite.data.name
     let unit = {coordinates, name}
-    // updateUnits(unit)
-    takeTurn(gameState)
-    console.log('update view success')
     //sends move to socket server
     console.log('emitting move to socket server', unit)
     //emit only to people in room
@@ -64,7 +61,6 @@ export function handleAttack(attacker, defender) {
     let health = defender.health
     let unit = {name, health}
 
-    updateUnitsHealth(unit)
     attacker.toggleSelected(false)
 
     socket.emit('updateUnits', unit, gameState)
