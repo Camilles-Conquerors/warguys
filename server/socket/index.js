@@ -9,7 +9,7 @@ module.exports = io => {
   //   - no? send the user back to the splash screen with text indicating room is full
 
   // every time we render a view, we need to emit
-  // joinLobby
+  // createLobby
   //   emit: indicate player1 sent to lobby
   //   listener: render the lobbyContainer
   // startGame
@@ -28,6 +28,7 @@ module.exports = io => {
         // if room doesn't exist, create the room as player1
         rooms[roomName] = {
           name: roomName,
+          inProgress: false,
           currentTurn: 'player1',
           currentPlayers: {
             //initializes player1 object in room object
@@ -41,7 +42,7 @@ module.exports = io => {
         //updates socket info
         socket.roomName = roomName
         socket.myName = 'player1'
-        socket.join(roomName).emit('joinLobby')
+        socket.join(roomName).emit('createLobby')
       } else if (rooms[roomName] && !rooms[roomName].currentPlayers.player2) {
         // if room exists and has 1 player inside, join room and start the game
         rooms[roomName].currentPlayers.player2 = {
@@ -50,6 +51,7 @@ module.exports = io => {
           playerName: 'player2',
           victoryPoints: 0
         }
+        rooms[roomName].inProgress = true
         socket.roomName = roomName
         socket.myName = 'player2'
 
@@ -92,7 +94,7 @@ module.exports = io => {
       socket.to(socket.roomName).on('disconnect', () => {
         //console.log(`Connection ${socket.id} has left the building`)
         let winner = ''
-        if (rooms[roomName]) {
+        if (rooms[roomName] && rooms[roomName].inProgress) {
           const player1 = rooms[roomName].currentPlayers.player1
           const player2 = rooms[roomName].currentPlayers.player2
           if (socket.id === player1.id) {

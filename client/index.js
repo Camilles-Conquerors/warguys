@@ -59,8 +59,6 @@ export function renderSplash() {
   let SplashContainer = new PIXI.Container()
   GameContainer.addChild(SplashContainer)
 
-  console.log(TextInput)
-
   // create text obj and add it to SplashContainer
   let text = new PIXI.Text('Join room to start the game!', {
     fontFamily: 'Arial',
@@ -70,6 +68,7 @@ export function renderSplash() {
   })
   SplashContainer.addChild(text)
 
+  // create an input field to enter room code, add to SplashContainer
   let inputRoomCode = new TextInput({
     input: {
       fontFamily: 'Arial',
@@ -111,8 +110,8 @@ export function renderSplash() {
   joinButtonSprite.interactive = true
   joinButtonSprite.buttonMode = true
   joinButtonSprite.on('click', () => {
-    const roomName = 'room1'
-    console.log(`you're about to join the room: ${inputRoomCode.text}`)
+    const roomName = inputRoomCode.text
+    console.log(`you're about to join the room: ${roomName}`)
     socket.emit('joinRoom', roomName)
   })
 }
