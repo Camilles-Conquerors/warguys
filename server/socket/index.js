@@ -16,6 +16,9 @@ module.exports = io => {
   //   emit: indicate the game is ready to start
   //   listener: render the gameBoard
 
+  //! fix bug where player1 leaves while in the lobby but player2 can still join and start the game without player1
+  //! allow player to join another game after gameOver, will have to take a look at why that functinoality initially didn't work
+  //! handle case where a player tries to join a game that is already full and in progress
   let rooms = {}
 
   io.on('connection', socket => {
@@ -105,7 +108,7 @@ module.exports = io => {
             winner = player1.playerName
           }
           console.log('the winner by default is:', winner)
-          socket.to(socket.roomName).emit('gameOver', winner)
+          io.to(socket.roomName).emit('gameOver', winner)
           console.log(rooms)
           delete rooms[roomName]
           console.log('rooms after someone leaves:', rooms)
