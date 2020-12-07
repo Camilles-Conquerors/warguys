@@ -163,6 +163,7 @@ export function renderGame(name) {
   return function(roomObj) {
     //Global gameState stored locally
     //socket object is owner of currentPlayers
+    gameState.me = playerName
     gameState.currentPlayers = roomObj.currentPlayers
     gameState.currentTurn =
       gameState.currentTurn === 'player1' ? 'player2' : 'player1'
@@ -173,21 +174,26 @@ export function renderGame(name) {
     // once you select a unit, you can click on any enemy unit within range
 
     // console.log('BoardContainer', BoardContainer)
-    // console.log('unitSprites', unitSprites)
+    console.log('unitSprites before update', unitSprites)
 
-    // unitSprites.map(unitSprite => {
-    //   BoardContainer.removeChild(unitSprite)
+    unitSprites.forEach(unitSprite => {
+      BoardContainer.removeChild(unitSprite)
 
-    //   if (gameState.currentTurn === playerName) {
-    //     unitSprite.interactive = true
-    //     unitSprite.buttonMode = true
-    //   } else {
-    //     unitSprite.interactive = false
-    //     unitSprite.buttonMode = false
-    //   }
+      if (
+        gameState.currentTurn === playerName &&
+        gameState.currentTurn === unitSprite.data.playerName
+      ) {
+        unitSprite.interactive = true
+        unitSprite.buttonMode = true
+      } else {
+        unitSprite.interactive = false
+        unitSprite.buttonMode = false
+      }
 
-    //   BoardContainer.addChild(unitSprite)
-    // })
+      BoardContainer.addChild(unitSprite)
+    })
+
+    console.log('unitSprites after update', unitSprites)
 
     // if (gameState.currentTurn === playerName) {
     //   console.log('enabling interaction with troops')

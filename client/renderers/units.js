@@ -1,5 +1,11 @@
 import * as PIXI from 'pixi.js'
-import {SCALE, GameContainer, updateSelectedUnit, getOffset} from '../index'
+import {
+  SCALE,
+  GameContainer,
+  updateSelectedUnit,
+  getOffset,
+  gameState
+} from '../index'
 import {BoardContainer} from './board'
 import {selectedUnit} from '../index'
 import {handleAttack, updateUnitsHealth} from '../actions/move'
@@ -12,6 +18,39 @@ const unitTextures = [rifleUnitRed, rifleUnitBlue]
 
 //stores rendered unitSprites added to gameboard
 export let unitSprites = []
+
+//enables interactive and buttonMode on all unitSprites including enemies
+function makeClickable() {
+  unitSprites.forEach(unitSprite => {
+    BoardContainer.removeChild(unitSprite)
+    unitSprite.interactive = true
+    unitSprite.buttonMode = true
+    BoardContainer.addChild(unitSprite)
+  })
+}
+
+//player can click their own units
+//player cannot click their enemy's units
+//enemy cannot click any units
+function disableEnemyInteraction() {
+  unitSprites.forEach(unitSprite => {
+    BoardContainer.removeChild(unitSprite)
+    if (
+      gameState.currentTurn === gameState.me &&
+      gameState.currentTurn === unitSprite.data.playerName
+    ) {
+      console.log(unitSprite, 'set to true')
+      unitSprite.interactive = true
+      unitSprite.buttonMode = true
+    } else {
+      console.log(unitSprite, 'set to false')
+      unitSprite.interactive = false
+      unitSprite.buttonMode = false
+    }
+
+    BoardContainer.addChild(unitSprite)
+  })
+}
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -59,12 +98,16 @@ export function renderUnits(unitArr) {
       if (!selectedUnit.data) {
         console.log('new unit selected!', unitSprite.data)
         updateSelectedUnit(unitSprite)
+        //make enemy units clickable
+        makeClickable()
       } else {
         //if you click on unit that's already selected, unselect it
         // eslint-disable-next-line no-lonely-if
         if (unitSprite === selectedUnit) {
           console.log('unselected unit: ', unitSprite.data)
           updateSelectedUnit({})
+          //disable enemy interaction
+          disableEnemyInteraction()
         } else if (
           unitSprite.data.playerName === selectedUnit.data.playerName
         ) {
@@ -75,6 +118,7 @@ export function renderUnits(unitArr) {
           //if you click enemy unit, attempt attack
           handleAttack(selectedUnit.data, unitSprite.data)
           updateSelectedUnit({})
+          disableEnemyInteraction()
         }
       }
       // console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
