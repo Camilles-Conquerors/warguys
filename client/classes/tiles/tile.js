@@ -2,9 +2,18 @@
 // This is a graph node
 // this.value is expected to take in the whole terrain object
 export default class TileNode {
-  constructor(tile, id, coordinates) {
+  constructor(id, coordinates, stats) {
     this.id = id
-    this.tile = tile
+
+    this.type = stats.type
+    this.moveCost = stats.moveCost
+    this.passable = stats.passable
+    this.defenseBonus = stats.defenseBonus
+    this.visionCost = stats.visionCost
+    this.visionBonus = stats.visionBonus
+    this.seeThrough = stats.seeThrough
+    this.height = stats.height
+
     this.coordinates = coordinates
     this.neighbors = []
   }
@@ -22,7 +31,7 @@ export default class TileNode {
     if (magnitude > 0) {
       --magnitude
       this.neighbors.forEach(node => {
-        if (callback(this.tile)) {
+        if (callback(this)) {
           nodesInRange = {
             ...node.findAllNodesInRange(magnitude, callback, nodesInRange)
           }

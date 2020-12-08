@@ -1,5 +1,6 @@
 import io from 'socket.io-client'
-import {ATTACK, MOVE, updateUnits, updateUnitsHealth} from './actions/move'
+import {MOVE, updateUnits} from './actions/move'
+import {ATTACK, updateUnitsHealth} from './actions/attack'
 import {
   unrender,
   renderSplash,
@@ -9,6 +10,7 @@ import {
   renderRoomFull,
   takeTurn
 } from './index'
+import {attemptCapture} from './actions/capture'
 
 const socket = io(window.location.origin)
 
@@ -23,6 +25,7 @@ socket.on('actionBroadcast', (actionType, unit) => {
   switch (actionType) {
     case MOVE:
       updateUnits(unit)
+      attemptCapture(unit)
       break
     case ATTACK:
       updateUnitsHealth(unit)

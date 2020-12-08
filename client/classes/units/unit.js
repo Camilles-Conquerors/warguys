@@ -2,15 +2,19 @@ import {unitSprites} from '../../renderers/units'
 
 /* eslint-disable no-loop-func */
 export default class Unit {
-  constructor(playerName, name, currentTile, unitStats) {
-    this.playerName = playerName
+  constructor(player, name, currentTile, unitStats) {
+    this.player = player //player OBJ that owns this unit
     this.movement = unitStats.movement
     this.health = unitStats.health
     this.visionRange = unitStats.vision
     this.height = 0
     this.name = name
-    this.movementCost = unitStats.movementCost
-    this.shootCost = unitStats.shootCost
+
+    this.actionPoints = unitStats.actionPoints
+    this.active = false
+
+    // this.movementCost = unitStats.movementCost
+    // this.shootCost = unitStats.shootCost
 
     this.currentTile = currentTile
 
@@ -35,7 +39,10 @@ export default class Unit {
 
     for (let node in nodesInRange) {
       //! check if terrain is impassible rather than if the name matches mountain
-      if (nodesInRange[node].tile.name === 'plain') {
+      if (
+        nodesInRange[node].type === 'plain' ||
+        nodesInRange[node].type === 'point'
+      ) {
         this.possibleMoves = {...this.possibleMoves, [node]: nodesInRange[node]}
       }
     }
@@ -93,49 +100,37 @@ export default class Unit {
         minAngle = get360Angle(minAngle)
         maxAngle = get360Angle(maxAngle)
 
-        let isCovered = false
         // if node is not in view, skip
 
         /* console.log(
           `Hex: ${H} (id ${node.id}), height: ${
-            node.tile.height
+            node.height
           }\nmin-max angles: ${minAngle}, ${maxAngle}`
         ) */
         for (let i = 0; i < shadowRanges.length; i++) {
-          //  console.log('checking aginst ranges: ', shadowRanges[i])
           if (minAngle > shadowRanges[i][0] && maxAngle < shadowRanges[i][1]) {
-            isCovered = true
             H++
             return
           }
         }
-        // console.log('if this value is true, something went wrong: ', isCovered)
         // other wise, it is visible
         visibleTiles[node.id] = node
 
         //check if it will cast a shadow in our view
         //if the tile is heigher than we are, it will block the view behind it
-        // console.log('shadow ranges before: ', ...shadowRanges)
-        // console.log('our height: ', this.currentTile.tile.height, `Node ${node.id}'s height: `, node.tile.height)
-        if (node.tile.height > this.currentTile.tile.height) {
+        if (node.height > this.currentTile.height) {
           //stash the angles this tile is blocking
           shadowRanges.push([minAngle, maxAngle])
         }
-        // console.log('shadow ranges after: ', ...shadowRanges)
 
         H++
       })
       H = 0
-      // The layer inside queue is returning empty, why???
-      // console.log('queue: ', ...queue)
+
       N++
     }
 
-    // console.log(`nodesQueued: `, alreadyQueued)
-
     //process the queue
-
-    // console.log('visisbleNodes: ', visibleTiles)
 
     return visibleTiles
   }
@@ -148,8 +143,10 @@ export default class Unit {
       this.isSelected = false
       this.findVisibleTiles()
       console.log('unit moved')
+      console.log('captured tiles: ', this.player.ownedTiles)
       return true
     }
+
     console.log('this is an invalid move')
     this.isSelected = false
     return false
@@ -180,11 +177,50 @@ export default class Unit {
     this.isSelected = false
     return false
   }
+
+  capture(tile) {
+    console.log('attempting to capture ', tile.type)
+    if (tile.type !== 'point') {
+      console.error(
+        'you are trying to capture and uncapturable tile!',
+        tile.type
+      )
+      return -1
+    }
+
+    //check if we already own this
+    let isOwned = this.player.ownedTiles.reduce((tileExists, ownedTile) => {
+      if (ownedTile === tile) return true
+      return tileExists
+    }, false)
+
+    //if we don't already own this, capture it
+    if (!isOwned) {
+      tile.setOwner(this.player)
+      this.player.addOwnedTile(tile)
+    }
+  }
+
+  //right now I am simply setting unit
+  spendAction(cost = 1) {
+    //spend an action point
+    this.actionPoints -= cost
+
+    //check if unit can take more actions
+    if (this.actionPoints < 1) {
+      this.active = false
+    }
+  }
+
+  Activate() {
+    this.active = true
+  }
 }
 
 function checkPassable(tile) {
   return tile.passable
 }
+
 function get360Angle(num) {
   if (num < 0) return 360 + num
   if (num > 360) return num - 360

@@ -1,7 +1,8 @@
-import {plain, mountain} from '../hardcoded-terrain'
-import TileNode from './tile'
 import socket from '../socket'
 import {setPointsToWin} from '../index'
+import Plain from './tiles/plain'
+import Mountain from './tiles/mountain'
+import Point from './tiles/point'
 //! utilize classes to generate graph/map (and methods to traverse and utilize them)
 
 // Gameboard args
@@ -45,10 +46,13 @@ export default class Gameboard {
       for (let x = 0; x < map[y].length; x++) {
         switch (map[y][x]) {
           case 0:
-            objsMapRow.push(new TileNode(plain, idCount, {x, y}))
+            objsMapRow.push(new Plain(idCount, {x, y}))
             break
           case 1:
-            objsMapRow.push(new TileNode(mountain, idCount, {x, y}))
+            objsMapRow.push(new Mountain(idCount, {x, y}))
+            break
+          case 2:
+            objsMapRow.push(new Point(idCount, {x, y}, 1))
             break
           default:
             break

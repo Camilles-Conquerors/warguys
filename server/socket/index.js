@@ -75,12 +75,8 @@ module.exports = io => {
         //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
       })
 
-      socket.to(socket.roomName).on('victory', () => {
-        // if (
-        //   room.currentPlayers[socket.myName].victoryPoints >= room.pointsToWin
-        // ) {
-        //   socket.to(socket.roomName).emit('gameOver', socket.myName)
-        // }
+      socket.to(socket.roomName).on('victory', winnerName => {
+        io.to(socket.roomName).emit('gameOver', winnerName)
       })
 
       //! handle player leaving the room by first popping up a warning message in their window

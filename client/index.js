@@ -204,7 +204,7 @@ export function renderGame(roomObj, playerName) {
   const player2 = roomObj.currentPlayers.player2
 
   // create the gameboard using the hardcoded testBoard
-  gameboard = new Gameboard(testBoard)
+  gameboard = new Gameboard(testBoard, 5)
   // sets tile width and height
   SCALE = app.renderer.screen.height / gameboard.board.length
 
@@ -227,6 +227,14 @@ export function takeTurn() {
     gameState.currentTurn === 'player1' ? 'player2' : 'player1'
   console.log(`${gameState.currentTurn}'s turn`)
 
+  const currentPlayer = gameState.currentPlayers[gameState.currentTurn]
+  currentPlayer.calculatePoints()
+
+  if (currentPlayer.victoryPoints >= gameState.pointsToWin) {
+    socket.emit('victory', currentPlayer.playerName)
+    return
+  }
+
   // sets default unit interaction for beginning of a turn
   unitSprites.forEach(unitSprite => {
     //remove unitSprite from BoardContainer
@@ -234,7 +242,7 @@ export function takeTurn() {
     // if it is your turn, you can click on your units to begin a turn
     if (
       gameState.currentTurn === gameState.me &&
-      gameState.currentTurn === unitSprite.data.playerName
+      gameState.currentTurn === unitSprite.data.player.playerName
     ) {
       unitSprite.interactive = true
       unitSprite.buttonMode = true
