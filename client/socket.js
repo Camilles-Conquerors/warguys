@@ -1,34 +1,37 @@
 import io from 'socket.io-client'
-import {updateUnits, updateUnitsHealth} from './actions/move'
+import {ATTACK, MOVE, updateUnits, updateUnitsHealth} from './actions/move'
 import {
   unrender,
   renderSplash,
   renderLobby,
   renderGame,
-  renderGameOver
+  renderGameOver,
+  gameState,
+  takeTurn
 } from './index'
 
 const socket = io(window.location.origin)
-
-export let takeTurn
 
 socket.on('connect', () => {
   renderSplash()
   console.log('Connected!')
 })
 
-socket.on('actionBroadcast', (unit, roomObj, currentTurn) => {
-  let actionType = 'unknown'
+socket.on('actionBroadcast', (actionType, unit) => {
   console.log('bcast recieved from server:', unit)
-  console.log('emitting to all users in the room, roomObj:', roomObj)
-  if (unit.coordinates) {
-    actionType = 'move'
-    updateUnits(unit)
-  } else if (unit.health > -1) {
-    actionType = 'attack'
-    updateUnitsHealth(unit)
+
+  switch (actionType) {
+    case MOVE:
+      updateUnits(unit)
+      break
+    case ATTACK:
+      updateUnitsHealth(unit)
+      break
+    default:
+      console.log('error, invalid action recieved')
   }
-  takeTurn(roomObj, currentTurn)
+
+  takeTurn()
   console.log(`recieved a(n) ${actionType} action`)
 })
 
@@ -45,7 +48,12 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log(`you are ${playerName}`)
   console.log('roomObj', roomObj)
   unrender()
-  takeTurn = renderGame(playerName)
+  renderGame(roomObj, playerName)
+  roomObj = gameState
+  console.log('socket gs and ro----->')
+  console.log('gs', gameState)
+  console.log('ro', roomObj)
+  //! call Game.addPlayer to add player2
   console.log('game starting!')
   takeTurn(roomObj)
 })

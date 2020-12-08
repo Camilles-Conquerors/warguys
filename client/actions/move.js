@@ -1,7 +1,11 @@
 import socket from '../socket'
-import {unitSprites} from '../renderers/units'
-import {SCALE, getOffset, gameboard, gameState} from '../index'
+import {removeSprite, unitSprites} from '../renderers/units'
+import {SCALE, getOffset, gameboard} from '../index'
 import {BoardContainer} from '../renderers/board'
+
+//ACTION TYPES
+export const MOVE = 'MOVE'
+export const ATTACK = 'ATTACK'
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -17,15 +21,13 @@ import {BoardContainer} from '../renderers/board'
 export function handleMove(unitSprite, newTile) {
   // update coords on unitSprite
   if (unitSprite.data.move(newTile)) {
-    console.log('unit move success')
     //update sprite's x amd y position on view
     let coordinates = unitSprite.data.currentTile.coordinates
     let name = unitSprite.data.name
     let unit = {coordinates, name}
+
     //sends move to socket server
-    console.log('emitting move to socket server', unit)
-    //emit only to people in room
-    socket.emit('updateUnits', unit, gameState)
+    socket.emit('updateUnits', MOVE, unit)
   }
 }
 
@@ -63,18 +65,18 @@ export function handleAttack(attacker, defender) {
 
     attacker.toggleSelected(false)
 
-    socket.emit('updateUnits', unit, gameState)
+    socket.emit('updateUnits', ATTACK, unit)
   }
 }
 
 //
 export function updateUnitsHealth(unit) {
   //<-- Specifically update attack
-  console.log(`Updating ${unit.name}'s health`)
   let [unitSprite] = unitSprites.filter(unitsprite => {
     return unitsprite.data.name === unit.name
   })
-  console.log('unitSprite destrcutured', unitSprite)
+
+  console.log('unitSprite destructured', unitSprite)
 
   unitSprite.data.health = unit.health //update health
 
@@ -86,6 +88,12 @@ export function updateUnitsHealth(unit) {
       )}AM`
     )
     console.log('unitSprit.parent', unitSprite.parent)
+    console.log('BoardContainer', BoardContainer)
+
+    //updating unitSprites to get rid of dead unit reference
+    removeSprite(unitSprite)
+
+    //removing from PIXI
     BoardContainer.removeChild(unitSprite)
   }
 }

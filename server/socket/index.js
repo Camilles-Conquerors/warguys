@@ -37,8 +37,7 @@ module.exports = io => {
             //initializes player1 object in room object
             player1: {
               id: socket.id,
-              playerName: 'player1',
-              victoryPoints: 0
+              playerName: 'player1'
             }
           }
         }
@@ -51,8 +50,7 @@ module.exports = io => {
         rooms[roomName].currentPlayers.player2 = {
           //initializes player2 object in room object
           id: socket.id,
-          playerName: 'player2',
-          victoryPoints: 0
+          playerName: 'player2'
         }
         rooms[roomName].inProgress = true
         socket.roomName = roomName
@@ -69,26 +67,19 @@ module.exports = io => {
         console.log('after setting pointsToWin', rooms[roomName])
       })
 
-      socket.to(socket.roomName).on('updateUnits', (unit, gameState) => {
+      socket.to(socket.roomName).on('updateUnits', (actionType, unit) => {
         console.log(`${roomName.currentTurn} has acted!: `, unit)
-        let room = rooms[roomName]
-        room = gameState
-        console.log(
-          'server updateUnits lister: roomObj',
-          room,
-          'gameState',
-          gameState
-        )
-        console.log(room)
-        if (
-          room.currentPlayers[socket.myName].victoryPoints >= room.pointsToWin
-        ) {
-          socket.to(socket.roomName).emit('gameOver', socket.myName)
-        }
-        io
-          .to(socket.roomName)
-          .emit('actionBroadcast', unit, room, room.currentTurn)
+
+        io.to(socket.roomName).emit('actionBroadcast', actionType, unit)
         //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
+      })
+
+      socket.to(socket.roomName).on('victory', () => {
+        // if (
+        //   room.currentPlayers[socket.myName].victoryPoints >= room.pointsToWin
+        // ) {
+        //   socket.to(socket.roomName).emit('gameOver', socket.myName)
+        // }
       })
 
       //! handle player leaving the room by first popping up a warning message in their window

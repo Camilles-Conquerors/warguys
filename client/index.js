@@ -3,11 +3,10 @@ import TextInput from 'pixi-text-input'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
 import {renderBoard, BoardContainer} from './renderers/board'
-import {renderUnits, unitSprites} from './renderers/units'
-import Riflemen from './classes/units/riflemen'
+import {unitSprites} from './renderers/units'
 import socket from './socket'
-import Game from './classes/game'
 import {getActionTiles, restoreTiles} from './renderers/action-tiles'
+import Player from './classes/player'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -156,7 +155,6 @@ export function updateSelectedUnit(newObject) {
   }
 
   selectedUnit = newObject
-  console.log('updateSelectedUnit: ', selectedUnit)
 
   if (selectedUnit.data) {
     selectedUnit.data.toggleSelected(true)
@@ -170,84 +168,64 @@ export function getOffset(y) {
   return y % 2 === 0 ? SCALE / 2 : 0
 }
 
-export function renderGame(name) {
-  //set playerName locally
-  const playerName = name
+export function renderGame(initialRoomObj, playerName) {
+  //set playerName in gameState
+  gameState.me = playerName
   // create the gameboard using the hardcoded testBoard
-  //console.log('gameboard.map', gameboard.map)
-
   gameboard = new Gameboard(testBoard)
-
-  // create initial unit placement with hardcoded riflemen
-  const unitRed1 = new Riflemen('player1', 'billy', gameboard.board[1][3])
-  const unitRed2 = new Riflemen('player1', 'bobby', gameboard.board[3][2])
-  const unitBlue1 = new Riflemen('player2', 'henry', gameboard.board[13][11])
-  const unitBlue2 = new Riflemen('player2', 'hienrik', gameboard.board[11][12])
-  let defaultUnits = [unitRed1, unitRed2, unitBlue1, unitBlue2]
-
+  // sets tile width and height
   SCALE = app.renderer.screen.height / gameboard.board.length
 
   //run renders for the board and unit, which will add them to BoardContainer
   renderBoard(gameboard)
-  renderUnits(defaultUnits)
+  //initialize Player instance for player1
+  gameState.currentPlayers.player1 = new Player(
+    initialRoomObj.currentPlayers.player1.id,
+    initialRoomObj.currentPlayers.player1.playerName
+  )
+  console.log(gameState.currentPlayers.player1)
+  gameState.currentPlayers.player1.initializeDefaultUnits()
+  gameState.currentPlayers.player1.renderActiveUnits()
+  //initialize player instance for player2
+  gameState.currentPlayers.player2 = new Player(
+    initialRoomObj.currentPlayers.player2.id,
+    initialRoomObj.currentPlayers.player2.playerName
+  )
+  gameState.currentPlayers.player2.initializeDefaultUnits()
+  gameState.currentPlayers.player2.renderActiveUnits()
+
+  //renderUnits(defaultUnits)
   GameContainer.addChild(BoardContainer)
-
-  return function(roomObj) {
-    //Global gameState stored locally
-    //socket object is owner of currentPlayers
-    gameState.me = playerName
-    gameState.currentPlayers = roomObj.currentPlayers
-    gameState.currentTurn =
-      gameState.currentTurn === 'player1' ? 'player2' : 'player1'
-    console.log(`it is ${gameState.currentTurn}'s turn`)
-
-    // if not your turn, you cannot click on anything
-    // if it is your turn, you can click on your units to select them
-    // once you select a unit, you can click on any enemy unit within range
-
-    // console.log('BoardContainer', BoardContainer)
-    console.log('unitSprites before update', unitSprites)
-
-    unitSprites.forEach(unitSprite => {
-      BoardContainer.removeChild(unitSprite)
-
-      if (
-        gameState.currentTurn === playerName &&
-        gameState.currentTurn === unitSprite.data.playerName
-      ) {
-        unitSprite.interactive = true
-        unitSprite.buttonMode = true
-      } else {
-        unitSprite.interactive = false
-        unitSprite.buttonMode = false
-      }
-
-      BoardContainer.addChild(unitSprite)
-    })
-
-    console.log('unitSprites after update', unitSprites)
-
-    // if (gameState.currentTurn === playerName) {
-    //   console.log('enabling interaction with troops')
-
-    // } else {
-    //   console.log('disabling interaction with troops')
-    // }
-  }
 }
-//restrict click for player whose turn is not
 
-// export function takeTurn(roomObj, playerName) {
-//   console.log(`it is ${roomObj.currentTurn}'s turn`)
-//   if (roomObj.currentTurn === playerName) {
-//     console.log('enabling interaction with troops')
-//   } else {
-//     console.log('disabling interaction with troops')
-//   }
-//   //const player1 = currentGame.addPlayer();
-//   // console.log('player1', player1)
-//   // player1.createRiflemen()
-// }
+export function takeTurn() {
+  //Global gameState stored locally
+  //socket object is owner of currentPlayers
+  gameState.currentTurn =
+    gameState.currentTurn === 'player1' ? 'player2' : 'player1'
+  console.log(`it is ${gameState.currentTurn}'s turn`)
+
+  // if not your turn, you cannot click on anything
+  // if it is your turn, you can click on your units to select them
+  // once you select a unit, you can click on any enemy unit within range
+
+  unitSprites.forEach(unitSprite => {
+    BoardContainer.removeChild(unitSprite)
+
+    if (
+      gameState.currentTurn === gameState.me &&
+      gameState.currentTurn === unitSprite.data.playerName
+    ) {
+      unitSprite.interactive = true
+      unitSprite.buttonMode = true
+    } else {
+      unitSprite.interactive = false
+      unitSprite.buttonMode = false
+    }
+
+    BoardContainer.addChild(unitSprite)
+  })
+}
 
 //gameOver screen
 export function renderGameOver(winner) {
