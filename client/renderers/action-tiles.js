@@ -28,8 +28,6 @@ export function getActionTiles(unit) {
 
   //render them
   renderActionTiles()
-
-  console.log('actionTiles after populating: ', actionTiles)
 }
 
 function renderActionTiles() {
@@ -51,10 +49,8 @@ function renderActionTiles() {
 export function restoreTiles() {
   //remove tint from tiles
   //move tiles
-  console.log('action Tiles: ', actionTiles)
 
   for (let index in actionTiles[0]) {
-    console.log('tileSprite: ', index)
     if (actionTiles[0][index].data.tile.name === 'plain')
       actionTiles[0][index].tint = 0x388004
     else if (actionTiles[0][index].data.tile.name === 'mountain')
@@ -63,7 +59,6 @@ export function restoreTiles() {
 
   //attack tiles
   for (let index in actionTiles[1]) {
-    console.log('tileSprite: ', index)
     if (actionTiles[1][index].data.tile.name === 'plain')
       actionTiles[1][index].tint = 0x388004
     else if (actionTiles[1][index].data.tile.name === 'mountain')

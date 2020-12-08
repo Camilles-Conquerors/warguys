@@ -8,8 +8,7 @@ import {
 } from '../index'
 import {BoardContainer} from './board'
 import {selectedUnit} from '../index'
-import {handleAttack, updateUnitsHealth} from '../actions/move'
-import {getActionTiles, restoreTiles} from './action-tiles'
+import {handleAttack} from '../actions/move'
 
 //Making texture from image files
 const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
@@ -18,6 +17,13 @@ const unitTextures = [rifleUnitRed, rifleUnitBlue]
 
 //stores rendered unitSprites added to gameboard
 export let unitSprites = []
+
+//work around for removing sprite
+export function removeSprite(sprite) {
+  unitSprites = unitSprites.filter(unitSprite => {
+    return unitSprite !== sprite
+  })
+}
 
 //enables interactive and buttonMode on all unitSprites including enemies
 function makeClickable() {
@@ -39,11 +45,9 @@ function disableEnemyInteraction() {
       gameState.currentTurn === gameState.me &&
       gameState.currentTurn === unitSprite.data.playerName
     ) {
-      console.log(unitSprite, 'set to true')
       unitSprite.interactive = true
       unitSprite.buttonMode = true
     } else {
-      console.log(unitSprite, 'set to false')
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }
@@ -65,6 +69,7 @@ function disableEnemyInteraction() {
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function renderUnits(unitArr) {
+  console.log('renderer ua', unitArr)
   unitArr.forEach(unit => {
     let offset = getOffset(unit.currentTile.coordinates.y)
 
@@ -96,7 +101,6 @@ export function renderUnits(unitArr) {
     unitSprite.on('click', () => {
       //if no unit selected, select this unit
       if (!selectedUnit.data) {
-        console.log('new unit selected!', unitSprite.data)
         updateSelectedUnit(unitSprite)
         //make enemy units clickable
         makeClickable()
@@ -104,7 +108,6 @@ export function renderUnits(unitArr) {
         //if you click on unit that's already selected, unselect it
         // eslint-disable-next-line no-lonely-if
         if (unitSprite === selectedUnit) {
-          console.log('unselected unit: ', unitSprite.data)
           updateSelectedUnit({})
           //disable enemy interaction
           disableEnemyInteraction()
@@ -112,7 +115,6 @@ export function renderUnits(unitArr) {
           unitSprite.data.playerName === selectedUnit.data.playerName
         ) {
           //if you click on a team unit, change select to that unit
-          console.log('changed selected unit!: ', unitSprite.data)
           updateSelectedUnit(unitSprite)
         } else {
           //if you click enemy unit, attempt attack
