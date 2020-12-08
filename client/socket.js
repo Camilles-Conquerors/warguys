@@ -6,6 +6,7 @@ import {
   renderLobby,
   renderGame,
   renderGameOver,
+  renderRoomFull,
   takeTurn
 } from './index'
 
@@ -34,11 +35,11 @@ socket.on('actionBroadcast', (actionType, unit) => {
   console.log(`recieved a(n) ${actionType} action`)
 })
 
-socket.on('createLobby', () => {
+socket.on('createLobby', roomName => {
   // rooms[roomName] aka roomObj initialized with player1
   // unloading the splash screen and sending player1 to lobby screen
   unrender()
-  renderLobby()
+  renderLobby(roomName)
   console.log(`${socket.id} created the lobby`)
 })
 
@@ -53,6 +54,8 @@ socket.on('startGame', (roomObj, playerName) => {
 })
 
 socket.on('roomFull', msg => {
+  unrender()
+  renderRoomFull()
   console.log(msg)
 })
 
