@@ -168,57 +168,49 @@ export function getOffset(y) {
   return y % 2 === 0 ? SCALE / 2 : 0
 }
 
-export function renderGame(initialRoomObj, playerName) {
-  //set playerName in gameState
-  gameState.me = playerName
+export function renderGame(roomObj, playerName) {
+  // assign vars to players in roomObj
+  const player1 = roomObj.currentPlayers.player1
+  const player2 = roomObj.currentPlayers.player2
+
   // create the gameboard using the hardcoded testBoard
   gameboard = new Gameboard(testBoard)
   // sets tile width and height
   SCALE = app.renderer.screen.height / gameboard.board.length
 
-  //run renders for the board and unit, which will add them to BoardContainer
+  // run renders for the board and unit, which will add them to BoardContainer
   renderBoard(gameboard)
-  //initialize Player instance for player1
-  gameState.currentPlayers.player1 = new Player(
-    initialRoomObj.currentPlayers.player1.id,
-    initialRoomObj.currentPlayers.player1.playerName
-  )
-  console.log(gameState.currentPlayers.player1)
-  gameState.currentPlayers.player1.initializeDefaultUnits()
-  gameState.currentPlayers.player1.renderActiveUnits()
-  //initialize player instance for player2
-  gameState.currentPlayers.player2 = new Player(
-    initialRoomObj.currentPlayers.player2.id,
-    initialRoomObj.currentPlayers.player2.playerName
-  )
-  gameState.currentPlayers.player2.initializeDefaultUnits()
-  gameState.currentPlayers.player2.renderActiveUnits()
 
-  //renderUnits(defaultUnits)
+  // sets playerName in gameState
+  gameState.me = playerName
+  // initialize Player instances for player1 & player 2 and save to gameState
+  // this will also render the player's units on the board
+  gameState.currentPlayers.player1 = new Player(player1.id, player1.playerName)
+  gameState.currentPlayers.player2 = new Player(player2.id, player2.playerName)
+  // add tile and unit sprites to the GameContainer
   GameContainer.addChild(BoardContainer)
 }
 
 export function takeTurn() {
-  //Global gameState stored locally
-  //socket object is owner of currentPlayers
-  gameState.currentTurn =
-    gameState.currentTurn === 'player1' ? 'player2' : 'player1'
-  console.log(`it is ${gameState.currentTurn}'s turn`)
+  // set currentTurn to current gameState value
+  let currentTurn = gameState.currentTurn
+  // toggle currentTurn between player1 and player2
+  currentTurn = currentTurn === 'player1' ? 'player2' : 'player1'
+  console.log(`${currentTurn}'s turn`)
 
-  // if not your turn, you cannot click on anything
-  // if it is your turn, you can click on your units to select them
-  // once you select a unit, you can click on any enemy unit within range
-
+  // sets default unit interaction for beginning of a turn
   unitSprites.forEach(unitSprite => {
+    //remove unitSprite from BoardContainer
     BoardContainer.removeChild(unitSprite)
-
+    // if it is your turn, you can click on your units to begin a turn
     if (
-      gameState.currentTurn === gameState.me &&
-      gameState.currentTurn === unitSprite.data.playerName
+      currentTurn === gameState.me &&
+      currentTurn === unitSprite.data.playerName
     ) {
       unitSprite.interactive = true
       unitSprite.buttonMode = true
     } else {
+      // if not your turn, you cannot click on anything
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }

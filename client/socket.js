@@ -6,7 +6,6 @@ import {
   renderLobby,
   renderGame,
   renderGameOver,
-  gameState,
   takeTurn
 } from './index'
 
@@ -49,13 +48,8 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log('roomObj', roomObj)
   unrender()
   renderGame(roomObj, playerName)
-  roomObj = gameState
-  console.log('socket gs and ro----->')
-  console.log('gs', gameState)
-  console.log('ro', roomObj)
-  //! call Game.addPlayer to add player2
   console.log('game starting!')
-  takeTurn(roomObj)
+  takeTurn()
 })
 
 socket.on('roomFull', msg => {
