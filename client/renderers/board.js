@@ -13,7 +13,8 @@ const plainTile = PIXI.Texture.from('/images/terrain_plains.png')
 const mtTile = PIXI.Texture.from('/images/terrain_mountains.png')
 const tileTextures = {
   plain: plainTile,
-  mountain: mtTile
+  mountain: mtTile,
+  point: plainTile
 }
 
 //stores rendered sprites added to gameboard
@@ -49,9 +50,7 @@ export function renderBoard(gameboard) {
 
       //console.log(gameboard.board[y][x].value.name)
 
-      let tileSprite = new PIXI.Sprite(
-        tileTextures[gameboard.board[y][x].tile.name]
-      )
+      let tileSprite = new PIXI.Sprite(tileTextures[gameboard.board[y][x].type])
 
       //pass reference to tile into sprite
       // TYPES
@@ -67,10 +66,22 @@ export function renderBoard(gameboard) {
       tileSprite.y = y * SCALE
 
       //rendering based on tile type
-      if (gameboard.board[y][x].tile.name === 'plain')
-        tileSprite.tint = 0x388004
-      else if (gameboard.board[y][x].tile.name === 'mountain')
-        tileSprite.tint = 0xb5651d /*0xa52a2a*/
+      switch (gameboard.board[y][x].type) {
+        case 'plain':
+          tileSprite.tint = 0x388004
+          break
+        case 'mountain':
+          tileSprite.tint = 0xb5651d /*0xa52a2a*/
+          break
+        case 'point':
+          console.log('tinting ')
+          tileSprite.tint = 0xffd700
+          break
+        default:
+          console.log(
+            'hey, homie, idk what tile this is. I cant color it properly'
+          )
+      }
 
       //setting event handlers
       tileSprite.interactive = true

@@ -12,6 +12,7 @@ export default class Player {
     this.id = id //socket id
     this.playerName = playerName
     this.units = []
+    this.ownedTiles = []
     this.victoryPoints = 0 //points accumulated towards winning during game play
     this.turnDone = false
     this.actionsRemaining = 2
@@ -23,9 +24,7 @@ export default class Player {
   initializeDefaultUnits() {
     gameboard.defaultUnits.forEach(unit => {
       if (unit.playerName === this.playerName) {
-        this.units.push(
-          new Riflemen(unit.playerName, unit.unitName, unit.currentTile)
-        )
+        this.units.push(new Riflemen(this, unit.unitName, unit.currentTile))
       }
     })
   }
@@ -33,5 +32,26 @@ export default class Player {
   // creates unitSprites and adds player's units to PIXI BoardContainer
   renderUnits() {
     renderUnits(this.units)
+  }
+
+  removeOwnedTile(tile) {
+    console.log('owned tiles before removal: ', this.ownedTiles)
+    this.ownedTiles = this.ownedTiles.filter(owned => {
+      if (owned === tile) return false
+      return true
+    })
+    console.log('owned tiles after removal: ', this.ownedTiles)
+  }
+
+  addOwnedTile(tile) {
+    this.ownedTiles.push(tile)
+  }
+
+  calculatePoints() {
+    let oldPoints = this.victoryPoints
+    this.victoryPoints += this.ownedTiles.reduce((total, tile) => {
+      return total + tile.points
+    }, 0)
+    console.log(`you points went up from ${oldPoints} to ${this.victoryPoints}`)
   }
 }

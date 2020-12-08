@@ -6,7 +6,8 @@ const stats = {
   health: 3,
   accuracy: 75, // out of 100
   movementCost: 2,
-  shootCost: 2
+  shootCost: 2,
+  actionPoints: 1
 }
 
 export default class Riflemen extends Unit {

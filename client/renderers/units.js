@@ -1,14 +1,13 @@
 import * as PIXI from 'pixi.js'
 import {
   SCALE,
-  GameContainer,
   updateSelectedUnit,
+  selectedUnit,
   getOffset,
   gameState
 } from '../index'
 import {BoardContainer} from './board'
-import {selectedUnit} from '../index'
-import {handleAttack} from '../actions/move'
+import {handleAttack} from '../actions/attack'
 
 //Making texture from image files
 const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
@@ -43,7 +42,7 @@ function disableEnemyInteraction() {
     BoardContainer.removeChild(unitSprite)
     if (
       gameState.currentTurn === gameState.me &&
-      gameState.currentTurn === unitSprite.data.playerName
+      gameState.currentTurn === unitSprite.data.player.playerName
     ) {
       unitSprite.interactive = true
       unitSprite.buttonMode = true
@@ -75,7 +74,7 @@ export function renderUnits(unitArr) {
 
     let unitSprite = {}
 
-    if (unit.playerName === 'player1') {
+    if (unit.player.playerName === 'player1') {
       unitSprite = new PIXI.Sprite(unitTextures[0])
     } else {
       unitSprite = new PIXI.Sprite(unitTextures[1])
@@ -112,7 +111,8 @@ export function renderUnits(unitArr) {
           //disable enemy interaction
           disableEnemyInteraction()
         } else if (
-          unitSprite.data.playerName === selectedUnit.data.playerName
+          unitSprite.data.player.playerName ===
+          selectedUnit.data.player.playerName
         ) {
           //if you click on a team unit, change select to that unit
           updateSelectedUnit(unitSprite)

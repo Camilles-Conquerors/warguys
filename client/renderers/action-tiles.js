@@ -50,20 +50,18 @@ export function restoreTiles() {
   //remove tint from tiles
   //move tiles
 
-  for (let index in actionTiles[0]) {
-    if (actionTiles[0][index].data.tile.name === 'plain')
-      actionTiles[0][index].tint = 0x388004
-    else if (actionTiles[0][index].data.tile.name === 'mountain')
-      actionTiles[0][index].tint = 0xb5651d
-  }
+  actionTiles.forEach(tileSet => {
+    // eslint-disable-next-line guard-for-in
+    for (let index in tileSet) {
+      let newTint = 0xffffff
+      if (tileSet[index].data.type === 'plain') newTint = 0x388004
+      else if (tileSet[index].data.type === 'mountain') newTint = 0xb5651d
+      else if (tileSet[index].data.type === 'point') newTint = 0xffd700
 
+      tileSet[index].tint = newTint
+    }
+  })
   //attack tiles
-  for (let index in actionTiles[1]) {
-    if (actionTiles[1][index].data.tile.name === 'plain')
-      actionTiles[1][index].tint = 0x388004
-    else if (actionTiles[1][index].data.tile.name === 'mountain')
-      actionTiles[1][index].tint = 0xb5651d
-  }
 
   //clear actionTiles
   for (let i = 0; i < actionTiles.length; i++) {
