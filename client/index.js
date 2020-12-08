@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import TextInput from 'pixi-text-input'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
 import {renderBoard, BoardContainer} from './renderers/board'
@@ -67,19 +68,50 @@ export function renderSplash() {
   })
   SplashContainer.addChild(text)
 
+  // create an input field to enter room code, add to SplashContainer
+  let inputRoomCode = new TextInput({
+    input: {
+      fontFamily: 'Arial',
+      fontSize: '36px',
+      padding: '12px',
+      width: '500px',
+      color: '#26272E'
+    },
+    box: {
+      default: {
+        fill: 0xe8e9f3,
+        rounded: 12,
+        stroke: {color: 0xcbcee0, width: 3}
+      },
+      focused: {
+        fill: 0xe1e3ee,
+        rounded: 12,
+        stroke: {color: 0xabafc6, width: 3}
+      },
+      disabled: {fill: 0xdbdbdb, rounded: 12}
+    }
+  })
+
+  inputRoomCode.placeholder = 'Enter your Text...'
+  inputRoomCode.x = 500
+  inputRoomCode.y = 300
+  inputRoomCode.pivot.x = inputRoomCode.width / 2
+  inputRoomCode.pivot.y = inputRoomCode.height / 2
+  SplashContainer.addChild(inputRoomCode)
+
   // add button texture and create sprite from it
   const joinButton = PIXI.Texture.from('/images/join_button_placeholder.png')
   const buttonTextures = [joinButton]
   let joinButtonSprite = new PIXI.Sprite(buttonTextures[0])
-  joinButtonSprite.y = 200
+  joinButtonSprite.y = 400
   SplashContainer.addChild(joinButtonSprite)
 
   // on click event for clicking join room
   joinButtonSprite.interactive = true
   joinButtonSprite.buttonMode = true
   joinButtonSprite.on('click', () => {
-    const roomName = 'room1'
-    console.log("you're about to join the room")
+    const roomName = inputRoomCode.text
+    console.log(`you're about to join the room: ${roomName}`)
     socket.emit('joinRoom', roomName)
   })
 }
