@@ -33,8 +33,7 @@ module.exports = io => {
             //initializes player1 object in room object
             player1: {
               id: socket.id,
-              playerName: 'player1',
-              victoryPoints: 0
+              playerName: 'player1'
             }
           }
         }
@@ -47,8 +46,7 @@ module.exports = io => {
         rooms[roomName].currentPlayers.player2 = {
           //initializes player2 object in room object
           id: socket.id,
-          playerName: 'player2',
-          victoryPoints: 0
+          playerName: 'player2'
         }
         socket.roomName = roomName
         socket.myName = 'player2'
@@ -67,7 +65,7 @@ module.exports = io => {
       socket.to(socket.roomName).on('updateUnits', (unit, gameState) => {
         console.log(`${roomName.currentTurn} has acted!: `, unit)
         let room = rooms[roomName]
-        room = gameState
+        room = gameState //! health overwritten?
         console.log(
           'server updateUnits lister: roomObj',
           room,

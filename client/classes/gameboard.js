@@ -15,6 +15,20 @@ export default class Gameboard {
     this.board = this.generateBoard(map)
     this.assignNeighbors(this.board)
     this.pointsToWin(pointsToWin)
+    this.defaultUnits = [
+      {playerName: 'player1', unitName: 'billy', currentTile: this.board[1][3]},
+      {playerName: 'player1', unitName: 'bobby', currentTile: this.board[3][2]},
+      {
+        playerName: 'player2',
+        unitName: 'henry',
+        currentTile: this.board[13][11]
+      },
+      {
+        playerName: 'player2',
+        unitName: 'heinrek',
+        currentTile: this.board[11][12]
+      }
+    ]
   }
 
   pointsToWin(pointsToWin) {
@@ -102,5 +116,9 @@ export default class Gameboard {
 
   findTileByCoordinates(coordinates) {
     return this.board[coordinates.y][coordinates.x]
+  }
+
+  getDefaultUnits() {
+    return this.defaultUnits
   }
 }

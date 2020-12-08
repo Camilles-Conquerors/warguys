@@ -1,3 +1,5 @@
+import {unitSprites} from '../../renderers/units'
+
 /* eslint-disable no-loop-func */
 export default class Unit {
   constructor(playerName, name, currentTile, unitStats) {
@@ -7,6 +9,8 @@ export default class Unit {
     this.visionRange = unitStats.vision
     this.height = 0
     this.name = name
+    this.movementCost = unitStats.movementCost
+    this.shootCost = unitStats.shootCost
 
     this.currentTile = currentTile
 

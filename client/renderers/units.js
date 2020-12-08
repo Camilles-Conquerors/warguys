@@ -65,6 +65,7 @@ function disableEnemyInteraction() {
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function renderUnits(unitArr) {
+  console.log('renderer ua', unitArr)
   unitArr.forEach(unit => {
     let offset = getOffset(unit.currentTile.coordinates.y)
 

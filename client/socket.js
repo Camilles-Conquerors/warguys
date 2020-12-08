@@ -5,12 +5,12 @@ import {
   renderSplash,
   renderLobby,
   renderGame,
-  renderGameOver
+  renderGameOver,
+  gameState,
+  takeTurn
 } from './index'
 
 const socket = io(window.location.origin)
-
-export let takeTurn
 
 socket.on('connect', () => {
   renderSplash()
@@ -44,7 +44,11 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log(`you are ${playerName}`)
   console.log('roomObj', roomObj)
   unrender()
-  takeTurn = renderGame(playerName)
+  renderGame(roomObj, playerName)
+  roomObj = gameState
+  console.log('socket gs and ro----->')
+  console.log('gs', gameState)
+  console.log('ro', roomObj)
   //! call Game.addPlayer to add player2
   console.log('game starting!')
   takeTurn(roomObj)
