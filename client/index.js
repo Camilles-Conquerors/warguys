@@ -58,13 +58,25 @@ export function renderSplash() {
   let SplashContainer = new PIXI.Container()
   GameContainer.addChild(SplashContainer)
 
+  // create logo sprite and add it to SplashContainer
+  const logoTexture = PIXI.Texture.from('/images/logo.png')
+  const logoSprite = new PIXI.Sprite(logoTexture)
+  logoSprite.x = 100
+  logoSprite.y = 50
+  SplashContainer.addChild(logoSprite)
+
   // create text obj and add it to SplashContainer
-  let text = new PIXI.Text('Enter a room code to create or join a game', {
-    fontFamily: 'Arial',
-    fontSize: 24,
-    fill: 0xffffff,
-    align: 'center'
-  })
+  let text = new PIXI.Text(
+    'Welcome! Enter a room code to create or join a game.',
+    {
+      fontFamily: 'Arial',
+      fontSize: 24,
+      fill: 0xffffff,
+      align: 'center'
+    }
+  )
+  text.x = 100
+  text.y = 200
   SplashContainer.addChild(text)
 
   // create an input field to enter room code, add to SplashContainer
@@ -92,23 +104,24 @@ export function renderSplash() {
   })
 
   inputRoomCode.placeholder = 'Enter Room Code...'
-  inputRoomCode.x = 500
+  inputRoomCode.x = 100
   inputRoomCode.y = 300
-  inputRoomCode.pivot.x = inputRoomCode.width / 2
-  inputRoomCode.pivot.y = inputRoomCode.height / 2
+  // inputRoomCode.pivot.x = inputRoomCode.width / 2
+  // inputRoomCode.pivot.y = inputRoomCode.height / 2
   SplashContainer.addChild(inputRoomCode)
 
   // add button texture and create sprite from it
-  const joinButton = PIXI.Texture.from('/images/join_button_placeholder.png')
-  const buttonTextures = [joinButton]
-  let joinButtonSprite = new PIXI.Sprite(buttonTextures[0])
-  joinButtonSprite.y = 400
-  SplashContainer.addChild(joinButtonSprite)
+  const playButton = PIXI.Texture.from('/images/play_button.png')
+  const buttonTextures = [playButton]
+  let playButtonSprite = new PIXI.Sprite(buttonTextures[0])
+  playButtonSprite.x = 100
+  playButtonSprite.y = 400
+  SplashContainer.addChild(playButtonSprite)
 
   // on click event for clicking join room
-  joinButtonSprite.interactive = true
-  joinButtonSprite.buttonMode = true
-  joinButtonSprite.on('click', () => {
+  playButtonSprite.interactive = true
+  playButtonSprite.buttonMode = true
+  playButtonSprite.on('click', () => {
     const roomName = inputRoomCode.text
     if (roomName.length) {
       // if text field is filled
@@ -122,7 +135,8 @@ export function renderSplash() {
         fill: 0xff0000,
         align: 'center'
       })
-      emptyRoomNameErr.y = 50
+      emptyRoomNameErr.x = 100
+      emptyRoomNameErr.y = 250
       SplashContainer.addChild(emptyRoomNameErr)
     }
   })
