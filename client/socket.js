@@ -5,7 +5,8 @@ import {
   renderSplash,
   renderLobby,
   renderGame,
-  renderGameOver
+  renderGameOver,
+  renderRoomFull
 } from './index'
 
 const socket = io(window.location.origin)
@@ -51,6 +52,8 @@ socket.on('startGame', (roomObj, playerName) => {
 })
 
 socket.on('roomFull', msg => {
+  unrender()
+  renderRoomFull()
   console.log(msg)
 })
 

@@ -16,7 +16,6 @@ module.exports = io => {
   //   emit: indicate the game is ready to start
   //   listener: render the gameBoard
 
-  //! fix bug where player1 leaves while in the lobby but player2 can still join and start the game without player1
   //! allow player to join another game after gameOver, will have to take a look at why that functinoality initially didn't work
   //! handle case where a player tries to join a game that is already full and in progress
   let rooms = {}
@@ -60,9 +59,11 @@ module.exports = io => {
 
         socket.join(roomName).emit('startGame', rooms[roomName], 'player2')
         socket.to(roomName).emit('startGame', rooms[roomName], 'player1')
+      } else if (rooms[roomName] && rooms[roomName].inProgress) {
+        // if room exists and the game has already started
+        socket.emit('roomFull', 'that room is already full')
       }
-      //! handle case if room is full
-      console.log('rooms', rooms)
+      console.log('rooms after join attempt', rooms)
 
       socket.to(socket.roomName).on('setPointsToWin', pointsToWin => {
         rooms[roomName].pointsToWin = pointsToWin
@@ -98,6 +99,7 @@ module.exports = io => {
         //console.log(`Connection ${socket.id} has left the building`)
         let winner = ''
         if (rooms[roomName] && rooms[roomName].inProgress) {
+          // hnadle players leaving after game has started
           const player1 = rooms[roomName].currentPlayers.player1
           const player2 = rooms[roomName].currentPlayers.player2
           if (socket.id === player1.id) {
@@ -112,6 +114,10 @@ module.exports = io => {
           console.log(rooms)
           delete rooms[roomName]
           console.log('rooms after someone leaves:', rooms)
+        } else if (rooms[roomName] && !rooms[roomName].inProgress) {
+          // handle player1 leaving while in the lobby
+          delete rooms[roomName]
+          console.log('rooms after player1 leaves the lobby', rooms)
         }
       })
 

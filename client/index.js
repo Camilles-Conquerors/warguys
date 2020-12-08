@@ -60,7 +60,7 @@ export function renderSplash() {
   GameContainer.addChild(SplashContainer)
 
   // create text obj and add it to SplashContainer
-  let text = new PIXI.Text('Join room to start the game!', {
+  let text = new PIXI.Text('Enter a room code to create or join a game', {
     fontFamily: 'Arial',
     fontSize: 24,
     fill: 0xffffff,
@@ -92,7 +92,7 @@ export function renderSplash() {
     }
   })
 
-  inputRoomCode.placeholder = 'Enter your Text...'
+  inputRoomCode.placeholder = 'Enter Room Code...'
   inputRoomCode.x = 500
   inputRoomCode.y = 300
   inputRoomCode.pivot.x = inputRoomCode.width / 2
@@ -111,8 +111,21 @@ export function renderSplash() {
   joinButtonSprite.buttonMode = true
   joinButtonSprite.on('click', () => {
     const roomName = inputRoomCode.text
-    console.log(`you're about to join the room: ${roomName}`)
-    socket.emit('joinRoom', roomName)
+    if (roomName.length) {
+      // if text field is filled
+      console.log(`you're about to join the room: ${roomName}`)
+      socket.emit('joinRoom', roomName)
+    } else {
+      // if text field is empty
+      let emptyRoomNameErr = new PIXI.Text('Please enter a room code', {
+        fontFamily: 'Arial',
+        fontSize: 24,
+        fill: 0xff0000,
+        align: 'center'
+      })
+      emptyRoomNameErr.y = 50
+      SplashContainer.addChild(emptyRoomNameErr)
+    }
   })
 }
 
@@ -249,7 +262,25 @@ export function renderGame(name) {
 //   // player1.createRiflemen()
 // }
 
-//gameOver screen
+// error screen when room is full
+export function renderRoomFull() {
+  let RoomFullContainer = new PIXI.Container()
+  GameContainer.addChild(RoomFullContainer)
+
+  // create text obj and add it to GameOverContainer
+  let text = new PIXI.Text(
+    'That room is already full \n Refresh page to try again!',
+    {
+      fontFamily: 'Arial',
+      fontSize: 24,
+      fill: 0xffffff,
+      align: 'center'
+    }
+  )
+  RoomFullContainer.addChild(text)
+}
+
+// game over screen
 export function renderGameOver(winner) {
   // create GameOverContainer
   let GameOverContainer = new PIXI.Container()
@@ -274,13 +305,4 @@ export function renderGameOver(winner) {
   // let joinButtonSprite = new PIXI.Sprite(buttonTextures[0])
   // joinButtonSprite.y = 200
   // GameOverContainer.addChild(joinButtonSprite)
-
-  // // on click event for clicking join room
-  // joinButtonSprite.interactive = true
-  // joinButtonSprite.buttonMode = true
-  // joinButtonSprite.on('click', () => {
-  //   const roomName = 'room1'
-  //   console.log("you're about to another game")
-  //   socket.emit('joinRoom', roomName)
-  // })
 }
