@@ -6,7 +6,7 @@ import {
   renderLobby,
   renderGame,
   renderGameOver,
-  renderRoomFull
+  renderRoomFull,
   takeTurn
 } from './index'
 
