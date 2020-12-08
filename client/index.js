@@ -131,18 +131,21 @@ export function renderSplash() {
 
 // renderSplash()
 
-export function renderLobby() {
+export function renderLobby(roomName) {
   // create LobbyContainer
   let LobbyContainer = new PIXI.Container()
   GameContainer.addChild(LobbyContainer)
 
   // create text obj and add it to LobbyContainer
-  let text = new PIXI.Text('Waiting for an opponent to join...', {
-    fontFamily: 'Arial',
-    fontSize: 24,
-    fill: 0xffffff,
-    align: 'center'
-  })
+  let text = new PIXI.Text(
+    `Your room code is ${roomName} \n Waiting for an opponent to join...`,
+    {
+      fontFamily: 'Arial',
+      fontSize: 24,
+      fill: 0xffffff,
+      align: 'center'
+    }
+  )
   LobbyContainer.addChild(text)
 }
 
