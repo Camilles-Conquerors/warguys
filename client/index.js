@@ -200,7 +200,7 @@ export function renderGame(roomObj, playerName) {
   // sets playerName in gameState
   gameState.me = playerName
   // initialize Player instances for player1 & player 2 and save to gameState
-  // this will also render the player's units on the board
+  // this will also render the player's units to the GameBoard container
   gameState.currentPlayers.player1 = new Player(player1.id, player1.playerName)
   gameState.currentPlayers.player2 = new Player(player2.id, player2.playerName)
   // add tile and unit sprites to the GameContainer
@@ -208,11 +208,10 @@ export function renderGame(roomObj, playerName) {
 }
 
 export function takeTurn() {
-  // set currentTurn to current gameState value
-  let currentTurn = gameState.currentTurn
   // toggle currentTurn between player1 and player2
-  currentTurn = currentTurn === 'player1' ? 'player2' : 'player1'
-  console.log(`${currentTurn}'s turn`)
+  gameState.currentTurn =
+    gameState.currentTurn === 'player1' ? 'player2' : 'player1'
+  console.log(`${gameState.currentTurn}'s turn`)
 
   // sets default unit interaction for beginning of a turn
   unitSprites.forEach(unitSprite => {
@@ -220,8 +219,8 @@ export function takeTurn() {
     BoardContainer.removeChild(unitSprite)
     // if it is your turn, you can click on your units to begin a turn
     if (
-      currentTurn === gameState.me &&
-      currentTurn === unitSprite.data.playerName
+      gameState.currentTurn === gameState.me &&
+      gameState.currentTurn === unitSprite.data.playerName
     ) {
       unitSprite.interactive = true
       unitSprite.buttonMode = true
