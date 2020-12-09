@@ -52,6 +52,8 @@ export default class Player {
     this.victoryPoints += this.ownedTiles.reduce((total, tile) => {
       return total + tile.points
     }, 0)
-    console.log(`you points went up from ${oldPoints} to ${this.victoryPoints}`)
+    console.log(
+      `your points went up from ${oldPoints} to ${this.victoryPoints}`
+    )
   }
 }

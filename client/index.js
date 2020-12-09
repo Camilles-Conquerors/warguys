@@ -11,7 +11,8 @@ import {
   SidebarContainer,
   renderSidebar,
   updateCurrentTurnDisplay,
-  sidebarDisplays
+  sidebarDisplays,
+  updatePointsDisplays
 } from './renderers/sidebar'
 
 // room/lobby system
@@ -238,6 +239,8 @@ export function takeTurn() {
 
   const currentPlayer = gameState.currentPlayers[gameState.currentTurn]
   currentPlayer.calculatePoints()
+
+  updatePointsDisplays()
 
   if (currentPlayer.victoryPoints >= gameState.pointsToWin) {
     socket.emit('victory', currentPlayer.playerName)
