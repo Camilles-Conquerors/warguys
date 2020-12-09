@@ -7,6 +7,7 @@ import {unitSprites} from './renderers/units'
 import socket from './socket'
 import {getActionTiles, restoreTiles} from './renderers/action-tiles'
 import Player from './classes/player'
+import {renderSidebar, SidebarContainer} from './renderers/sidebar'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -220,20 +221,8 @@ export function renderGame(roomObj, playerName) {
   // add tile and unit sprites to the GameContainer
   GameContainer.addChild(BoardContainer)
 
-  let sidebarContainer = new PIXI.Container()
-  // sidebar height should equal board height
-  // sidebar x position should equal board width plus a few pixels
-  // sidebar should render: room code, current turn, points to win, player points, player points per turn
-  // sidebar needs access to gameState.currentTurn, gameState.pointsToWin, gameState.currentPlayers[playerName].playerName, gameState.currentPlayers[playerName].victoryPoints
-  let roomCode = new PIXI.Text(`Room Code: ${roomObj.name}`, {
-    fontFamily: 'Arial',
-    fontSize: 24,
-    fill: 0xffffff,
-    align: 'center'
-  })
-  sidebarContainer.addChild(roomCode)
-
-  GameContainer.addChild(sidebarContainer)
+  renderSidebar(roomObj)
+  GameContainer.addChild(SidebarContainer)
 }
 
 export function takeTurn() {
@@ -268,6 +257,9 @@ export function takeTurn() {
     }
 
     BoardContainer.addChild(unitSprite)
+
+    SidebarContainer.removeChild(currentTurnDisplay)
+    SidebarContainer.addChild(currentTurnDisplay)
   })
 }
 
