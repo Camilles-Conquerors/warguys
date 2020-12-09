@@ -8,6 +8,8 @@ import {gameState} from '../index'
 
 export const SidebarContainer = new PIXI.Container()
 
+export let sidebarDisplays = {}
+
 export function renderSidebar(roomObj) {
   let roomCodeDisplay = new PIXI.Text(`Room Code: ${roomObj.name}`, {
     fontFamily: 'Arial',
@@ -15,6 +17,7 @@ export function renderSidebar(roomObj) {
     fill: 0xffffff,
     align: 'center'
   })
+  sidebarDisplays.roomCodeDisplay = roomCodeDisplay
   SidebarContainer.addChild(roomCodeDisplay)
 
   let currentTurnDisplay = new PIXI.Text(`${gameState.currentTurn}'s Turn`, {
@@ -24,5 +27,12 @@ export function renderSidebar(roomObj) {
     align: 'center'
   })
   currentTurnDisplay.y = 50
+  sidebarDisplays.currentTurnDisplay = currentTurnDisplay
   SidebarContainer.addChild(currentTurnDisplay)
+
+  console.log('sidebar displays', sidebarDisplays)
+}
+
+export function updateCurrentTurnDisplay(currentTurnDisplay) {
+  currentTurnDisplay.text = `${gameState.currentTurn}'s Turn`
 }

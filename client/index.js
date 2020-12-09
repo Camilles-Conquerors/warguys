@@ -7,7 +7,12 @@ import {unitSprites} from './renderers/units'
 import socket from './socket'
 import {getActionTiles, restoreTiles} from './renderers/action-tiles'
 import Player from './classes/player'
-import {renderSidebar, SidebarContainer} from './renderers/sidebar'
+import {
+  SidebarContainer,
+  renderSidebar,
+  updateCurrentTurnDisplay,
+  sidebarDisplays
+} from './renderers/sidebar'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -258,8 +263,7 @@ export function takeTurn() {
 
     BoardContainer.addChild(unitSprite)
 
-    SidebarContainer.removeChild(currentTurnDisplay)
-    SidebarContainer.addChild(currentTurnDisplay)
+    updateCurrentTurnDisplay(sidebarDisplays.currentTurnDisplay)
   })
 }
 
