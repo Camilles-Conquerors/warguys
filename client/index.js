@@ -48,6 +48,14 @@ console.log(GameContainer.pivot)
 console.log(GameContainer.width, ', ', GameContainer.height)
 app.stage.addChild(GameContainer)
 
+const testSprite = new PIXI.Sprite(
+  new PIXI.Texture.from('images/faction_usa.png')
+)
+
+app.stage.addChild(testSprite)
+testSprite.x = canvas.width / 2
+testSprite.y = canvas.height / 2
+
 function scaleGameContainerSize() {
   //find distace from container width/height to window width/height
   let heightDelta = canvas.height - GameContainer.height
@@ -55,20 +63,22 @@ function scaleGameContainerSize() {
 
   let diff = heightDelta < widthDelta ? heightDelta : widthDelta
 
-  GameContainer.scale.y = GameContainer.scale.x += diff
+  GameContainer.width = GameContainer.height += diff
   // GameContainer.height += diff;
 }
 
 function scaleGameContainerPosition() {
-  GameContainer.pivot.x = GameContainer.width / 2
-  GameContainer.pivot.y = GameContainer.height / 2
   GameContainer.x = canvas.width / 2
   GameContainer.y = canvas.height / 2
   console.log('pivot: ', GameContainer.pivot.x, ', ', GameContainer.pivot.y)
+  console.log('position: ', GameContainer.x, ', ', GameContainer.y)
+  //for testing
+  testSprite.x = GameContainer.pivot.x
+  testSprite.y = GameContainer.pivot.y
 }
 
 export function scaleGameContainer() {
-  // scaleGameContainerSize()
+  scaleGameContainerSize()
   console.log(GameContainer.width, ', ', GameContainer.height)
   scaleGameContainerPosition()
   console.log(canvas.height)
@@ -80,7 +90,6 @@ window.addEventListener('resize', scaleGameContainer) //! This is not optimal, i
 export function unrender() {
   GameContainer.removeChildAt(0)
 }
-scaleGameContainer()
 
 // Splash screen
 export function renderSplash() {
