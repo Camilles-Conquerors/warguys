@@ -18,11 +18,11 @@ const socket = io(window.location.origin)
 
 socket.on('connect', () => {
   renderSplash()
-  // -v- part of scaling window
-  GameContainer.pivot.x = GameContainer.width / 2
-  GameContainer.pivot.y = GameContainer.height / 2
-  scaleGameContainer()
-  // -^- part of scaling window
+  // // -v- part of scaling window
+  // GameContainer.pivot.x = GameContainer.width / 2
+  // GameContainer.pivot.y = GameContainer.height / 2
+  // scaleGameContainer()
+  // // -^- part of scaling window
   console.log('Connected!')
 })
 

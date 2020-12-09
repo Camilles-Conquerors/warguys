@@ -42,12 +42,7 @@ const app = new PIXI.Application({
   resizeTo: window
 })
 
-export let GameContainer = new PIXI.Container()
-//create GameContainer and append it to PIXI app
-console.log(GameContainer.pivot)
-console.log(GameContainer.width, ', ', GameContainer.height)
-app.stage.addChild(GameContainer)
-
+//testing sprite
 const testSprite = new PIXI.Sprite(
   new PIXI.Texture.from('images/faction_usa.png')
 )
@@ -55,6 +50,15 @@ const testSprite = new PIXI.Sprite(
 app.stage.addChild(testSprite)
 testSprite.x = canvas.width / 2
 testSprite.y = canvas.height / 2
+//testing sprite
+
+export let GameContainer = new PIXI.Container()
+//create GameContainer and append it to PIXI app
+// console.log(GameContainer.pivot)
+console.log(GameContainer.width, ', ', GameContainer.height)
+app.stage.addChild(GameContainer)
+scaleGameContainer()
+console.log(GameContainer.width, ', ', GameContainer.height)
 
 function scaleGameContainerSize() {
   //find distace from container width/height to window width/height
@@ -63,25 +67,27 @@ function scaleGameContainerSize() {
 
   let diff = heightDelta < widthDelta ? heightDelta : widthDelta
 
-  GameContainer.width = GameContainer.height += diff
-  // GameContainer.height += diff;
+  GameContainer.width = GameContainer.height += diff //<-- in the beginning this isn't scaling the contianer properly
 }
 
 function scaleGameContainerPosition() {
   GameContainer.x = canvas.width / 2
   GameContainer.y = canvas.height / 2
-  console.log('pivot: ', GameContainer.pivot.x, ', ', GameContainer.pivot.y)
-  console.log('position: ', GameContainer.x, ', ', GameContainer.y)
+  // console.log('pivot: ', GameContainer.pivot.x, ', ', GameContainer.pivot.y)
+  // console.log('position: ', GameContainer.x, ', ', GameContainer.y)
   //for testing
   testSprite.x = GameContainer.pivot.x
   testSprite.y = GameContainer.pivot.y
 }
 
+//Notes: seems like containers gain width and hieght with Sprite additions.
+// maybe there might be a way to presize containers? or perhaps resize regardless of width/height??
+// The main problem is certainly this: the container size is determined by the sprites passed it, making it somewhat unpredictable.
 export function scaleGameContainer() {
   scaleGameContainerSize()
-  console.log(GameContainer.width, ', ', GameContainer.height)
+  // console.log(GameContainer.width, ', ', GameContainer.height)
   scaleGameContainerPosition()
-  console.log(canvas.height)
+  // console.log(canvas.height)
 }
 
 window.addEventListener('resize', scaleGameContainer) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
@@ -95,6 +101,7 @@ export function unrender() {
 export function renderSplash() {
   // create SplashContainer
   let SplashContainer = new PIXI.Container()
+  console.log(GameContainer.width, ', ', GameContainer.height)
   GameContainer.addChild(SplashContainer)
 
   // create logo sprite and add it to SplashContainer
@@ -103,6 +110,7 @@ export function renderSplash() {
   logoSprite.x = 100
   logoSprite.y = 50
   SplashContainer.addChild(logoSprite)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // create text obj and add it to SplashContainer
   let text = new PIXI.Text(
@@ -117,6 +125,7 @@ export function renderSplash() {
   text.x = 100
   text.y = 200
   SplashContainer.addChild(text)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // create an input field to enter room code, add to SplashContainer
   let inputRoomCode = new TextInput({
@@ -148,6 +157,7 @@ export function renderSplash() {
   // inputRoomCode.pivot.x = inputRoomCode.width / 2
   // inputRoomCode.pivot.y = inputRoomCode.height / 2
   SplashContainer.addChild(inputRoomCode)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // add button texture and create sprite from it
   const playButton = PIXI.Texture.from('/images/play_button.png')
@@ -156,6 +166,7 @@ export function renderSplash() {
   playButtonSprite.x = 100
   playButtonSprite.y = 400
   SplashContainer.addChild(playButtonSprite)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // on click event for clicking join room
   playButtonSprite.interactive = true
@@ -177,6 +188,7 @@ export function renderSplash() {
       emptyRoomNameErr.x = 100
       emptyRoomNameErr.y = 250
       SplashContainer.addChild(emptyRoomNameErr)
+      console.log(GameContainer.width, ', ', GameContainer.height)
     }
   })
 }
