@@ -219,6 +219,21 @@ export function renderGame(roomObj, playerName) {
   gameState.currentPlayers.player2 = new Player(player2.id, player2.playerName)
   // add tile and unit sprites to the GameContainer
   GameContainer.addChild(BoardContainer)
+
+  let sidebarContainer = new PIXI.Container()
+  // sidebar height should equal board height
+  // sidebar x position should equal board width plus a few pixels
+  // sidebar should render: room code, current turn, points to win, player points, player points per turn
+  // sidebar needs access to gameState.currentTurn, gameState.pointsToWin, gameState.currentPlayers[playerName].playerName, gameState.currentPlayers[playerName].victoryPoints
+  let roomCode = new PIXI.Text(`Room Code: ${roomObj.name}`, {
+    fontFamily: 'Arial',
+    fontSize: 24,
+    fill: 0xffffff,
+    align: 'center'
+  })
+  sidebarContainer.addChild(roomCode)
+
+  GameContainer.addChild(sidebarContainer)
 }
 
 export function takeTurn() {
