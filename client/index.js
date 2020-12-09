@@ -39,18 +39,48 @@ const canvas = document.getElementById('mycanvas')
 
 const app = new PIXI.Application({
   view: canvas,
-  width: window.outerWidth,
-  height: window.outerHeight
+  resizeTo: window
 })
 
-//create GameContainer and append it to PIXI app
 export let GameContainer = new PIXI.Container()
+//create GameContainer and append it to PIXI app
+console.log(GameContainer.pivot)
+console.log(GameContainer.width, ', ', GameContainer.height)
 app.stage.addChild(GameContainer)
+
+function scaleGameContainerSize() {
+  //find distace from container width/height to window width/height
+  let heightDelta = canvas.height - GameContainer.height
+  let widthDelta = canvas.width - GameContainer.width
+
+  let diff = heightDelta < widthDelta ? heightDelta : widthDelta
+
+  GameContainer.scale.y = GameContainer.scale.x += diff
+  // GameContainer.height += diff;
+}
+
+function scaleGameContainerPosition() {
+  GameContainer.pivot.x = GameContainer.width / 2
+  GameContainer.pivot.y = GameContainer.height / 2
+  GameContainer.x = canvas.width / 2
+  GameContainer.y = canvas.height / 2
+  console.log('pivot: ', GameContainer.pivot.x, ', ', GameContainer.pivot.y)
+}
+
+export function scaleGameContainer() {
+  // scaleGameContainerSize()
+  console.log(GameContainer.width, ', ', GameContainer.height)
+  scaleGameContainerPosition()
+  console.log(canvas.height)
+}
+
+window.addEventListener('resize', scaleGameContainer) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
 
 // function to remove a view so that we can render the next view
 export function unrender() {
   GameContainer.removeChildAt(0)
 }
+scaleGameContainer()
 
 // Splash screen
 export function renderSplash() {

@@ -8,7 +8,8 @@ import {
   renderGame,
   renderGameOver,
   renderRoomFull,
-  takeTurn
+  takeTurn,
+  scaleGameContainer
 } from './index'
 import {attemptCapture} from './actions/capture'
 
@@ -16,6 +17,7 @@ const socket = io(window.location.origin)
 
 socket.on('connect', () => {
   renderSplash()
+  scaleGameContainer()
   console.log('Connected!')
 })
 
@@ -52,6 +54,7 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log('roomObj', roomObj)
   unrender()
   renderGame(roomObj, playerName)
+  scaleGameContainer()
   console.log('game starting!')
   takeTurn()
 })
