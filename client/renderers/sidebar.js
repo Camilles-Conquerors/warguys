@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import {GameContainer, gameState, renderGame} from '../index'
+import {GameContainer, gameState} from '../index'
 
 // sidebar height should equal board height
 // sidebar x position should equal board width plus a few pixels
@@ -12,19 +12,22 @@ import {GameContainer, gameState, renderGame} from '../index'
 //   - CurrentTurnContainer
 //     - currentTurnPlayerDisplay
 //     - currentTurnDisplay
-//   - pointsToWinDisplay
+//     - pointsToWinDisplay
 // - Player1InfoContainer
 //   - Player1NameContainer
+//     - player1IconSprite
 //     - player1NameDisplay
-//     - player1You
+//     - player1Indicator
 //   - player1PointsDisplay
 //   - player1PerTurnDisplay
 // - Player2InfoContainer
 //   - Player2NameContainer
+//     - player2IconSprite
 //     - player2NameDisplay
-//     - player2You
+//     - player2Indicator
 //   - player2PointsDisplay
 //   - player2PerTurnDisplay
+// - logoSprite
 
 export const SidebarContainer = new PIXI.Container()
 
@@ -104,27 +107,58 @@ export function renderPlayer1Info() {
 
   const Player1NameContainer = new PIXI.Container()
 
+  // // create logo sprite and add it to SplashContainer
+  // const logoTexture = PIXI.Texture.from('/images/logo.png')
+  // const logoSprite = new PIXI.Sprite(logoTexture)
+  // logoSprite.x = 100
+  // logoSprite.y = 50
+  // SplashContainer.addChild(logoSprite)
+
+  // // create text obj and add it to SplashContainer
+  // let text = new PIXI.Text(
+  //   'Welcome! Enter a room code to create or join a game.',
+  //   {
+  //     fontFamily: 'Arial',
+  //     fontSize: 24,
+  //     fill: 0xffffff,
+  //     align: 'center'
+  //   }
+  // )
+  // text.x = 100
+  // text.y = 200
+  // SplashContainer.addChild(text)
+
+  const player1IconTexture = PIXI.Texture.from('/images/faction_usa.png')
+  const player1IconSprite = new PIXI.Sprite(player1IconTexture)
+  player1IconSprite.width = 50
+  player1IconSprite.height = 50
+  player1IconSprite.y = 150
+  Player1NameContainer.addChild(player1IconSprite)
+
+  console.log('helmet width', player1IconSprite.width)
+
   const player1NameDisplay = new PIXI.Text('Player 1', {
     fontFamily: 'Arial',
     fontSize: 48,
     fill: 0xff0000,
     align: 'left'
   })
+  player1NameDisplay.x = player1IconSprite.width
   player1NameDisplay.y = 150
   sidebarDisplays.player1NameDisplay = player1NameDisplay
   Player1NameContainer.addChild(player1NameDisplay)
 
   if (gameState.me === 'player1') {
-    const player1You = new PIXI.Text(' (You)', {
+    const player1Indicator = new PIXI.Text(' (You)', {
       fontFamily: 'Arial',
       fontSize: 48,
       fill: 0xffffff,
       align: 'left'
     })
-    player1You.x = player1NameDisplay.width
-    player1You.y = 150
-    sidebarDisplays.player1You = player1You
-    Player1NameContainer.addChild(player1You)
+    player1Indicator.x = player1IconSprite.width + player1NameDisplay.width
+    player1Indicator.y = 150
+    sidebarDisplays.player1Indicator = player1Indicator
+    Player1NameContainer.addChild(player1Indicator)
   }
 
   Player1InfoContainer.addChild(Player1NameContainer)
@@ -175,18 +209,17 @@ export function renderPlayer2Info() {
   sidebarDisplays.player2NameDisplay = player2NameDisplay
   Player2NameContainer.addChild(player2NameDisplay)
 
-  console.log('are we player2?', gameState.me)
   if (gameState.me === 'player2') {
-    const player2You = new PIXI.Text(' (You)', {
+    const player2Indicator = new PIXI.Text(' (You)', {
       fontFamily: 'Arial',
       fontSize: 48,
       fill: 0xffffff,
       align: 'left'
     })
-    player2You.x = player2NameDisplay.width
-    player2You.y = 300
-    sidebarDisplays.player2You = player2You
-    Player2NameContainer.addChild(player2You)
+    player2Indicator.x = player2NameDisplay.width
+    player2Indicator.y = 300
+    sidebarDisplays.player2Indicator = player2Indicator
+    Player2NameContainer.addChild(player2Indicator)
   }
 
   Player2InfoContainer.addChild(Player2NameContainer)
@@ -228,27 +261,6 @@ export function renderLogo() {
   SidebarContainer.addChild(logoSprite)
   console.log('sidebar logoSprite', logoSprite)
 }
-
-// // create logo sprite and add it to SplashContainer
-// const logoTexture = PIXI.Texture.from('/images/logo.png')
-// const logoSprite = new PIXI.Sprite(logoTexture)
-// logoSprite.x = 100
-// logoSprite.y = 50
-// SplashContainer.addChild(logoSprite)
-
-// // create text obj and add it to SplashContainer
-// let text = new PIXI.Text(
-//   'Welcome! Enter a room code to create or join a game.',
-//   {
-//     fontFamily: 'Arial',
-//     fontSize: 24,
-//     fill: 0xffffff,
-//     align: 'center'
-//   }
-// )
-// text.x = 100
-// text.y = 200
-// SplashContainer.addChild(text)
 
 export function updateCurrentTurnDisplay(currentTurnPlayerDisplay) {
   currentTurnPlayerDisplay.text = `${gameState.currentTurn}`

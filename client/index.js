@@ -50,6 +50,41 @@ const app = new PIXI.Application({
   height: window.outerHeight
 })
 
+// // preload player icons so we have access to their width property
+// //? in the future, maybe refactor to preload all assets
+// app.loader.baseUrl = 'images'
+// app.loader
+//   .add('player1Icon', 'faction_usa.png')
+//   .add('player2Icon', 'faction_ger.png')
+
+// // log progress and errors
+// app.loader.onProgress.add(showProgress)
+// app.loader.onComplete.add(doneLoading)
+// app.loader.onError.add(reportError)
+
+// function showProgress(evt) {
+//   console.log(evt.progress)
+// }
+
+// function doneLoading(evt) {
+//   console.log('asset preloading complete!', evt)
+// }
+
+// function reportError(evt) {
+//   console.log('error preloading assets', evt)
+// }
+
+// // run the preloader
+// app.loader.load()
+
+// // log the resources we now have access
+// console.log('prelaoded resources', app.loader.resources)
+
+// // save and export preloaded assets
+// export const player1IconSprite = new PIXI.Sprite(app.loader.resources.player1Icon.texture)
+
+// export const player2IconSprite = new PIXI.Sprite(app.loader.resources.player2Icon.texture)
+
 //create GameContainer and append it to PIXI app
 export let GameContainer = new PIXI.Container()
 app.stage.addChild(GameContainer)
