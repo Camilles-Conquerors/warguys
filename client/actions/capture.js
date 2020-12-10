@@ -1,4 +1,4 @@
-import {unitSprites} from '../renderers/units'
+import {unitContainers} from '../renderers/units'
 
 export const CAPTURE = 'CAPTURE'
 
@@ -6,9 +6,9 @@ export const CAPTURE = 'CAPTURE'
 export function attemptCapture(emittedUnit) {
   let unit = {}
 
-  unitSprites.forEach(unitSprite => {
-    if (unitSprite.data.name === emittedUnit.name) {
-      unit = unitSprite.data
+  unitContainers.forEach(unitContainer => {
+    if (unitContainer.children[0].data.name === emittedUnit.name) {
+      unit = unitContainer.children[0].data
     }
   })
 

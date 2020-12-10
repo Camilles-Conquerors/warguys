@@ -8,29 +8,32 @@ import {
 } from '../index'
 import {BoardContainer} from './board'
 import {handleAttack} from '../actions/attack'
+import Unit from '../classes/units/unit'
 
 //Making texture from image files
 const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
 const rifleUnitBlue = PIXI.Texture.from('/images/unit_rifleman_ger.png')
 const unitTextures = [rifleUnitRed, rifleUnitBlue]
+const health5 = PIXI.Texture.from('/images/health5.png')
+const healthTextures = [0, 1, 2, 3, 4, health5]
 
-//stores rendered unitSprites added to gameboard
-export let unitSprites = []
+//stores rendered unitContainers added to gameboard
+export let unitContainers = []
 
 //work around for removing sprite
-export function removeSprite(sprite) {
-  unitSprites = unitSprites.filter(unitSprite => {
-    return unitSprite !== sprite
+export function removeContainer(container) {
+  unitContainers = unitContainers.filter(unitContainer => {
+    return unitContainer !== container
   })
 }
 
-//enables interactive and buttonMode on all unitSprites including enemies
+//enables interactive and buttonMode on all unitContainers including enemies
 function makeClickable() {
-  unitSprites.forEach(unitSprite => {
-    BoardContainer.removeChild(unitSprite)
-    unitSprite.interactive = true
-    unitSprite.buttonMode = true
-    BoardContainer.addChild(unitSprite)
+  unitContainers.forEach(unitContainer => {
+    BoardContainer.removeChild(unitContainer)
+    unitContainer.interactive = true
+    unitContainer.buttonMode = true
+    BoardContainer.addChild(unitContainer)
   })
 }
 
@@ -38,20 +41,20 @@ function makeClickable() {
 //player cannot click their enemy's units
 //enemy cannot click any units
 function disableEnemyInteraction() {
-  unitSprites.forEach(unitSprite => {
-    BoardContainer.removeChild(unitSprite)
+  unitContainers.forEach(unitContainer => {
+    BoardContainer.removeChild(unitContainer)
     if (
       gameState.currentTurn === gameState.me &&
-      gameState.currentTurn === unitSprite.data.player.playerName
+      gameState.currentTurn === unitContainer.children[0].data.player.playerName
     ) {
-      unitSprite.interactive = true
-      unitSprite.buttonMode = true
+      unitContainer.interactive = true
+      unitContainer.buttonMode = true
     } else {
-      unitSprite.interactive = false
-      unitSprite.buttonMode = false
+      unitContainer.interactive = false
+      unitContainer.buttonMode = false
     }
 
-    BoardContainer.addChild(unitSprite)
+    BoardContainer.addChild(unitContainer)
   })
 }
 
@@ -63,7 +66,7 @@ function disableEnemyInteraction() {
     PIXI
     SCALE
     GameContainer
-    unitSprites
+    unitContainers
     selectedUnit
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
@@ -83,48 +86,67 @@ export function renderUnits(unitArr) {
     unitSprite.data = unit
 
     // setting position
-    unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
-    unitSprite.y = unit.currentTile.coordinates.y * SCALE
+    // unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
+    // unitSprite.y = unit.currentTile.coordinates.y * SCALE
 
-    unitSprite.height = SCALE / 1.5
-    unitSprite.width = SCALE / 1.5
+    //unitSprite.height = SCALE / 1.5
+    //unitSprite.width = SCALE / 1.5
 
     unitSprite.type = 'unit'
 
-    BoardContainer.addChild(unitSprite)
-    unitSprites.push(unitSprite)
+    let healthSprite = new PIXI.Sprite(healthTextures[5])
+    healthSprite.x = unitSprite.width - 15
+    // healthSprite.y = unit.currentTile.coordinates.y * SCALE
+    //healthSprite.height = unitSprite.height * .9
+    //healthSprite.width = unitSprite.width * .9
+
+    //BoardContainer.addChild(unitSprite)
+    //contains unitSprite and healthSprite
+    const unitContainer = new PIXI.Container()
+    unitContainer.addChild(unitSprite)
+    unitContainer.addChild(healthSprite)
+    unitContainer.x = unit.currentTile.coordinates.x * SCALE + offset
+    unitContainer.y = unit.currentTile.coordinates.y * SCALE
+    unitContainer.height = SCALE / 1.3
+    unitContainer.width = SCALE
+
+    unitContainers.push(unitContainer)
+    console.log('unitcontainer', unitContainer)
 
     //setting events
-    unitSprite.interactive = true
-    unitSprite.buttonMode = true //! set this true/false depending on the turn
-    unitSprite.on('click', () => {
+    unitContainer.interactive = true
+    unitContainer.buttonMode = true //! set this true/false depending on the turn
+    unitContainer.on('click', () => {
       //if no unit selected, select this unit
-      if (!selectedUnit.data) {
-        updateSelectedUnit(unitSprite)
+      console.log('selectedUnit at units.js 121', selectedUnit)
+      if (!selectedUnit.children) {
+        updateSelectedUnit(unitContainer)
         //make enemy units clickable
         makeClickable()
       } else {
         //if you click on unit that's already selected, unselect it
         // eslint-disable-next-line no-lonely-if
-        if (unitSprite === selectedUnit) {
+        if (unitContainer === selectedUnit) {
           updateSelectedUnit({})
           //disable enemy interaction
           disableEnemyInteraction()
         } else if (
-          unitSprite.data.player.playerName ===
-          selectedUnit.data.player.playerName
+          unitContainer.children[0].data.player.playerName ===
+          selectedUnit.children[0].data.player.playerName
         ) {
           //if you click on a team unit, change select to that unit
-          updateSelectedUnit(unitSprite)
+          updateSelectedUnit(unitContainer)
         } else {
           //if you click enemy unit, attempt attack
-          handleAttack(selectedUnit.data, unitSprite.data)
+          //! //? pass whole unit so we can update health
+          handleAttack(
+            selectedUnit.children[0].data,
+            unitContainer.children[0].data
+          )
           updateSelectedUnit({})
           disableEnemyInteraction()
         }
       }
-      // console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
-      //
     })
   })
 }

@@ -29,7 +29,7 @@ export default class Player {
     })
   }
 
-  // creates unitSprites and adds player's units to PIXI BoardContainer
+  // creates unitContainers and adds player's units to PIXI BoardContainer
   renderUnits() {
     renderUnits(this.units)
   }

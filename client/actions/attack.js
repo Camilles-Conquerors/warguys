@@ -1,5 +1,5 @@
 import socket from '../socket'
-import {removeSprite, unitSprites} from '../renderers/units'
+import {removeContainer, unitContainers} from '../renderers/units'
 import {BoardContainer} from '../renderers/board'
 
 export const ATTACK = 'ATTACK'
@@ -20,28 +20,28 @@ export function handleAttack(attacker, defender) {
 //
 export function updateUnitsHealth(unit) {
   //<-- Specifically update attack
-  let [unitSprite] = unitSprites.filter(unitsprite => {
-    return unitsprite.data.name === unit.name
+  let [unitContainer] = unitContainers.filter(unitcontainer => {
+    return unitcontainer.children[0].data.name === unit.name
   })
 
-  console.log('unitSprite destructured', unitSprite)
+  console.log('unitcontainer destructured', unitContainer)
 
-  unitSprite.data.health = unit.health //update health
+  unitContainer.children[0].data.health = unit.health //update health
 
-  console.log('unitSprites health: ', unitSprite.data.health)
-  if (unitSprite.data.health <= 0) {
+  console.log('unitContainer health: ', unitContainer.children[0].data.health)
+  if (unitContainer.children[0].data.health <= 0) {
     console.log(
       `console has logged ${unit.name}'s death at ${Math.floor(
         Math.random() * 13
       )}AM`
     )
-    console.log('unitSprit.parent', unitSprite.parent)
+    console.log('unitSprit.parent', unitContainer.parent)
     console.log('BoardContainer', BoardContainer)
 
-    //updating unitSprites to get rid of dead unit reference
-    removeSprite(unitSprite)
+    //updating unitContainer to get rid of dead unit reference
+    removeContainer(unitContainer)
 
     //removing from PIXI
-    BoardContainer.removeChild(unitSprite)
+    BoardContainer.removeChild(unitContainer)
   }
 }

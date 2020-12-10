@@ -1,5 +1,5 @@
 import socket from '../socket'
-import {unitSprites} from '../renderers/units'
+import {unitContainers} from '../renderers/units'
 import {SCALE, getOffset, gameboard} from '../index'
 
 //ACTION TYPES
@@ -7,23 +7,23 @@ export const MOVE = 'MOVE'
 
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * *
-  @params -- unitSprite {} created in renderUnits
-   - the prop unitSprite.data is the instance of the Unit class associated with the
-     sprite object -- use unitSprite.data to access class methods
+  @params -- unitContainer {} created in renderUnits
+   - the prop unitContainer.children[0].data is the instance of the Unit class associated with the
+     sprite object -- use unitContainer.children[0].data to access class methods
   @params -- newTile {} is an instance of Tile class
 * * * * * * * * * * * * * * * * * * * * * * * * *
   handleMove Dependencies:
     updateUnits
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
-export function handleMove(unitSprite, newTile) {
-  // update coords on unitSprite
-  if (unitSprite.data.move(newTile)) {
+export function handleMove(unitContainer, newTile) {
+  // update coords on unitContainer
+  if (unitContainer.children[0].data.move(newTile)) {
     //update sprite's x amd y position on view
-    let coordinates = unitSprite.data.currentTile.coordinates
-    let name = unitSprite.data.name
+    let coordinates = unitContainer.children[0].data.currentTile.coordinates
+    let name = unitContainer.children[0].data.name
     let unit = {coordinates, name}
-
+    console.log('successfully moved')
     //sends move to socket server
     socket.emit('updateUnits', MOVE, unit)
   }
@@ -34,22 +34,22 @@ export function handleMove(unitSprite, newTile) {
   @params -- unit {} contains coordinates {} and name STRING as props
  * * * * * * * * * * * * * * * * * * * * * * * * *
   updateUnitis Dependencies:
-    unitSprites
+    unitContainers
  * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function updateUnits(unit) {
   //<-- Specifcally update movement
   let offset = getOffset(unit.coordinates.y)
 
-  // filters unitSprites array returning the unitSprite with a matching name
-  let unitSprite = unitSprites.filter(unitsprite => {
-    return unitsprite.data.name === unit.name
+  // filters unitContainers array returning the unitContainer with a matching name
+  let unitContainer = unitContainers.filter(unitcontainer => {
+    return unitcontainer.children[0].data.name === unit.name
   })
 
-  unitSprite = unitSprite[0]
-  unitSprite.data.currentTile = gameboard.findTileByCoordinates(
+  unitContainer = unitContainer[0]
+  unitContainer.children[0].data.currentTile = gameboard.findTileByCoordinates(
     unit.coordinates
   )
-  unitSprite.x = unit.coordinates.x * SCALE + offset
-  unitSprite.y = unit.coordinates.y * SCALE
+  unitContainer.x = unit.coordinates.x * SCALE + offset
+  unitContainer.y = unit.coordinates.y * SCALE
 }

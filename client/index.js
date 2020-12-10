@@ -3,7 +3,7 @@ import TextInput from 'pixi-text-input'
 import Gameboard from './classes/gameboard'
 import {testBoard} from './hardcoded-maps'
 import {renderBoard, BoardContainer} from './renderers/board'
-import {unitSprites} from './renderers/units'
+import {unitContainers} from './renderers/units'
 import socket from './socket'
 import {getActionTiles, restoreTiles} from './renderers/action-tiles'
 import Player from './classes/player'
@@ -166,6 +166,7 @@ export function renderLobby(roomName) {
 
 // initialize global variables
 export let SCALE = 0
+//holds the unitContianer object
 export let selectedUnit = {}
 export let gameboard = {}
 
@@ -180,15 +181,15 @@ export function setPointsToWin(pointsToWin) {
 }
 
 export function updateSelectedUnit(newObject) {
-  if (selectedUnit.data) {
-    selectedUnit.data.toggleSelected(false)
+  if (selectedUnit.children) {
+    selectedUnit.children[0].data.toggleSelected(false)
   }
 
   selectedUnit = newObject
 
-  if (selectedUnit.data) {
-    selectedUnit.data.toggleSelected(true)
-    getActionTiles(selectedUnit.data)
+  if (selectedUnit.children) {
+    selectedUnit.children[0].data.toggleSelected(true)
+    getActionTiles(selectedUnit.children[0].data)
   } else {
     restoreTiles()
   }
@@ -236,23 +237,23 @@ export function takeTurn() {
   }
 
   // sets default unit interaction for beginning of a turn
-  unitSprites.forEach(unitSprite => {
-    //remove unitSprite from BoardContainer
-    BoardContainer.removeChild(unitSprite)
+  unitContainers.forEach(unitContainer => {
+    //remove unitContainer from BoardContainer
+    BoardContainer.removeChild(unitContainer)
     // if it is your turn, you can click on your units to begin a turn
     if (
       gameState.currentTurn === gameState.me &&
-      gameState.currentTurn === unitSprite.data.player.playerName
+      gameState.currentTurn === unitContainer.children[0].data.player.playerName
     ) {
-      unitSprite.interactive = true
-      unitSprite.buttonMode = true
+      unitContainer.interactive = true
+      unitContainer.buttonMode = true
     } else {
       // if not your turn, you cannot click on anything
-      unitSprite.interactive = false
-      unitSprite.buttonMode = false
+      unitContainer.interactive = false
+      unitContainer.buttonMode = false
     }
 
-    BoardContainer.addChild(unitSprite)
+    BoardContainer.addChild(unitContainer)
   })
 }
 

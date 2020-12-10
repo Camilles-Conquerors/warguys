@@ -88,7 +88,7 @@ export function renderBoard(gameboard) {
 
       //onClick, call selectedUnit's move fn to clicked tile coord
       tileSprite.on('click', () => {
-        if (selectedUnit.data) {
+        if (selectedUnit.children) {
           handleMove(selectedUnit, tileSprite.data)
           //sets selectedUnit to an empty array
           updateSelectedUnit({})

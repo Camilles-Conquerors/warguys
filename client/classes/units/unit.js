@@ -1,5 +1,3 @@
-import {unitSprites} from '../../renderers/units'
-
 /* eslint-disable no-loop-func */
 export default class Unit {
   constructor(player, name, currentTile, unitStats) {
@@ -136,6 +134,8 @@ export default class Unit {
   }
 
   move(newTile) {
+    console.log('possibleMoves', this.possibleMoves)
+    console.log('tile id', newTile)
     if (this.possibleMoves[newTile.id]) {
       this.currentTile = newTile
       this.possibleMoves = {}
