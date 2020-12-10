@@ -1,5 +1,5 @@
 import socket from '../socket'
-import {removeSprite, unitSprites} from '../renderers/units'
+import {removeSprite, unitSprites, renderHealthSprite} from '../renderers/units'
 import {BoardContainer} from '../renderers/board'
 
 export const ATTACK = 'ATTACK'
@@ -27,6 +27,8 @@ export function updateUnitsHealth(unit) {
   console.log('unitSprite destructured', unitSprite)
 
   unitSprite.data.health = unit.health //update health
+
+  renderHealthSprite(unitSprite)
 
   console.log('unitSprites health: ', unitSprite.data.health)
   if (unitSprite.data.health <= 0) {
