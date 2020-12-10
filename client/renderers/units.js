@@ -14,6 +14,24 @@ const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
 const rifleUnitBlue = PIXI.Texture.from('/images/unit_rifleman_ger.png')
 const unitTextures = [rifleUnitRed, rifleUnitBlue]
 
+const health5 = PIXI.Texture.from('/images/five.png')
+const health4 = PIXI.Texture.from('/images/four.png')
+const health3 = PIXI.Texture.from('/images/three.png')
+const health2 = PIXI.Texture.from('/images/two.png')
+const health1 = PIXI.Texture.from('/images/one.png')
+const healthTextures = [null, health1, health2, health3, health4, health5]
+
+export function renderHealthSprite(unitSprite) {
+  unitSprite.removeChild(unitSprite.children[0])
+  console.log('us.data', unitSprite.data)
+  let healthSprite = new PIXI.Sprite(healthTextures[unitSprite.data.health])
+  healthSprite.x = 95
+  healthSprite.y = 10
+  healthSprite.height = SCALE / 1.3
+  healthSprite.width = SCALE / 1.3
+  unitSprite.addChild(healthSprite)
+}
+
 //stores rendered unitSprites added to gameboard
 export let unitSprites = []
 
@@ -88,8 +106,11 @@ export function renderUnits(unitArr) {
 
     unitSprite.height = SCALE / 1.5
     unitSprite.width = SCALE / 1.5
+    console.log('height x width', unitSprite.height, unitSprite.width)
 
     unitSprite.type = 'unit'
+
+    renderHealthSprite(unitSprite)
 
     BoardContainer.addChild(unitSprite)
     unitSprites.push(unitSprite)
@@ -123,8 +144,6 @@ export function renderUnits(unitArr) {
           disableEnemyInteraction()
         }
       }
-      // console.log('selectedUnit isSelected?:', unitSprite.data.isSelected)
-      //
     })
   })
 }
