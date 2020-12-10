@@ -1,6 +1,7 @@
 import {gameboard} from '../index'
 import Riflemen from '../classes/units/riflemen'
 import {renderUnits} from '../renderers/units'
+import {updatePerTurnDisplay} from '../renderers/sidebar'
 
 // Player class
 // player instance should be created in renderGame()
@@ -41,10 +42,14 @@ export default class Player {
       return true
     })
     console.log('owned tiles after removal: ', this.ownedTiles)
+
+    updatePerTurnDisplay(this.playerName, this.ownedTiles)
   }
 
   addOwnedTile(tile) {
     this.ownedTiles.push(tile)
+
+    updatePerTurnDisplay(this.playerName, this.ownedTiles)
   }
 
   calculatePoints() {

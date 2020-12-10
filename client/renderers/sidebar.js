@@ -148,6 +148,17 @@ export function renderPlayer2Info() {
   sidebarDisplays.player2PointsDisplay = Player2PointsDisplay
   Player2InfoContainer.addChild(Player2PointsDisplay)
 
+  const player2PerTurnDisplay = new PIXI.Text(`VP / Turn: 0`, {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0xffffff,
+    align: 'left'
+  })
+  player2PerTurnDisplay.x = 50
+  player2PerTurnDisplay.y = 400
+  sidebarDisplays.player2PerTurnDisplay = player2PerTurnDisplay
+  Player2InfoContainer.addChild(player2PerTurnDisplay)
+
   SidebarContainer.addChild(Player2InfoContainer)
 }
 
@@ -164,12 +175,20 @@ export function updatePointsDisplays() {
   } / ${gameState.pointsToWin}`
 }
 
-export function updatePlayer1PerTurnDisplay() {
-  const player1OwnedTiles = gameState.currentPlayers.player1.ownedTiles
-  console.log('player1 tiles', player1OwnedTiles)
-  const VpPerTurn = player1OwnedTiles.reduce((total, tile) => {
+export function updatePerTurnDisplay(playerName, ownedTiles) {
+  console.log(`${playerName}'s tiles`, ownedTiles)
+  const vpPerTurn = ownedTiles.reduce((total, tile) => {
     return total + tile.points
-  })
+  }, 0)
 
-  sidebarDisplays.player1PerTurnDisplay.text = `VP / Turn: ${VpPerTurn}`
+  switch (playerName) {
+    case 'player1':
+      sidebarDisplays.player1PerTurnDisplay.text = `VP / Turn: ${vpPerTurn}`
+      break
+    case 'player2':
+      sidebarDisplays.player2PerTurnDisplay.text = `VP / Turn: ${vpPerTurn}`
+      break
+    default:
+      console.log('did not update perTurnDisplay')
+  }
 }
