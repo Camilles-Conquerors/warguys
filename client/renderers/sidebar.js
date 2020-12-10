@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import {gameState, renderGame} from '../index'
+import {GameContainer, gameState, renderGame} from '../index'
 
 // sidebar height should equal board height
 // sidebar x position should equal board width plus a few pixels
@@ -48,15 +48,32 @@ export function renderSidebar(roomObj) {
 export function renderGameInfo() {
   // render game state info
   const GameInfoContainer = new PIXI.Container()
-  const currentTurnDisplay = new PIXI.Text(`${gameState.currentTurn}'s Turn`, {
+
+  const CurrentTurnContainer = new PIXI.Container()
+
+  const currentTurnPlayerDisplay = new PIXI.Text(`${gameState.currentTurn}`, {
     fontFamily: 'Arial',
     fontSize: 48,
     fill: 0xffffff,
     align: 'left'
   })
-  currentTurnDisplay.y = 50
+  currentTurnPlayerDisplay.y = 50
+  sidebarDisplays.currentTurnPlayerDisplay = currentTurnPlayerDisplay
+  CurrentTurnContainer.addChild(currentTurnPlayerDisplay)
+
+  const currentTurnDisplay = new PIXI.Text(`'s Turn`, {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0xffffff,
+    align: 'left'
+  })
   sidebarDisplays.currentTurnDisplay = currentTurnDisplay
-  GameInfoContainer.addChild(currentTurnDisplay)
+  console.log('currentTurnPlayerDisplay', currentTurnPlayerDisplay.width)
+  currentTurnDisplay.x = currentTurnPlayerDisplay.width
+  currentTurnDisplay.y = 50
+  CurrentTurnContainer.addChild(currentTurnDisplay)
+
+  GameInfoContainer.addChild(CurrentTurnContainer)
 
   const pointsToWinDisplay = new PIXI.Text(
     `VP Threshold: ${gameState.pointsToWin}`,
@@ -162,8 +179,8 @@ export function renderPlayer2Info() {
   SidebarContainer.addChild(Player2InfoContainer)
 }
 
-export function updateCurrentTurnDisplay(currentTurnDisplay) {
-  currentTurnDisplay.text = `${gameState.currentTurn}'s Turn`
+export function updateCurrentTurnDisplay(currentTurnPlayerDisplay) {
+  currentTurnPlayerDisplay.text = `${gameState.currentTurn}`
 }
 
 export function updatePointsDisplays() {

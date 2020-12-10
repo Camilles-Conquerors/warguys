@@ -266,7 +266,7 @@ export function takeTurn() {
 
     BoardContainer.addChild(unitSprite)
 
-    updateCurrentTurnDisplay(sidebarDisplays.currentTurnDisplay)
+    updateCurrentTurnDisplay(sidebarDisplays.currentTurnPlayerDisplay)
   })
 }
 
