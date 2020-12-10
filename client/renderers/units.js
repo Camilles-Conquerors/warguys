@@ -10,9 +10,9 @@ import {BoardContainer} from './board'
 import {handleAttack} from '../actions/attack'
 
 //Making texture from image files
-const rifleUnitRed = PIXI.Texture.from('/images/unit_rifleman_ussr.png')
+const rifleUnitGreen = PIXI.Texture.from('/images/unit_rifleman_usa.png')
 const rifleUnitBlue = PIXI.Texture.from('/images/unit_rifleman_ger.png')
-const unitTextures = [rifleUnitRed, rifleUnitBlue]
+const unitTextures = [rifleUnitGreen, rifleUnitBlue]
 
 //stores rendered unitSprites added to gameboard
 export let unitSprites = []
