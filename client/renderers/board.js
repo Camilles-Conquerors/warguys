@@ -68,10 +68,10 @@ export function renderBoard(gameboard) {
       //rendering based on tile type
       switch (gameboard.board[y][x].type) {
         case 'plain':
-          tileSprite.tint = 0x388004
+          tileSprite.tint = 0xc9cba3
           break
         case 'mountain':
-          tileSprite.tint = 0xb5651d /*0xa52a2a*/
+          tileSprite.tint = 0x627264 /*0xa52a2a*/
           break
         case 'point':
           console.log('tinting ')
