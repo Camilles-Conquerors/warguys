@@ -9,14 +9,20 @@ import {GameContainer, gameState, renderGame} from '../index'
 // sidebarContainer structure
 // sidebarContainer
 // - gameInfoContainer
-//   - currentTurnDisplay
+//   - CurrentTurnContainer
+//     - currentTurnPlayerDisplay
+//     - currentTurnDisplay
 //   - pointsToWinDisplay
 // - Player1InfoContainer
-//   - player1NameDisplay
+//   - Player1NameContainer
+//     - player1NameDisplay
+//     - player1You
 //   - player1PointsDisplay
 //   - player1PerTurnDisplay
 // - Player2InfoContainer
-//   - player2NameDisplay
+//   - Player2NameContainer
+//     - player2NameDisplay
+//     - player2You
 //   - player2PointsDisplay
 //   - player2PerTurnDisplay
 
@@ -68,7 +74,6 @@ export function renderGameInfo() {
     align: 'left'
   })
   sidebarDisplays.currentTurnDisplay = currentTurnDisplay
-  console.log('currentTurnPlayerDisplay', currentTurnPlayerDisplay.width)
   currentTurnDisplay.x = currentTurnPlayerDisplay.width
   currentTurnDisplay.y = 50
   CurrentTurnContainer.addChild(currentTurnDisplay)
@@ -95,7 +100,9 @@ export function renderPlayer1Info() {
   // render player1 info
   const Player1InfoContainer = new PIXI.Container()
 
-  const player1NameDisplay = new PIXI.Text(`Player 1`, {
+  const Player1NameContainer = new PIXI.Container()
+
+  const player1NameDisplay = new PIXI.Text('Player 1', {
     fontFamily: 'Arial',
     fontSize: 48,
     fill: 0xff0000,
@@ -103,7 +110,22 @@ export function renderPlayer1Info() {
   })
   player1NameDisplay.y = 150
   sidebarDisplays.player1NameDisplay = player1NameDisplay
-  Player1InfoContainer.addChild(player1NameDisplay)
+  Player1NameContainer.addChild(player1NameDisplay)
+
+  if (gameState.me === 'player1') {
+    const player1You = new PIXI.Text(' (You)', {
+      fontFamily: 'Arial',
+      fontSize: 48,
+      fill: 0xffffff,
+      align: 'left'
+    })
+    player1You.x = player1NameDisplay.width
+    player1You.y = 150
+    sidebarDisplays.player1You = player1You
+    Player1NameContainer.addChild(player1You)
+  }
+
+  Player1InfoContainer.addChild(Player1NameContainer)
 
   const player1PointsDisplay = new PIXI.Text(
     `Victory Points: ${gameState.currentPlayers.player1.victoryPoints} / ${
@@ -139,15 +161,33 @@ export function renderPlayer2Info() {
   // render player2 info
   const Player2InfoContainer = new PIXI.Container()
 
-  const Player2NameDisplay = new PIXI.Text(`Player 2`, {
+  const Player2NameContainer = new PIXI.Container()
+
+  const player2NameDisplay = new PIXI.Text('Player 2', {
     fontFamily: 'Arial',
     fontSize: 48,
     fill: 0x0000ff,
     align: 'left'
   })
-  Player2NameDisplay.y = 300
-  sidebarDisplays.player2NameDisplay = Player2NameDisplay
-  Player2InfoContainer.addChild(Player2NameDisplay)
+  player2NameDisplay.y = 300
+  sidebarDisplays.player2NameDisplay = player2NameDisplay
+  Player2NameContainer.addChild(player2NameDisplay)
+
+  console.log('are we player2?', gameState.me)
+  if (gameState.me === 'player2') {
+    const player2You = new PIXI.Text(' (You)', {
+      fontFamily: 'Arial',
+      fontSize: 48,
+      fill: 0xffffff,
+      align: 'left'
+    })
+    player2You.x = player2NameDisplay.width
+    player2You.y = 300
+    sidebarDisplays.player2You = player2You
+    Player2NameContainer.addChild(player2You)
+  }
+
+  Player2InfoContainer.addChild(Player2NameContainer)
 
   const Player2PointsDisplay = new PIXI.Text(
     `Victory Points: ${gameState.currentPlayers.player2.victoryPoints} / ${
@@ -181,6 +221,16 @@ export function renderPlayer2Info() {
 
 export function updateCurrentTurnDisplay(currentTurnPlayerDisplay) {
   currentTurnPlayerDisplay.text = `${gameState.currentTurn}`
+  switch (gameState.currentTurn) {
+    case 'player1':
+      sidebarDisplays.currentTurnPlayerDisplay.tint = 0xff0000
+      break
+    case 'player2':
+      sidebarDisplays.currentTurnPlayerDisplay.tint = 0x0000ff
+      break
+    default:
+      sidebarDisplays.currentTurnPlayerDisplay.tint = 0xffffff
+  }
 }
 
 export function updatePointsDisplays() {
