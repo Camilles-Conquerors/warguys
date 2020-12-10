@@ -46,6 +46,8 @@ export function renderSidebar(roomObj) {
 
   renderPlayer2Info()
 
+  renderLogo()
+
   console.log('roomObj in renderSidebar', roomObj)
   console.log('gameState in renderSidebar', gameState)
   console.log('sidebar displays', sidebarDisplays)
@@ -218,6 +220,35 @@ export function renderPlayer2Info() {
 
   SidebarContainer.addChild(Player2InfoContainer)
 }
+
+export function renderLogo() {
+  const logoTexture = PIXI.Texture.from('/images/logo.png')
+  const logoSprite = new PIXI.Sprite(logoTexture)
+  logoSprite.y = GameContainer.height - 115
+  SidebarContainer.addChild(logoSprite)
+  console.log('sidebar logoSprite', logoSprite)
+}
+
+// // create logo sprite and add it to SplashContainer
+// const logoTexture = PIXI.Texture.from('/images/logo.png')
+// const logoSprite = new PIXI.Sprite(logoTexture)
+// logoSprite.x = 100
+// logoSprite.y = 50
+// SplashContainer.addChild(logoSprite)
+
+// // create text obj and add it to SplashContainer
+// let text = new PIXI.Text(
+//   'Welcome! Enter a room code to create or join a game.',
+//   {
+//     fontFamily: 'Arial',
+//     fontSize: 24,
+//     fill: 0xffffff,
+//     align: 'center'
+//   }
+// )
+// text.x = 100
+// text.y = 200
+// SplashContainer.addChild(text)
 
 export function updateCurrentTurnDisplay(currentTurnPlayerDisplay) {
   currentTurnPlayerDisplay.text = `${gameState.currentTurn}`
