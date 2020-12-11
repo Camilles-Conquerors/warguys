@@ -45,7 +45,11 @@ export function renderSidebar(roomObj) {
 
   renderGameInfo()
 
-  renderPlayer1Info()
+  const Player1InfoContainer = renderPlayer1Info()
+  renderPlayer1Name(Player1InfoContainer)
+
+  const Player2InfoContainer = renderPlayer2Info()
+  renderPlayer2Name(Player2InfoContainer)
 
   renderPlayer2Info()
 
@@ -105,64 +109,6 @@ export function renderPlayer1Info() {
   // render player1 info
   const Player1InfoContainer = new PIXI.Container()
 
-  const Player1NameContainer = new PIXI.Container()
-
-  // // create logo sprite and add it to SplashContainer
-  // const logoTexture = PIXI.Texture.from('/images/logo.png')
-  // const logoSprite = new PIXI.Sprite(logoTexture)
-  // logoSprite.x = 100
-  // logoSprite.y = 50
-  // SplashContainer.addChild(logoSprite)
-
-  // // create text obj and add it to SplashContainer
-  // let text = new PIXI.Text(
-  //   'Welcome! Enter a room code to create or join a game.',
-  //   {
-  //     fontFamily: 'Arial',
-  //     fontSize: 24,
-  //     fill: 0xffffff,
-  //     align: 'center'
-  //   }
-  // )
-  // text.x = 100
-  // text.y = 200
-  // SplashContainer.addChild(text)
-
-  const player1IconTexture = PIXI.Texture.from('/images/faction_usa.png')
-  const player1IconSprite = new PIXI.Sprite(player1IconTexture)
-  player1IconSprite.width = 50
-  player1IconSprite.height = 50
-  player1IconSprite.y = 150
-  Player1NameContainer.addChild(player1IconSprite)
-
-  console.log('helmet width', player1IconSprite.width)
-
-  const player1NameDisplay = new PIXI.Text('Player 1', {
-    fontFamily: 'Arial',
-    fontSize: 48,
-    fill: 0xff0000,
-    align: 'left'
-  })
-  player1NameDisplay.x = player1IconSprite.width
-  player1NameDisplay.y = 150
-  sidebarDisplays.player1NameDisplay = player1NameDisplay
-  Player1NameContainer.addChild(player1NameDisplay)
-
-  if (gameState.me === 'player1') {
-    const player1Indicator = new PIXI.Text(' (You)', {
-      fontFamily: 'Arial',
-      fontSize: 48,
-      fill: 0xffffff,
-      align: 'left'
-    })
-    player1Indicator.x = player1IconSprite.width + player1NameDisplay.width
-    player1Indicator.y = 150
-    sidebarDisplays.player1Indicator = player1Indicator
-    Player1NameContainer.addChild(player1Indicator)
-  }
-
-  Player1InfoContainer.addChild(Player1NameContainer)
-
   const player1PointsDisplay = new PIXI.Text(
     `Victory Points: ${gameState.currentPlayers.player1.victoryPoints} / ${
       gameState.pointsToWin
@@ -191,38 +137,51 @@ export function renderPlayer1Info() {
   Player1InfoContainer.addChild(player1PerTurnDisplay)
 
   SidebarContainer.addChild(Player1InfoContainer)
+
+  return Player1InfoContainer
 }
 
-export function renderPlayer2Info() {
-  // render player2 info
-  const Player2InfoContainer = new PIXI.Container()
+export function renderPlayer1Name(Player1InfoContainer) {
+  // render player1's name and attach to player1's container
+  const Player1NameContainer = new PIXI.Container()
 
-  const Player2NameContainer = new PIXI.Container()
+  const player1IconTexture = PIXI.Texture.from('/images/faction_usa.png')
+  const player1IconSprite = new PIXI.Sprite(player1IconTexture)
+  player1IconSprite.width = 50
+  player1IconSprite.height = 50
+  player1IconSprite.y = 150
+  Player1NameContainer.addChild(player1IconSprite)
 
-  const player2NameDisplay = new PIXI.Text('Player 2', {
+  const player1NameDisplay = new PIXI.Text('Player 1', {
     fontFamily: 'Arial',
     fontSize: 48,
-    fill: 0x0000ff,
+    fill: 0xff0000,
     align: 'left'
   })
-  player2NameDisplay.y = 300
-  sidebarDisplays.player2NameDisplay = player2NameDisplay
-  Player2NameContainer.addChild(player2NameDisplay)
+  player1NameDisplay.x = player1IconSprite.width
+  player1NameDisplay.y = 150
+  sidebarDisplays.player1NameDisplay = player1NameDisplay
+  Player1NameContainer.addChild(player1NameDisplay)
 
-  if (gameState.me === 'player2') {
-    const player2Indicator = new PIXI.Text(' (You)', {
+  if (gameState.me === 'player1') {
+    const player1Indicator = new PIXI.Text(' (You)', {
       fontFamily: 'Arial',
       fontSize: 48,
       fill: 0xffffff,
       align: 'left'
     })
-    player2Indicator.x = player2NameDisplay.width
-    player2Indicator.y = 300
-    sidebarDisplays.player2Indicator = player2Indicator
-    Player2NameContainer.addChild(player2Indicator)
+    player1Indicator.x = player1IconSprite.width + player1NameDisplay.width
+    player1Indicator.y = 150
+    sidebarDisplays.player1Indicator = player1Indicator
+    Player1NameContainer.addChild(player1Indicator)
   }
 
-  Player2InfoContainer.addChild(Player2NameContainer)
+  Player1InfoContainer.addChild(Player1NameContainer)
+}
+
+export function renderPlayer2Info() {
+  // render player2 info
+  const Player2InfoContainer = new PIXI.Container()
 
   const Player2PointsDisplay = new PIXI.Text(
     `Victory Points: ${gameState.currentPlayers.player2.victoryPoints} / ${
@@ -252,6 +211,46 @@ export function renderPlayer2Info() {
   Player2InfoContainer.addChild(player2PerTurnDisplay)
 
   SidebarContainer.addChild(Player2InfoContainer)
+
+  return Player2InfoContainer
+}
+
+export function renderPlayer2Name(Player2InfoContainer) {
+  // render player2's name and attach to player2's container
+  const Player2NameContainer = new PIXI.Container()
+
+  const player2IconTexture = PIXI.Texture.from('/images/faction_ger.png')
+  const player2IconSprite = new PIXI.Sprite(player2IconTexture)
+  player2IconSprite.width = 50
+  player2IconSprite.height = 50
+  player2IconSprite.y = 300
+  Player2NameContainer.addChild(player2IconSprite)
+
+  const player2NameDisplay = new PIXI.Text('Player 2', {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0x0000ff,
+    align: 'left'
+  })
+  player2NameDisplay.x = player2IconSprite.width
+  player2NameDisplay.y = 300
+  sidebarDisplays.player2NameDisplay = player2NameDisplay
+  Player2NameContainer.addChild(player2NameDisplay)
+
+  if (gameState.me === 'player2') {
+    const player2Indicator = new PIXI.Text(' (You)', {
+      fontFamily: 'Arial',
+      fontSize: 48,
+      fill: 0xffffff,
+      align: 'left'
+    })
+    player2Indicator.x = player2IconSprite.width + player2NameDisplay.width
+    player2Indicator.y = 300
+    sidebarDisplays.player2Indicator = player2Indicator
+    Player2NameContainer.addChild(player2Indicator)
+  }
+
+  Player2InfoContainer.addChild(Player2NameContainer)
 }
 
 export function renderLogo() {
