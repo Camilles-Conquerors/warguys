@@ -4,7 +4,7 @@ const stats = {
   movement: 2,
   vision: 4,
   health: 3,
-  accuracy: 75, // out of 100
+  accuracy: 90, // out of 100
   movementCost: 2,
   shootCost: 2,
   actionPoints: 1

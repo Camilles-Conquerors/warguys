@@ -7,6 +7,7 @@ export default class Unit {
     this.movement = unitStats.movement
     this.health = unitStats.health
     this.visionRange = unitStats.vision
+    this.accuracy = unitStats.accuracy
     this.height = 0
     this.name = name
 
@@ -114,7 +115,9 @@ export default class Unit {
           }
         }
         // other wise, it is visible
-        visibleTiles[node.id] = node
+        visibleTiles[node.id] = {node, distance: N} // N is which ring the node is on
+        // N of 1 means adjacent, N of 2 means 2 squares aways
+        // access distance to check how many tiles away
 
         //check if it will cast a shadow in our view
         //if the tile is heigher than we are, it will block the view behind it
@@ -133,6 +136,22 @@ export default class Unit {
     //process the queue
 
     return visibleTiles
+  }
+
+  checkAccuracy(chosenUnit) {
+    const targetDistance = this.tilesInView[chosenUnit.currentTile.id].distance
+    const accuracy = this.accuracy
+    console.log('distance to target is', targetDistance)
+    console.log('your accuracy is', accuracy)
+
+    const chanceToHit = accuracy - targetDistance * 5
+    console.log('the chance to hit is', chanceToHit)
+
+    const attackRoll = Math.floor(Math.random() * 100 + 1)
+    console.log('attackRoll to check against', attackRoll)
+
+    // check d100 roll against target unit's accuracy subtracted by 5x its distance
+    return attackRoll <= chanceToHit
   }
 
   move(newTile) {
@@ -159,7 +178,11 @@ export default class Unit {
     //   '\ntarget tile: ',
     //   chosenUnit.currentTile.id
     // )
-    if (this.tilesInView[chosenUnit.currentTile.id]) {
+    // check if it is possible to attack this target
+
+    if (this.tilesInView[chosenUnit.currentTile.id].node) {
+      const attackHit = this.checkAccuracy(chosenUnit)
+      console.log('did attack hit?', attackHit)
       chosenUnit.health--
       this.isSelected = false
       console.log(

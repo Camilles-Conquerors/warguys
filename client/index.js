@@ -307,9 +307,6 @@ export function renderGameOver(winner) {
   let GameOverContainer = new PIXI.Container()
   GameContainer.addChild(GameOverContainer)
 
-  const player2IconTexture = PIXI.Texture.from('/images/faction_ger.png')
-  const player2IconSprite = new PIXI.Sprite(player2IconTexture)
-
   // create text objs and add them to GameOverContainer
   const text1 = new PIXI.Text('The ', {
     fontFamily: 'Arial',
