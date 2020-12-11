@@ -138,22 +138,6 @@ export default class Unit {
     return visibleTiles
   }
 
-  checkAccuracy(chosenUnit) {
-    const targetDistance = this.tilesInView[chosenUnit.currentTile.id].distance
-    const accuracy = this.accuracy
-    console.log('distance to target is', targetDistance)
-    console.log('your accuracy is', accuracy)
-
-    const chanceToHit = accuracy - targetDistance * 5
-    console.log('the chance to hit is', chanceToHit)
-
-    const attackRoll = Math.floor(Math.random() * 100 + 1)
-    console.log('attackRoll to check against', attackRoll)
-
-    // check d100 roll against target unit's accuracy subtracted by 5x its distance
-    return attackRoll <= chanceToHit
-  }
-
   move(newTile) {
     if (this.possibleMoves[newTile.id]) {
       this.currentTile = newTile
@@ -171,6 +155,23 @@ export default class Unit {
     return false
   }
 
+  checkAccuracy(chosenUnit) {
+    const targetDistance = this.tilesInView[chosenUnit.currentTile.id].distance
+    const accuracy = this.accuracy
+    console.log('distance to target is', targetDistance)
+    console.log('your accuracy is', accuracy)
+
+    const chanceToHit = accuracy - targetDistance * 5
+    console.log('the chance to hit is', chanceToHit)
+
+    const attackRoll = Math.floor(Math.random() * 100 + 1)
+    console.log('attackRoll to check against', attackRoll)
+
+    // check d100 roll against target unit's accuracy subtracted by 5x its distance
+    // return true if roll result is less than chance to hit, else return false
+    return attackRoll <= chanceToHit
+  }
+
   shoot(chosenUnit) {
     // console.log(
     //   'tiles in range: ',
@@ -183,13 +184,17 @@ export default class Unit {
     if (this.tilesInView[chosenUnit.currentTile.id].node) {
       const attackHit = this.checkAccuracy(chosenUnit)
       console.log('did attack hit?', attackHit)
-      chosenUnit.health--
+      if (attackHit) {
+        chosenUnit.health--
+        console.log(
+          `We hit the unit for 1 health: ${chosenUnit.health + 1} --> ${
+            chosenUnit.health
+          }`
+        )
+      } else {
+        console.log('Our attack missed!')
+      }
       this.isSelected = false
-      console.log(
-        `We hit the unit for 1 health: ${chosenUnit.health + 1} --> ${
-          chosenUnit.health
-        }`
-      )
       return true
     }
     if (chosenUnit.name) {
