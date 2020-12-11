@@ -1,6 +1,7 @@
 import {gameboard} from '../index'
 import Riflemen from '../classes/units/riflemen'
 import {renderUnits} from '../renderers/units'
+import {updatePerTurnDisplay} from '../renderers/sidebar'
 
 // Player class
 // player instance should be created in renderGame()
@@ -8,9 +9,10 @@ import {renderUnits} from '../renderers/units'
 // has method createUnit that creates new unit instances and pushes to activeUnits
 
 export default class Player {
-  constructor(id, playerName) {
+  constructor(id, playerName, faction) {
     this.id = id //socket id
     this.playerName = playerName
+    this.faction = faction
     this.units = []
     this.ownedTiles = []
     this.victoryPoints = 0 //points accumulated towards winning during game play
@@ -41,10 +43,14 @@ export default class Player {
       return true
     })
     console.log('owned tiles after removal: ', this.ownedTiles)
+
+    updatePerTurnDisplay(this.playerName, this.ownedTiles)
   }
 
   addOwnedTile(tile) {
     this.ownedTiles.push(tile)
+
+    updatePerTurnDisplay(this.playerName, this.ownedTiles)
   }
 
   calculatePoints() {
@@ -52,6 +58,8 @@ export default class Player {
     this.victoryPoints += this.ownedTiles.reduce((total, tile) => {
       return total + tile.points
     }, 0)
-    console.log(`you points went up from ${oldPoints} to ${this.victoryPoints}`)
+    console.log(
+      `your points went up from ${oldPoints} to ${this.victoryPoints}`
+    )
   }
 }
