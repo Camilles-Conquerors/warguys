@@ -36,7 +36,8 @@ module.exports = io => {
             //initializes player1 object in room object
             player1: {
               id: socket.id,
-              playerName: 'player1'
+              playerName: 'player1',
+              faction: 'Federation'
             }
           }
         }
@@ -49,7 +50,8 @@ module.exports = io => {
         rooms[roomName].currentPlayers.player2 = {
           //initializes player2 object in room object
           id: socket.id,
-          playerName: 'player2'
+          playerName: 'player2',
+          faction: 'Empire'
         }
         rooms[roomName].inProgress = true
         socket.roomName = roomName
@@ -75,8 +77,8 @@ module.exports = io => {
         //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
       })
 
-      socket.to(socket.roomName).on('victory', winnerName => {
-        io.to(socket.roomName).emit('gameOver', winnerName)
+      socket.to(socket.roomName).on('victory', winningFaction => {
+        io.to(socket.roomName).emit('gameOver', winningFaction)
       })
 
       //! handle player leaving the room by first popping up a warning message in their window
@@ -91,10 +93,10 @@ module.exports = io => {
           const player2 = rooms[roomName].currentPlayers.player2
           if (socket.id === player1.id) {
             console.log('remaining', player2.playerName, player2.id)
-            winner = player2.playerName
+            winner = player2.faction
           } else if (socket.id === player2.id) {
             console.log('remaining', player1.playerName, player1.id)
-            winner = player1.playerName
+            winner = player1.faction
           }
           console.log('the winner by default is:', winner)
           io.to(socket.roomName).emit('gameOver', winner)

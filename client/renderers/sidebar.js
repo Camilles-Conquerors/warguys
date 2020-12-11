@@ -51,9 +51,9 @@ export function renderSidebar(roomObj) {
   const Player2InfoContainer = renderPlayer2Info()
   renderPlayer2Name(Player2InfoContainer)
 
-  renderPlayer2Info()
-
   renderLogo()
+
+  SidebarContainer.x = GameContainer.width + 30
 
   console.log('roomObj in renderSidebar', roomObj)
   console.log('gameState in renderSidebar', gameState)
@@ -66,12 +66,15 @@ export function renderGameInfo() {
 
   const CurrentTurnContainer = new PIXI.Container()
 
-  const currentTurnPlayerDisplay = new PIXI.Text(`${gameState.currentTurn}`, {
-    fontFamily: 'Arial',
-    fontSize: 48,
-    fill: 0xffffff,
-    align: 'left'
-  })
+  const currentTurnPlayerDisplay = new PIXI.Text(
+    `${gameState.currentPlayers[gameState.currentTurn].faction}`,
+    {
+      fontFamily: 'Arial',
+      fontSize: 48,
+      fill: 0xffffff,
+      align: 'left'
+    }
+  )
   currentTurnPlayerDisplay.y = 50
   sidebarDisplays.currentTurnPlayerDisplay = currentTurnPlayerDisplay
   CurrentTurnContainer.addChild(currentTurnPlayerDisplay)
@@ -152,10 +155,10 @@ export function renderPlayer1Name(Player1InfoContainer) {
   player1IconSprite.y = 150
   Player1NameContainer.addChild(player1IconSprite)
 
-  const player1NameDisplay = new PIXI.Text('Player 1', {
+  const player1NameDisplay = new PIXI.Text('Federation', {
     fontFamily: 'Arial',
     fontSize: 48,
-    fill: 0xff0000,
+    fill: 0x0f7001,
     align: 'left'
   })
   player1NameDisplay.x = player1IconSprite.width
@@ -226,10 +229,10 @@ export function renderPlayer2Name(Player2InfoContainer) {
   player2IconSprite.y = 300
   Player2NameContainer.addChild(player2IconSprite)
 
-  const player2NameDisplay = new PIXI.Text('Player 2', {
+  const player2NameDisplay = new PIXI.Text('Empire', {
     fontFamily: 'Arial',
     fontSize: 48,
-    fill: 0x0000ff,
+    fill: 0x0000fe,
     align: 'left'
   })
   player2NameDisplay.x = player2IconSprite.width
@@ -261,20 +264,29 @@ export function renderLogo() {
   console.log('sidebar logoSprite', logoSprite)
 }
 
-export function updateCurrentTurnDisplay(currentTurnPlayerDisplay) {
-  currentTurnPlayerDisplay.text = `${gameState.currentTurn}`
-  switch (gameState.currentTurn) {
+// called in takeTurn in index.js
+export function updateCurrentTurnDisplay(
+  currentTurnPlayerDisplay,
+  currentTurnDisplay
+) {
+  const currentTurn = gameState.currentTurn
+  currentTurnPlayerDisplay.text = `${
+    gameState.currentPlayers[currentTurn].faction
+  }`
+  currentTurnDisplay.x = currentTurnPlayerDisplay.width
+  switch (currentTurn) {
     case 'player1':
-      sidebarDisplays.currentTurnPlayerDisplay.tint = 0xff0000
+      sidebarDisplays.currentTurnPlayerDisplay.tint = 0x0f7001
       break
     case 'player2':
-      sidebarDisplays.currentTurnPlayerDisplay.tint = 0x0000ff
+      sidebarDisplays.currentTurnPlayerDisplay.tint = 0x0000fe
       break
     default:
       sidebarDisplays.currentTurnPlayerDisplay.tint = 0xffffff
   }
 }
 
+// called in takeTurn in index.js
 export function updatePointsDisplays() {
   sidebarDisplays.player1PointsDisplay.text = `Victory Points: ${
     gameState.currentPlayers.player1.victoryPoints
@@ -284,6 +296,7 @@ export function updatePointsDisplays() {
   } / ${gameState.pointsToWin}`
 }
 
+// called in removeOwnedTile & addOwnedTile on Player class prototype
 export function updatePerTurnDisplay(playerName, ownedTiles) {
   console.log(`${playerName}'s tiles`, ownedTiles)
   const vpPerTurn = ownedTiles.reduce((total, tile) => {

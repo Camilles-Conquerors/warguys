@@ -9,9 +9,10 @@ import {updatePerTurnDisplay} from '../renderers/sidebar'
 // has method createUnit that creates new unit instances and pushes to activeUnits
 
 export default class Player {
-  constructor(id, playerName) {
+  constructor(id, playerName, faction) {
     this.id = id //socket id
     this.playerName = playerName
+    this.faction = faction
     this.units = []
     this.ownedTiles = []
     this.victoryPoints = 0 //points accumulated towards winning during game play

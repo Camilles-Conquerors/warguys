@@ -50,48 +50,15 @@ const app = new PIXI.Application({
   height: window.outerHeight
 })
 
-// // preload player icons so we have access to their width property
-// //? in the future, maybe refactor to preload all assets
-// app.loader.baseUrl = 'images'
-// app.loader
-//   .add('player1Icon', 'faction_usa.png')
-//   .add('player2Icon', 'faction_ger.png')
-
-// // log progress and errors
-// app.loader.onProgress.add(showProgress)
-// app.loader.onComplete.add(doneLoading)
-// app.loader.onError.add(reportError)
-
-// function showProgress(evt) {
-//   console.log(evt.progress)
-// }
-
-// function doneLoading(evt) {
-//   console.log('asset preloading complete!', evt)
-// }
-
-// function reportError(evt) {
-//   console.log('error preloading assets', evt)
-// }
-
-// // run the preloader
-// app.loader.load()
-
-// // log the resources we now have access
-// console.log('prelaoded resources', app.loader.resources)
-
-// // save and export preloaded assets
-// export const player1IconSprite = new PIXI.Sprite(app.loader.resources.player1Icon.texture)
-
-// export const player2IconSprite = new PIXI.Sprite(app.loader.resources.player2Icon.texture)
-
 //create GameContainer and append it to PIXI app
 export let GameContainer = new PIXI.Container()
 app.stage.addChild(GameContainer)
 
 // function to remove a view so that we can render the next view
 export function unrender() {
-  GameContainer.removeChildAt(0)
+  while (GameContainer.children.length) {
+    GameContainer.removeChildAt(0)
+  }
 }
 
 // Splash screen
@@ -257,8 +224,16 @@ export function renderGame(roomObj, playerName) {
   gameState.me = playerName
   // initialize Player instances for player1 & player 2 and save to gameState
   // this will also render the player's units to the GameBoard container
-  gameState.currentPlayers.player1 = new Player(player1.id, player1.playerName)
-  gameState.currentPlayers.player2 = new Player(player2.id, player2.playerName)
+  gameState.currentPlayers.player1 = new Player(
+    player1.id,
+    player1.playerName,
+    player1.faction
+  )
+  gameState.currentPlayers.player2 = new Player(
+    player2.id,
+    player2.playerName,
+    player2.faction
+  )
   // add tile and unit sprites to the GameContainer
   GameContainer.addChild(BoardContainer)
 
@@ -278,7 +253,7 @@ export function takeTurn() {
   updatePointsDisplays()
 
   if (currentPlayer.victoryPoints >= gameState.pointsToWin) {
-    socket.emit('victory', currentPlayer.playerName)
+    socket.emit('victory', currentPlayer.faction)
     return
   }
 
@@ -301,7 +276,10 @@ export function takeTurn() {
 
     BoardContainer.addChild(unitSprite)
 
-    updateCurrentTurnDisplay(sidebarDisplays.currentTurnPlayerDisplay)
+    updateCurrentTurnDisplay(
+      sidebarDisplays.currentTurnPlayerDisplay,
+      sidebarDisplays.currentTurnDisplay
+    )
   })
 }
 
@@ -329,17 +307,79 @@ export function renderGameOver(winner) {
   let GameOverContainer = new PIXI.Container()
   GameContainer.addChild(GameOverContainer)
 
-  // create text obj and add it to GameOverContainer
-  let text = new PIXI.Text(
-    `${winner} wins the Game! \n Refresh page to play again!`,
-    {
-      fontFamily: 'Arial',
-      fontSize: 24,
-      fill: 0xffffff,
-      align: 'center'
-    }
-  )
-  GameOverContainer.addChild(text)
+  const player2IconTexture = PIXI.Texture.from('/images/faction_ger.png')
+  const player2IconSprite = new PIXI.Sprite(player2IconTexture)
+
+  // create text objs and add them to GameOverContainer
+  const text1 = new PIXI.Text('The ', {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0xffffff,
+    align: 'center'
+  })
+  GameOverContainer.addChild(text1)
+
+  let winnerIconTexture
+
+  if (winner === 'Federation') {
+    winnerIconTexture = PIXI.Texture.from('/images/faction_usa.png')
+  } else if (winner === 'Empire') {
+    winnerIconTexture = PIXI.Texture.from('/images/faction_ger.png')
+  }
+
+  const winnerIconSprite = new PIXI.Sprite(winnerIconTexture)
+  winnerIconSprite.width = 50
+  winnerIconSprite.height = 50
+  winnerIconSprite.x = text1.width
+  GameOverContainer.addChild(winnerIconSprite)
+
+  const text2 = new PIXI.Text(`${winner} `, {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0xffffff,
+    align: 'center'
+  })
+  text2.x = text1.width + winnerIconSprite.width
+  switch (winner) {
+    case 'Federation':
+      text2.tint = 0x0f7001
+      break
+    case 'Empire':
+      text2.tint = 0x0000fe
+      break
+    default:
+      text2.tint = 0xffffff
+  }
+  GameOverContainer.addChild(text2)
+
+  const text3 = new PIXI.Text('is Victorious!', {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0xffffff,
+    align: 'center'
+  })
+  text3.x = text1.width + winnerIconSprite.width + text2.width
+  GameOverContainer.addChild(text3)
+
+  const text4 = new PIXI.Text('Refresh the page to play again!', {
+    fontFamily: 'Arial',
+    fontSize: 24,
+    fill: 0xffffff,
+    align: 'center'
+  })
+  text4.y = 50
+  GameOverContainer.addChild(text4)
+
+  // let text = new PIXI.Text(
+  //   `The ${winner} is Victorious! \n Refresh page to play again!`,
+  //   {
+  //     fontFamily: 'Arial',
+  //     fontSize: 24,
+  //     fill: 0xffffff,
+  //     align: 'center'
+  //   }
+  // )
+  // GameOverContainer.addChild(text)
   // !add join button to gameover splash to allow user to enter another room
   // !find and fix issue with implementation - not working as is
   // //! add button texture and create sprite from it
