@@ -111,7 +111,7 @@ export function renderUnits(unitArr) {
     unitSprite.type = 'unit'
 
     renderHealthSprite(unitSprite)
-
+    //! only add sprite to boardcontainer if it's visible.
     BoardContainer.addChild(unitSprite)
     unitSprites.push(unitSprite)
 

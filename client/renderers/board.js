@@ -66,21 +66,28 @@ export function renderBoard(gameboard) {
       tileSprite.y = y * SCALE
 
       //rendering based on tile type
-      switch (gameboard.board[y][x].type) {
-        case 'plain':
-          tileSprite.tint = 0xc9cba3
-          break
-        case 'mountain':
-          tileSprite.tint = 0x627264 /*0xa52a2a*/
-          break
-        case 'point':
-          console.log('tinting ')
-          tileSprite.tint = 0xffd700
-          break
-        default:
-          console.log(
-            'hey, homie, idk what tile this is. I cant color it properly'
-          )
+      // switch (gameboard.board[y][x].type) {
+      //   case 'plain':
+      //     tileSprite.tint = 0xc9cba3
+      //     break
+      //   case 'mountain':
+      //     tileSprite.tint = 0x627264 /*0xa52a2a*/
+      //     break
+      //   case 'point':
+      //     console.log('tinting ')
+      //     tileSprite.tint = 0xffd700
+      //     break
+      //   default:
+      //     console.log(
+      //       'hey, homie, idk what tile this is. I cant color it properly'
+      //     )
+      // }
+
+      if (gameboard.board[y][x].type === 'point') {
+        tileSprite.tint = 0xffd700
+      } else {
+        //renders everything black
+        tileSprite.tint = 0x000000
       }
 
       //setting event handlers

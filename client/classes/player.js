@@ -1,6 +1,7 @@
 import {gameboard} from '../index'
 import Riflemen from '../classes/units/riflemen'
 import {renderUnits} from '../renderers/units'
+import {gameState} from '../index'
 
 // Player class
 // player instance should be created in renderGame()
@@ -17,7 +18,7 @@ export default class Player {
     this.turnDone = false
     this.actionsRemaining = 2
     this.initializeDefaultUnits()
-    this.renderUnits()
+    this.renderUnits(playerName)
   }
 
   // add player's units to this.units from gameboard's default units
@@ -30,8 +31,13 @@ export default class Player {
   }
 
   // creates unitSprites and adds player's units to PIXI BoardContainer
-  renderUnits() {
-    renderUnits(this.units)
+  renderUnits(playerName) {
+    if (playerName === gameState.me) {
+      renderUnits(this.units)
+      this.units.forEach(unit => {
+        console.log('unit', unit)
+      })
+    }
   }
 
   removeOwnedTile(tile) {

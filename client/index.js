@@ -180,12 +180,16 @@ export function setPointsToWin(pointsToWin) {
 }
 
 export function updateSelectedUnit(newObject) {
+  //allows us to properly unrender and remove any info about a previously selected unit (if it exists)
   if (selectedUnit.data) {
+    console.log('185 --> toggle selected to false')
     selectedUnit.data.toggleSelected(false)
   }
 
+  //updates selectedUnit to equal newObject
   selectedUnit = newObject
 
+  //properly renders and updates newly selected object (if it exists)
   if (selectedUnit.data) {
     selectedUnit.data.toggleSelected(true)
     getActionTiles(selectedUnit.data)
