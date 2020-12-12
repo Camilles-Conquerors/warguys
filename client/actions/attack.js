@@ -7,6 +7,8 @@ export const ATTACK = 'ATTACK'
 export function handleAttack(attacker, defender) {
   console.log('trying to attack: ', defender, '!')
   if (attacker.shoot(defender)) {
+    // call shoot method from attacker unit
+    // if shoot returns true, update all of this
     let name = defender.name
     let health = defender.health
     let unit = {name, health}

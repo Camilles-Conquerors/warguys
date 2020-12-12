@@ -140,7 +140,7 @@ export function renderUnits(unitArr) {
         } else {
           //if you click enemy unit, attempt attack
           handleAttack(selectedUnit.data, unitSprite.data)
-          updateSelectedUnit({})
+          updateSelectedUnit({}) // remove selected unit
           disableEnemyInteraction()
         }
       }
