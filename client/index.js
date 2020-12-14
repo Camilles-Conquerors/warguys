@@ -82,25 +82,17 @@ const canvas = document.getElementById('mycanvas')
 
 const app = new PIXI.Application({
   view: canvas,
+  width: window.outerWidth,
+  height: window.outerHeight
   resizeTo: window
 })
-
-//testing sprite
-const testSprite = new PIXI.Sprite(
-  new PIXI.Texture.from('images/faction_usa.png')
-)
-
-app.stage.addChild(testSprite)
-testSprite.x = canvas.width / 2
-testSprite.y = canvas.height / 2
-//testing sprite
 
 export let GameContainer = new PIXI.Container()
 //create GameContainer and append it to PIXI app
 // console.log(GameContainer.pivot)
 console.log(GameContainer.width, ', ', GameContainer.height)
 app.stage.addChild(GameContainer)
-scaleContainer(GameContainer)
+//scaleContainer(GameContainer)
 console.log(GameContainer.width, ', ', GameContainer.height)
 
 // function to remove a view so that we can render the next view
