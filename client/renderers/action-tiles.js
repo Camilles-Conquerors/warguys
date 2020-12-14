@@ -39,14 +39,30 @@ function renderActionTiles() {
   }
 
   //render attacks
-  actionTiles[1].forEach(sprite => {
-    sprite.tint = 0x506164
-  })
+  if (gameState.colorblindMode) {
+    // ATTACK colorblind mode ON
+    actionTiles[1].forEach(sprite => {
+      sprite.tint = 0x506164
+    })
+  } else {
+    // ATTACK colorblind mode OFF
+    actionTiles[1].forEach(sprite => {
+      sprite.tint = 0xb40000
+    })
+  }
 
   //render moves
-  actionTiles[0].forEach(sprite => {
-    sprite.tint = 0x79958d
-  })
+  if (gameState.colorblindMode) {
+    // MOVE colorblind mode ON
+    actionTiles[0].forEach(sprite => {
+      sprite.tint = 0x79958d
+    })
+  } else {
+    // MOVE colorblind mode OFF
+    actionTiles[0].forEach(sprite => {
+      sprite.tint = 0x0048b4
+    })
+  }
 }
 export function restoreTiles() {
   //remove tint from tiles
@@ -86,8 +102,8 @@ export function restoreColorblindTiles(tile) {
 export function restoreNonColorblindTiles(tile) {
   let newTint = 0xffffff
   // use these colors for colorblind mode OFF
-  if (tile.data.type === 'plain') newTint = 0xc9cba3
-  else if (tile.data.type === 'mountain') newTint = 0x627264
+  if (tile.data.type === 'plain') newTint = 0x80af49
+  else if (tile.data.type === 'mountain') newTint = 0x733818
   else if (tile.data.type === 'point') newTint = 0xffd700
   tile.tint = newTint
 }

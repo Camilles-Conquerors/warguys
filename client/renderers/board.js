@@ -102,7 +102,7 @@ export function tintColorblindTiles(tileSprite, tileType) {
       tileSprite.tint = 0xc9cba3
       break
     case 'mountain':
-      tileSprite.tint = 0x627264 /*0xa52a2a*/
+      tileSprite.tint = 0x627264
       break
     case 'point':
       console.log('tinting ')
@@ -117,10 +117,10 @@ export function tintNonColorblindTiles(tileSprite, tileType) {
   // use these for colorblind mode OFF
   switch (tileType) {
     case 'plain':
-      tileSprite.tint = 0xc9cba3
+      tileSprite.tint = 0x80af49
       break
     case 'mountain':
-      tileSprite.tint = 0x627264 /*0xa52a2a*/
+      tileSprite.tint = 0x733818
       break
     case 'point':
       console.log('tinting ')
