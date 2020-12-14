@@ -45,10 +45,8 @@ export function removeSprite(sprite) {
 //enables interactive and buttonMode on all unitSprites including enemies
 function makeClickable() {
   unitSprites.forEach(unitSprite => {
-    BoardContainer.removeChild(unitSprite)
     unitSprite.interactive = true
     unitSprite.buttonMode = true
-    BoardContainer.addChild(unitSprite)
   })
 }
 
@@ -57,7 +55,6 @@ function makeClickable() {
 //enemy cannot click any units
 function disableEnemyInteraction() {
   unitSprites.forEach(unitSprite => {
-    BoardContainer.removeChild(unitSprite)
     if (
       gameState.currentTurn === gameState.me &&
       gameState.currentTurn === unitSprite.data.player.playerName
@@ -68,8 +65,6 @@ function disableEnemyInteraction() {
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }
-
-    BoardContainer.addChild(unitSprite)
   })
 }
 
@@ -87,7 +82,7 @@ function disableEnemyInteraction() {
 */
 export function renderUnits(unitArr) {
   console.log('renderer ua', unitArr)
-  unitArr.forEach(unit => {
+  return unitArr.map(unit => {
     let offset = getOffset(unit.currentTile.coordinates.y)
 
     let unitSprite = {}
@@ -111,8 +106,6 @@ export function renderUnits(unitArr) {
     unitSprite.type = 'unit'
 
     renderHealthSprite(unitSprite)
-    //! only add sprite to boardcontainer if it's visible.
-    BoardContainer.addChild(unitSprite)
     unitSprites.push(unitSprite)
 
     //setting events
@@ -145,5 +138,6 @@ export function renderUnits(unitArr) {
         }
       }
     })
+    return unitSprite
   })
 }

@@ -263,8 +263,6 @@ export function takeTurn() {
 
   // sets default unit interaction for beginning of a turn
   unitSprites.forEach(unitSprite => {
-    //remove unitSprite from BoardContainer
-    BoardContainer.removeChild(unitSprite)
     // if it is your turn, you can click on your units to begin a turn
     if (
       gameState.currentTurn === gameState.me &&
@@ -277,8 +275,6 @@ export function takeTurn() {
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }
-
-    BoardContainer.addChild(unitSprite)
 
     updateCurrentTurnDisplay(
       sidebarDisplays.currentTurnPlayerDisplay,

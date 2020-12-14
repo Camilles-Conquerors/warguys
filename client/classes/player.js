@@ -1,7 +1,9 @@
-import {gameboard, gameStae} from '../index'
+import {gameboard, gameState} from '../index'
 import Riflemen from '../classes/units/riflemen'
 import {renderUnits} from '../renderers/units'
 import {updatePerTurnDisplay} from '../renderers/sidebar'
+import {getFogTiles} from '..//renderers/fog-of-war'
+import {BoardContainer} from '../renderers/board'
 
 // Player class
 // player instance should be created in renderGame()
@@ -19,7 +21,7 @@ export default class Player {
     this.turnDone = false
     this.actionsRemaining = 2
     this.initializeDefaultUnits()
-    this.renderUnits(playerName)
+    this.renderUnits()
   }
 
   // add player's units to this.units from gameboard's default units
@@ -32,13 +34,15 @@ export default class Player {
   }
 
   // creates unitSprites and adds player's units to PIXI BoardContainer
-  renderUnits(playerName) {
-    if (playerName === gameState.me) {
-      renderUnits(this.units)
-      this.units.forEach(unit => {
-        console.log('unit', unit)
-      })
-    }
+  renderUnits(playerName = this.playerName) {
+    renderUnits(this.units).forEach(unitSprite => {
+      if (playerName === gameState.me) {
+        unitSprite.data.toggleSelected(false)
+        getFogTiles(unitSprite.data)
+        //! only add sprite to boardcontainer if it's visible.
+        BoardContainer.addChild(unitSprite)
+      }
+    })
   }
 
   removeOwnedTile(tile) {

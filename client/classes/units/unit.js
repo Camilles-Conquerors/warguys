@@ -26,6 +26,8 @@ export default class Unit {
 
   toggleSelected(selected = !this.Selecter) {
     this.isSelected = selected
+    console.log('possible moves', this.possibleMoves)
+    console.log('objectKeys', Object.keys(this.possibleMoves))
     if (Object.keys(this.possibleMoves).length < 1) this.findMovementRange()
     if (Object.keys(this.tilesInView).length < 1)
       this.tilesInView = this.findVisibleTiles()

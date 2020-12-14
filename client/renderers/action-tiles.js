@@ -38,12 +38,14 @@ function renderActionTiles() {
 
   //render attacks
   actionTiles[1].forEach(sprite => {
-    sprite.tint = 0x506164
+    sprite.tint = 0xff0000
+    //0x506164
   })
 
   //render moves
   actionTiles[0].forEach(sprite => {
-    sprite.tint = 0x79958d
+    sprite.tint = 0x0000ff
+    //0x79958d
   })
 }
 export function restoreTiles() {
@@ -54,8 +56,8 @@ export function restoreTiles() {
     // eslint-disable-next-line guard-for-in
     for (let index in tileSet) {
       let newTint = 0xffffff
-      if (tileSet[index].data.type === 'plain') newTint = 0xa2c5ac
-      else if (tileSet[index].data.type === 'mountain') newTint = 0xb5651d
+      if (tileSet[index].data.type === 'plain') newTint = 0xc9cba3
+      else if (tileSet[index].data.type === 'mountain') newTint = 0x627264
       else if (tileSet[index].data.type === 'point') newTint = 0xffd700
 
       tileSet[index].tint = newTint

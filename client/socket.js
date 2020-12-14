@@ -8,9 +8,12 @@ import {
   renderGame,
   renderGameOver,
   renderRoomFull,
-  takeTurn
+  takeTurn,
+  gameState
 } from './index'
 import {attemptCapture} from './actions/capture'
+import {getFogTiles} from './renderers/fog-of-war'
+import {unitSprites} from './renderers/units'
 
 const socket = io(window.location.origin)
 
@@ -26,6 +29,32 @@ socket.on('actionBroadcast', (actionType, unit) => {
     case MOVE:
       updateUnits(unit)
       attemptCapture(unit)
+      //updates each sprite's view radius for fog of war
+      unitSprites.forEach(unitSprite => {
+        console.log('currentTurn', gameState.currentTurn)
+        console.log(
+          'unitSprite.data.playerName',
+          unitSprite.data.player.playerName
+        )
+
+        //update unfogged tiles if moved player belongs to me
+        if (
+          gameState.currentTurn === gameState.me &&
+          unitSprite.data.player.playerName === gameState.currentTurn
+        ) {
+          unitSprite.data.toggleSelected(false)
+          getFogTiles(unitSprite.data)
+        }
+        // else if(gameState.me !== unitSprite.data.player.playerName){
+        //   console.log('I dont belong to you', unitSprite.data)
+        //   console.log('current unitSprite visible Titles:', unitSprite )
+        // }
+      })
+
+      console.log(
+        'player obj for most recent turn',
+        gameState.currentPlayers[gameState.currentTurn]
+      )
       break
     case ATTACK:
       updateUnitsHealth(unit)
@@ -33,7 +62,6 @@ socket.on('actionBroadcast', (actionType, unit) => {
     default:
       console.log('error, invalid action recieved')
   }
-
   takeTurn()
   console.log(`recieved a(n) ${actionType} action`)
 })

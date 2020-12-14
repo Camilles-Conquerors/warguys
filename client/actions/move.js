@@ -52,4 +52,7 @@ export function updateUnits(unit) {
   )
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE
+
+  // update fog of war for moved sprite
+  unitSprite.data.toggleSelected(false)
 }
