@@ -53,7 +53,7 @@ function makeClickable() {
 //player can click their own units
 //player cannot click their enemy's units
 //enemy cannot click any units
-function disableEnemyInteraction() {
+export function disableEnemyInteraction() {
   unitSprites.forEach(unitSprite => {
     if (
       gameState.currentTurn === gameState.me &&

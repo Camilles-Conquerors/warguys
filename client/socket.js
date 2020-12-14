@@ -12,13 +12,18 @@ import {
   gameState
 } from './index'
 import {attemptCapture} from './actions/capture'
-import {getFogTiles} from './renderers/fog-of-war'
+import {getFogTiles, unrenderFogTiles} from './renderers/fog-of-war'
 import {unitSprites} from './renderers/units'
 
 const socket = io(window.location.origin)
 
 socket.on('connect', () => {
   renderSplash()
+  // // -v- part of scaling window
+  //GameContainer.pivot.x = GameContainer.width / 2
+  //GameContainer.pivot.y = GameContainer.height / 2
+  // scaleGameContainer()
+  // // -^- part of scaling window
   console.log('Connected!')
 })
 
@@ -30,25 +35,19 @@ socket.on('actionBroadcast', (actionType, unit) => {
       updateUnits(unit)
       attemptCapture(unit)
       //updates each sprite's view radius for fog of war
+      //unrenderFogTiles()
       unitSprites.forEach(unitSprite => {
-        console.log('currentTurn', gameState.currentTurn)
-        console.log(
-          'unitSprite.data.playerName',
-          unitSprite.data.player.playerName
-        )
-
         //update unfogged tiles if moved player belongs to me
         if (
-          gameState.currentTurn === gameState.me &&
-          unitSprite.data.player.playerName === gameState.currentTurn
+          //gameState.currentTurn === gameState.me &&
+          unitSprite.data.player.playerName === gameState.me
         ) {
           unitSprite.data.toggleSelected(false)
           getFogTiles(unitSprite.data)
+        } else if (gameState.me !== unitSprite.data.player.playerName) {
+          //and it the enemy is in view
+          console.log('buildiong...')
         }
-        // else if(gameState.me !== unitSprite.data.player.playerName){
-        //   console.log('I dont belong to you', unitSprite.data)
-        //   console.log('current unitSprite visible Titles:', unitSprite )
-        // }
       })
 
       console.log(
@@ -80,6 +79,16 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log('roomObj', roomObj)
   unrender()
   renderGame(roomObj, playerName)
+  //GameContainer.pivot.x = GameContainer.width / 2
+  //GameContainer.pivot.y = GameContainer.height / 2
+  //scaleContainer(GameContainer)
+  //visualize(GameContainer)
+
+  //window.addEventListener('resize', () => {
+  //  scaleContainer(GameContainer)
+  //  updateVisualizer()
+  //}) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
+
   console.log('game starting!')
   takeTurn()
 })

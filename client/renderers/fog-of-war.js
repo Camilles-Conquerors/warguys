@@ -1,4 +1,8 @@
-const {tileSprites} = require('./board')
+import {gameState, SCALE, getOffset} from '..'
+import {restoreColorblindTiles, restoreNonColorblindTiles} from './action-tiles'
+import {unitSprites} from './units'
+
+const {tileSprites, BoardContainer} = require('./board')
 
 let fogTiles = []
 
@@ -24,21 +28,42 @@ function renderFogTiles() {
   //render visible tiles
   fogTiles.forEach(sprite => {
     //console.log('fog sprite', sprite)
-    switch (sprite.data.type) {
-      case 'plain':
-        sprite.tint = 0xc9cba3
-        break
-      case 'mountain':
-        sprite.tint = 0x627264 /*0xa52a2a*/
-        break
-      case 'point':
-        console.log('tinting ')
-        sprite.tint = 0xffd700
-        break
-      default:
-        console.log(
-          'hey, homie, idk what tile this is. I cant color it properly'
-        )
+    if (gameState.colorblindMode) {
+      restoreColorblindTiles(sprite)
+    } else {
+      restoreNonColorblindTiles(sprite)
     }
+    if (!sprite.data.isEmpty()) {
+      console.log(
+        'other unit in view (team dont matter)',
+        sprite.data.occupiedBy
+      )
+    }
+    if (
+      !sprite.data.isEmpty() &&
+      sprite.data.occupiedBy.player.playerName !== gameState.me
+    ) {
+      console.log('enemy unit in view', sprite.data.occupiedBy)
+      //renderUnit
+      let enemyUnit = sprite.data.occupiedBy
+      let [enemySprite] = unitSprites.filter(unitSprite => {
+        return unitSprite.data === enemyUnit
+      })
+      // setting position
+      enemySprite.x =
+        enemyUnit.currentTile.coordinates.x * SCALE +
+        getOffset(enemyUnit.currentTile.coordinates.y)
+      enemySprite.y = enemyUnit.currentTile.coordinates.y * SCALE
+      BoardContainer.addChild(enemySprite)
+      //! check to make sure in view units are enemies
+
+      //BoardContainer.addChild()
+    }
+  })
+}
+export function unrenderFogTiles() {
+  fogTiles.forEach(sprite => {
+    console.log('unrendering sprite', sprite)
+    sprite.tint = 0x000000
   })
 }

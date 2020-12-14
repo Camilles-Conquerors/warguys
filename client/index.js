@@ -14,6 +14,7 @@ import {
   sidebarDisplays,
   updatePointsDisplays
 } from './renderers/sidebar'
+import {scaleContainer} from './scaling-tools'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -41,18 +42,71 @@ import {
 // socket.to sends to just that client
 // io.to sends to all sockets in a room/connection
 
+// initialize global variables
+export let SCALE = 0
+export let selectedUnit = {}
+export let gameboard = {}
+
+export let gameState = {
+  currentTurn: 'player2',
+  pointsToWin: 0,
+  currentPlayers: {},
+  colorblindMode: false
+}
+
+export function setPointsToWin(pointsToWin) {
+  gameState.pointsToWin = pointsToWin
+}
+
+export function updateSelectedUnit(newObject) {
+  //allows us to properly unrender and remove any info about a previously selected unit (if it exists)
+  if (selectedUnit.data) {
+    selectedUnit.data.toggleSelected(false)
+  }
+
+  //updates selectedUnit to equal newObject
+  selectedUnit = newObject
+
+  //properly renders and updates newly selected object (if it exists)
+  if (selectedUnit.data) {
+    selectedUnit.data.toggleSelected(true)
+    getActionTiles(selectedUnit.data)
+  } else {
+    restoreTiles()
+  }
+}
+
+export function getOffset(y) {
+  return y % 2 === 0 ? SCALE / 2 : 0
+}
+
 //mount PIXI to DOM
 const canvas = document.getElementById('mycanvas')
 
 const app = new PIXI.Application({
   view: canvas,
   width: window.outerWidth,
-  height: window.outerHeight
+  height: window.outerHeight,
+  resizeTo: window
 })
+
+// we're setting these so that the renderer fits to the window size upon start
+// we have a style tag in index.html setting the padding and margins for all html elements to 0
+// this way, we can get rid of the white lines along the edges
+//? maybe we'll implement dynamic resizing later but for now this should do
+app.renderer.view.style.position = 'absolute'
+app.renderer.view.style.display = 'block'
+app.renderer.autoResize = true
+app.renderer.resize(window.innerWidth, window.innerHeight)
 
 //create GameContainer and append it to PIXI app
 export let GameContainer = new PIXI.Container()
+// console.log(GameContainer.pivot)
+console.log(GameContainer.width, ', ', GameContainer.height)
+
 app.stage.addChild(GameContainer)
+//scaleContainer(GameContainer)
+console.log(GameContainer.width, ', ', GameContainer.height)
 
 // function to remove a view so that we can render the next view
 export function unrender() {
@@ -65,6 +119,7 @@ export function unrender() {
 export function renderSplash() {
   // create SplashContainer
   let SplashContainer = new PIXI.Container()
+  console.log(GameContainer.width, ', ', GameContainer.height)
   GameContainer.addChild(SplashContainer)
 
   // create logo sprite and add it to SplashContainer
@@ -73,6 +128,7 @@ export function renderSplash() {
   logoSprite.x = 100
   logoSprite.y = 50
   SplashContainer.addChild(logoSprite)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // create text obj and add it to SplashContainer
   let text = new PIXI.Text(
@@ -87,6 +143,7 @@ export function renderSplash() {
   text.x = 100
   text.y = 200
   SplashContainer.addChild(text)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // create an input field to enter room code, add to SplashContainer
   let inputRoomCode = new TextInput({
@@ -118,14 +175,20 @@ export function renderSplash() {
   // inputRoomCode.pivot.x = inputRoomCode.width / 2
   // inputRoomCode.pivot.y = inputRoomCode.height / 2
   SplashContainer.addChild(inputRoomCode)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
-  // add button texture and create sprite from it
+  renderSplashButtons(SplashContainer, inputRoomCode)
+}
+
+export function renderSplashButtons(SplashContainer, inputRoomCode) {
+  // add play button texture and create sprite from it
   const playButton = PIXI.Texture.from('/images/play_button.png')
   const buttonTextures = [playButton]
   let playButtonSprite = new PIXI.Sprite(buttonTextures[0])
   playButtonSprite.x = 100
   playButtonSprite.y = 400
   SplashContainer.addChild(playButtonSprite)
+  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // on click event for clicking join room
   playButtonSprite.interactive = true
@@ -147,7 +210,47 @@ export function renderSplash() {
       emptyRoomNameErr.x = 100
       emptyRoomNameErr.y = 250
       SplashContainer.addChild(emptyRoomNameErr)
+      console.log(GameContainer.width, ', ', GameContainer.height)
     }
+  })
+
+  // add colorblind button textures and create sprite from it
+  const colorblindButtonOff = PIXI.Texture.from(
+    '/images/colorblind_button_off.png'
+  )
+  const colorblindButtonOn = PIXI.Texture.from(
+    '/images/colorblind_button_on.png'
+  )
+  const colorblindButtonTextures = [colorblindButtonOff, colorblindButtonOn]
+
+  const colorblindButtonOffSprite = new PIXI.Sprite(colorblindButtonTextures[0])
+  colorblindButtonOffSprite.x = 100
+  colorblindButtonOffSprite.y = 440
+  SplashContainer.addChild(colorblindButtonOffSprite)
+
+  const colorblindButtonOnSprite = new PIXI.Sprite(colorblindButtonTextures[1])
+  colorblindButtonOnSprite.x = 100
+  colorblindButtonOnSprite.y = 440
+
+  // on click event for clicking colorblind off button
+  colorblindButtonOffSprite.interactive = true
+  colorblindButtonOffSprite.buttonMode = true
+  colorblindButtonOffSprite.on('click', () => {
+    // if colorblind mode off, set to on and render colorblindButtonOnSprite
+    gameState.colorblindMode = true
+    console.log('turning on colorblind mode', gameState)
+    SplashContainer.removeChild(colorblindButtonOffSprite)
+    SplashContainer.addChild(colorblindButtonOnSprite)
+  })
+
+  colorblindButtonOnSprite.interactive = true
+  colorblindButtonOnSprite.buttonMode = true
+  colorblindButtonOnSprite.on('click', () => {
+    // if colorblind mode On, set to off and render colorblindButtonOffSprite
+    gameState.colorblindMode = false
+    console.log('turning off colorblind mode', gameState)
+    SplashContainer.removeChild(colorblindButtonOnSprite)
+    SplashContainer.addChild(colorblindButtonOffSprite)
   })
 }
 
@@ -172,44 +275,6 @@ export function renderLobby(roomName) {
 }
 
 // renderLobby()
-
-// initialize global variables
-export let SCALE = 0
-export let selectedUnit = {}
-export let gameboard = {}
-
-export let gameState = {
-  currentTurn: 'player2',
-  pointsToWin: 0,
-  currentPlayers: {}
-}
-
-export function setPointsToWin(pointsToWin) {
-  gameState.pointsToWin = pointsToWin
-}
-
-export function updateSelectedUnit(newObject) {
-  //allows us to properly unrender and remove any info about a previously selected unit (if it exists)
-  if (selectedUnit.data) {
-    console.log('185 --> toggle selected to false')
-    selectedUnit.data.toggleSelected(false)
-  }
-
-  //updates selectedUnit to equal newObject
-  selectedUnit = newObject
-
-  //properly renders and updates newly selected object (if it exists)
-  if (selectedUnit.data) {
-    selectedUnit.data.toggleSelected(true)
-    getActionTiles(selectedUnit.data)
-  } else {
-    restoreTiles()
-  }
-}
-
-export function getOffset(y) {
-  return y % 2 === 0 ? SCALE / 2 : 0
-}
 
 export function renderGame(roomObj, playerName) {
   // assign vars to players in roomObj
@@ -253,12 +318,21 @@ export function takeTurn() {
 
   const currentPlayer = gameState.currentPlayers[gameState.currentTurn]
   currentPlayer.calculatePoints()
+  let totalHealth = currentPlayer.checkUnitsHealth()
 
   updatePointsDisplays()
 
   if (currentPlayer.victoryPoints >= gameState.pointsToWin) {
     socket.emit('victory', currentPlayer.faction)
     return
+  } else if (totalHealth <= 0) {
+    //if player2 does not have health for any of its units, player1 wins
+    //winner is not the current player]
+    let winner =
+      gameState.currentPlayers[
+        currentPlayer.playerName !== 'player1' ? 'player1' : 'player2'
+      ]
+    socket.emit('victory', winner.faction)
   }
 
   // sets default unit interaction for beginning of a turn

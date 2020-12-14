@@ -13,6 +13,7 @@ export default class TileNode {
     this.visionBonus = stats.visionBonus
     this.seeThrough = stats.seeThrough
     this.height = stats.height
+    this.occupiedBy = {}
 
     this.coordinates = coordinates
     this.neighbors = []
@@ -40,5 +41,19 @@ export default class TileNode {
     }
 
     return nodesInRange
+  }
+  //passese in unitSprite.data obj
+  setUnit(unit) {
+    //! check that tile is not occupied before resetting unit
+    this.occupiedBy = unit
+  }
+
+  removeUnit() {
+    this.occupiedBy = {}
+  }
+
+  isEmpty() {
+    if (this.occupiedBy.name) return false
+    return true
   }
 }

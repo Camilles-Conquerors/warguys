@@ -71,4 +71,13 @@ export default class Player {
       `your points went up from ${oldPoints} to ${this.victoryPoints}`
     )
   }
+
+  checkUnitsHealth() {
+    console.log('unit roll call!', this.units)
+    // eslint-disable-next-line no-return-assign
+    return this.units.reduce(
+      (totalHealth, unit) => (totalHealth += unit.health),
+      0
+    )
+  }
 }

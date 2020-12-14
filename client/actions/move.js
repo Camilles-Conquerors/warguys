@@ -1,5 +1,5 @@
 import socket from '../socket'
-import {unitSprites} from '../renderers/units'
+import {unitSprites, disableEnemyInteraction} from '../renderers/units'
 import {SCALE, getOffset, gameboard} from '../index'
 
 //ACTION TYPES
@@ -26,6 +26,8 @@ export function handleMove(unitSprite, newTile) {
 
     //sends move to socket server
     socket.emit('updateUnits', MOVE, unit)
+  } else {
+    disableEnemyInteraction()
   }
 }
 
@@ -47,8 +49,22 @@ export function updateUnits(unit) {
   })
 
   unitSprite = unitSprite[0]
-  unitSprite.data.currentTile = gameboard.findTileByCoordinates(
-    unit.coordinates
+
+  let tile = gameboard.findTileByCoordinates(unit.coordinates)
+  //update previous tile occupied status
+  unitSprite.data.currentTile.removeUnit()
+  console.log(
+    '-------->>>>>>>>>>>>>removed tile occupation:',
+    unitSprite.data.currentTile.occupiedBy
+  )
+  //set unitSprite's currentTile to tile
+  unitSprite.data.currentTile = tile
+  //set occupiedBy on tile to unitSprite
+  tile.setUnit(unitSprite.data)
+  console.log(
+    '-------->>>>>>>>>>>>>added tile occupation:',
+    tile.occupiedBy,
+    unitSprite.data.currentTile.occupiedBy
   )
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE

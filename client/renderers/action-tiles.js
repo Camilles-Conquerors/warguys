@@ -1,3 +1,5 @@
+import {gameState} from '..'
+
 const {tileSprites} = require('./board')
 
 const actionTiles = []
@@ -37,30 +39,47 @@ function renderActionTiles() {
   }
 
   //render attacks
-  actionTiles[1].forEach(sprite => {
-    sprite.tint = 0xff0000
-    //0x506164
-  })
+  if (gameState.colorblindMode) {
+    // ATTACK colorblind mode ON
+    actionTiles[1].forEach(sprite => {
+      sprite.tint = 0x506164
+    })
+  } else {
+    // ATTACK colorblind mode OFF
+    actionTiles[1].forEach(sprite => {
+      sprite.tint = 0xb40000
+    })
+  }
 
   //render moves
-  actionTiles[0].forEach(sprite => {
-    sprite.tint = 0x0000ff
-    //0x79958d
-  })
+  if (gameState.colorblindMode) {
+    // MOVE colorblind mode ON
+    actionTiles[0].forEach(sprite => {
+      sprite.tint = 0x79958d
+    })
+  } else {
+    // MOVE colorblind mode OFF
+    actionTiles[0].forEach(sprite => {
+      sprite.tint = 0x0048b4
+    })
+  }
 }
 export function restoreTiles() {
   //remove tint from tiles
   //move tiles
 
   actionTiles.forEach(tileSet => {
-    // eslint-disable-next-line guard-for-in
-    for (let index in tileSet) {
-      let newTint = 0xffffff
-      if (tileSet[index].data.type === 'plain') newTint = 0xc9cba3
-      else if (tileSet[index].data.type === 'mountain') newTint = 0x627264
-      else if (tileSet[index].data.type === 'point') newTint = 0xffd700
-
-      tileSet[index].tint = newTint
+    // check whether colorblind mode is on
+    if (gameState.colorblindMode) {
+      // eslint-disable-next-line guard-for-in
+      for (let index in tileSet) {
+        restoreColorblindTiles(tileSet[index])
+      }
+    } else {
+      // eslint-disable-next-line guard-for-in
+      for (let index in tileSet) {
+        restoreNonColorblindTiles(tileSet[index])
+      }
     }
   })
   //attack tiles
@@ -69,4 +88,22 @@ export function restoreTiles() {
   for (let i = 0; i < actionTiles.length; i++) {
     actionTiles.pop()
   }
+}
+
+export function restoreColorblindTiles(tile) {
+  let newTint = 0xffffff
+  // use these colors for colorblind mode ON
+  if (tile.data.type === 'plain') newTint = 0xc9cba3
+  else if (tile.data.type === 'mountain') newTint = 0x627264
+  else if (tile.data.type === 'point') newTint = 0xffd700
+  tile.tint = newTint
+}
+
+export function restoreNonColorblindTiles(tile) {
+  let newTint = 0xffffff
+  // use these colors for colorblind mode OFF
+  if (tile.data.type === 'plain') newTint = 0x80af49
+  else if (tile.data.type === 'mountain') newTint = 0x733818
+  else if (tile.data.type === 'point') newTint = 0xffd700
+  tile.tint = newTint
 }
