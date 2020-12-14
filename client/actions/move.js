@@ -1,5 +1,5 @@
 import socket from '../socket'
-import {unitSprites} from '../renderers/units'
+import {unitSprites, disableEnemyInteraction} from '../renderers/units'
 import {SCALE, getOffset, gameboard} from '../index'
 
 //ACTION TYPES
@@ -26,6 +26,8 @@ export function handleMove(unitSprite, newTile) {
 
     //sends move to socket server
     socket.emit('updateUnits', MOVE, unit)
+  } else {
+    disableEnemyInteraction()
   }
 }
 
