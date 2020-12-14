@@ -45,19 +45,19 @@ export function removeSprite(sprite) {
 //enables interactive and buttonMode on all unitSprites including enemies
 function makeClickable() {
   unitSprites.forEach(unitSprite => {
-    BoardContainer.removeChild(unitSprite)
+    //BoardContainer.removeChild(unitSprite)
     unitSprite.interactive = true
     unitSprite.buttonMode = true
-    BoardContainer.addChild(unitSprite)
+    //BoardContainer.addChild(unitSprite)
   })
 }
 
 //player can click their own units
 //player cannot click their enemy's units
 //enemy cannot click any units
-function disableEnemyInteraction() {
+export function disableEnemyInteraction() {
   unitSprites.forEach(unitSprite => {
-    BoardContainer.removeChild(unitSprite)
+    //BoardContainer.removeChild(unitSprite)
     if (
       gameState.currentTurn === gameState.me &&
       gameState.currentTurn === unitSprite.data.player.playerName
@@ -69,7 +69,7 @@ function disableEnemyInteraction() {
       unitSprite.buttonMode = false
     }
 
-    BoardContainer.addChild(unitSprite)
+    //BoardContainer.addChild(unitSprite)
   })
 }
 
