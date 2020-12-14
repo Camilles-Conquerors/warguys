@@ -22,8 +22,8 @@ const socket = io(window.location.origin)
 socket.on('connect', () => {
   renderSplash()
   // // -v- part of scaling window
-  GameContainer.pivot.x = GameContainer.width / 2
-  GameContainer.pivot.y = GameContainer.height / 2
+  //GameContainer.pivot.x = GameContainer.width / 2
+  //GameContainer.pivot.y = GameContainer.height / 2
   // scaleGameContainer()
   // // -^- part of scaling window
   console.log('Connected!')
@@ -62,15 +62,15 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log('roomObj', roomObj)
   unrender()
   renderGame(roomObj, playerName)
-  GameContainer.pivot.x = GameContainer.width / 2
-  GameContainer.pivot.y = GameContainer.height / 2
-  scaleContainer(GameContainer)
-  visualize(GameContainer)
+  //GameContainer.pivot.x = GameContainer.width / 2
+  //GameContainer.pivot.y = GameContainer.height / 2
+  //scaleContainer(GameContainer)
+  //visualize(GameContainer)
 
-  window.addEventListener('resize', () => {
-    scaleContainer(GameContainer)
-    updateVisualizer()
-  }) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
+  //window.addEventListener('resize', () => {
+  //  scaleContainer(GameContainer)
+  //  updateVisualizer()
+  //}) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
 
   console.log('game starting!')
   takeTurn()
