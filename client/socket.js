@@ -15,6 +15,7 @@ import {
 import {attemptCapture} from './actions/capture'
 import {BoardContainer} from './renderers/board'
 import {scaleContainer} from './scaling-tools'
+import {updateVisualizer, visualize} from './pixiDebugTools'
 
 const socket = io(window.location.origin)
 
@@ -64,9 +65,11 @@ socket.on('startGame', (roomObj, playerName) => {
   GameContainer.pivot.x = GameContainer.width / 2
   GameContainer.pivot.y = GameContainer.height / 2
   scaleContainer(GameContainer)
+  visualize(GameContainer)
 
   window.addEventListener('resize', () => {
     scaleContainer(GameContainer)
+    updateVisualizer()
   }) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
 
   console.log('game starting!')
