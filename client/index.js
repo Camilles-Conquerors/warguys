@@ -230,9 +230,17 @@ export function takeTurn() {
   const currentPlayer = gameState.currentPlayers[gameState.currentTurn]
   currentPlayer.calculatePoints()
 
+  let totalHealth = currentPlayer.checkUnitsHealth()
+
   if (currentPlayer.victoryPoints >= gameState.pointsToWin) {
     socket.emit('victory', currentPlayer.playerName)
     return
+  } else if (totalHealth <= 0) {
+    //if player2 does not have health for any of its units, player1 wins
+    socket.emit(
+      'victory',
+      currentPlayer.playerName !== 'player1' ? 'player1' : 'player2'
+    )
   }
 
   // sets default unit interaction for beginning of a turn
