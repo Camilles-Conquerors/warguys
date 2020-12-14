@@ -4,7 +4,8 @@ import {
   GameContainer,
   selectedUnit,
   updateSelectedUnit,
-  getOffset
+  getOffset,
+  gameState
 } from '../index'
 import {handleMove} from '../actions/move'
 
@@ -65,22 +66,11 @@ export function renderBoard(gameboard) {
       tileSprite.x = x * SCALE + offset
       tileSprite.y = y * SCALE
 
-      //rendering based on tile type
-      switch (gameboard.board[y][x].type) {
-        case 'plain':
-          tileSprite.tint = 0xc9cba3
-          break
-        case 'mountain':
-          tileSprite.tint = 0x627264 /*0xa52a2a*/
-          break
-        case 'point':
-          console.log('tinting ')
-          tileSprite.tint = 0xffd700
-          break
-        default:
-          console.log(
-            'hey, homie, idk what tile this is. I cant color it properly'
-          )
+      //tinting based on tile type and colorblind mode
+      if (gameState.colorblindMode) {
+        tintColorblindTiles(tileSprite, gameboard.board[y][x].type)
+      } else {
+        tintNonColorblindTiles(tileSprite, gameboard.board[y][x].type)
       }
 
       //setting event handlers
@@ -102,5 +92,41 @@ export function renderBoard(gameboard) {
       BoardContainer.addChild(tileSprite)
       tileSprites.push(tileSprite)
     }
+  }
+}
+
+export function tintColorblindTiles(tileSprite, tileType) {
+  // use these for colorblind mode ON
+  switch (tileType) {
+    case 'plain':
+      tileSprite.tint = 0xc9cba3
+      break
+    case 'mountain':
+      tileSprite.tint = 0x627264
+      break
+    case 'point':
+      console.log('tinting ')
+      tileSprite.tint = 0xffd700
+      break
+    default:
+      console.log('hey, homie, idk what tile this is. I cant color it properly')
+  }
+}
+
+export function tintNonColorblindTiles(tileSprite, tileType) {
+  // use these for colorblind mode OFF
+  switch (tileType) {
+    case 'plain':
+      tileSprite.tint = 0x80af49
+      break
+    case 'mountain':
+      tileSprite.tint = 0x733818
+      break
+    case 'point':
+      console.log('tinting ')
+      tileSprite.tint = 0xffd700
+      break
+    default:
+      console.log('hey, homie, idk what tile this is. I cant color it properly')
   }
 }

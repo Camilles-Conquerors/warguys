@@ -42,6 +42,41 @@ import {scaleContainer} from './scaling-tools'
 // socket.to sends to just that client
 // io.to sends to all sockets in a room/connection
 
+// initialize global variables
+export let SCALE = 0
+export let selectedUnit = {}
+export let gameboard = {}
+
+export let gameState = {
+  currentTurn: 'player2',
+  pointsToWin: 0,
+  currentPlayers: {},
+  colorblindMode: false
+}
+
+export function setPointsToWin(pointsToWin) {
+  gameState.pointsToWin = pointsToWin
+}
+
+export function updateSelectedUnit(newObject) {
+  if (selectedUnit.data) {
+    selectedUnit.data.toggleSelected(false)
+  }
+
+  selectedUnit = newObject
+
+  if (selectedUnit.data) {
+    selectedUnit.data.toggleSelected(true)
+    getActionTiles(selectedUnit.data)
+  } else {
+    restoreTiles()
+  }
+}
+
+export function getOffset(y) {
+  return y % 2 === 0 ? SCALE / 2 : 0
+}
+
 //mount PIXI to DOM
 const canvas = document.getElementById('mycanvas')
 
@@ -141,7 +176,11 @@ export function renderSplash() {
   SplashContainer.addChild(inputRoomCode)
   console.log(GameContainer.width, ', ', GameContainer.height)
 
-  // add button texture and create sprite from it
+  renderSplashButtons(SplashContainer, inputRoomCode)
+}
+
+export function renderSplashButtons(SplashContainer, inputRoomCode) {
+  // add play button texture and create sprite from it
   const playButton = PIXI.Texture.from('/images/play_button.png')
   const buttonTextures = [playButton]
   let playButtonSprite = new PIXI.Sprite(buttonTextures[0])
@@ -173,6 +212,45 @@ export function renderSplash() {
       console.log(GameContainer.width, ', ', GameContainer.height)
     }
   })
+
+  // add colorblind button textures and create sprite from it
+  const colorblindButtonOff = PIXI.Texture.from(
+    '/images/colorblind_button_off.png'
+  )
+  const colorblindButtonOn = PIXI.Texture.from(
+    '/images/colorblind_button_on.png'
+  )
+  const colorblindButtonTextures = [colorblindButtonOff, colorblindButtonOn]
+
+  const colorblindButtonOffSprite = new PIXI.Sprite(colorblindButtonTextures[0])
+  colorblindButtonOffSprite.x = 100
+  colorblindButtonOffSprite.y = 440
+  SplashContainer.addChild(colorblindButtonOffSprite)
+
+  const colorblindButtonOnSprite = new PIXI.Sprite(colorblindButtonTextures[1])
+  colorblindButtonOnSprite.x = 100
+  colorblindButtonOnSprite.y = 440
+
+  // on click event for clicking colorblind off button
+  colorblindButtonOffSprite.interactive = true
+  colorblindButtonOffSprite.buttonMode = true
+  colorblindButtonOffSprite.on('click', () => {
+    // if colorblind mode off, set to on and render colorblindButtonOnSprite
+    gameState.colorblindMode = true
+    console.log('turning on colorblind mode', gameState)
+    SplashContainer.removeChild(colorblindButtonOffSprite)
+    SplashContainer.addChild(colorblindButtonOnSprite)
+  })
+
+  colorblindButtonOnSprite.interactive = true
+  colorblindButtonOnSprite.buttonMode = true
+  colorblindButtonOnSprite.on('click', () => {
+    // if colorblind mode On, set to off and render colorblindButtonOffSprite
+    gameState.colorblindMode = false
+    console.log('turning off colorblind mode', gameState)
+    SplashContainer.removeChild(colorblindButtonOnSprite)
+    SplashContainer.addChild(colorblindButtonOffSprite)
+  })
 }
 
 // renderSplash()
@@ -196,40 +274,6 @@ export function renderLobby(roomName) {
 }
 
 // renderLobby()
-
-// initialize global variables
-export let SCALE = 0
-export let selectedUnit = {}
-export let gameboard = {}
-
-export let gameState = {
-  currentTurn: 'player2',
-  pointsToWin: 0,
-  currentPlayers: {}
-}
-
-export function setPointsToWin(pointsToWin) {
-  gameState.pointsToWin = pointsToWin
-}
-
-export function updateSelectedUnit(newObject) {
-  if (selectedUnit.data) {
-    selectedUnit.data.toggleSelected(false)
-  }
-
-  selectedUnit = newObject
-
-  if (selectedUnit.data) {
-    selectedUnit.data.toggleSelected(true)
-    getActionTiles(selectedUnit.data)
-  } else {
-    restoreTiles()
-  }
-}
-
-export function getOffset(y) {
-  return y % 2 === 0 ? SCALE / 2 : 0
-}
 
 export function renderGame(roomObj, playerName) {
   // assign vars to players in roomObj
