@@ -103,10 +103,6 @@ app.stage.addChild(GameContainer)
 scaleContainer(GameContainer)
 console.log(GameContainer.width, ', ', GameContainer.height)
 
-window.addEventListener('resize', () => {
-  scaleContainer(GameContainer)
-}) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
-
 // function to remove a view so that we can render the next view
 export function unrender() {
   while (GameContainer.children.length) {

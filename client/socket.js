@@ -65,6 +65,10 @@ socket.on('startGame', (roomObj, playerName) => {
   GameContainer.pivot.y = GameContainer.height / 2
   scaleContainer(GameContainer)
 
+  window.addEventListener('resize', () => {
+    scaleContainer(GameContainer)
+  }) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
+
   console.log('game starting!')
   takeTurn()
 })
