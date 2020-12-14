@@ -14,6 +14,7 @@ import {
   sidebarDisplays,
   updatePointsDisplays
 } from './renderers/sidebar'
+import {scaleContainer} from './scaling-tools'
 
 // room/lobby system
 // create a view that just has a button to join room
@@ -64,40 +65,12 @@ export let GameContainer = new PIXI.Container()
 // console.log(GameContainer.pivot)
 console.log(GameContainer.width, ', ', GameContainer.height)
 app.stage.addChild(GameContainer)
-scaleGameContainer()
+scaleContainer(GameContainer)
 console.log(GameContainer.width, ', ', GameContainer.height)
 
-function scaleGameContainerSize() {
-  //find distace from container width/height to window width/height
-  let heightDelta = canvas.height - GameContainer.height
-  let widthDelta = canvas.width - GameContainer.width
-
-  let diff = heightDelta < widthDelta ? heightDelta : widthDelta
-
-  GameContainer.width = GameContainer.height += diff //<-- in the beginning this isn't scaling the contianer properly
-}
-
-function scaleGameContainerPosition() {
-  GameContainer.x = canvas.width / 2
-  GameContainer.y = canvas.height / 2
-  // console.log('pivot: ', GameContainer.pivot.x, ', ', GameContainer.pivot.y)
-  // console.log('position: ', GameContainer.x, ', ', GameContainer.y)
-  //for testing
-  testSprite.x = GameContainer.pivot.x
-  testSprite.y = GameContainer.pivot.y
-}
-
-//Notes: seems like containers gain width and hieght with Sprite additions.
-// maybe there might be a way to presize containers? or perhaps resize regardless of width/height??
-// The main problem is certainly this: the container size is determined by the sprites passed it, making it somewhat unpredictable.
-export function scaleGameContainer() {
-  scaleGameContainerSize()
-  // console.log(GameContainer.width, ', ', GameContainer.height)
-  scaleGameContainerPosition()
-  // console.log(canvas.height)
-}
-
-window.addEventListener('resize', scaleGameContainer) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
+window.addEventListener('resize', () => {
+  scaleContainer(GameContainer)
+}) //! This is not optimal, it fires off many times. Perhaps have it fire off when user releases mouse button when trying to rescale
 
 // function to remove a view so that we can render the next view
 export function unrender() {

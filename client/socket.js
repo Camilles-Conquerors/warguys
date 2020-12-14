@@ -13,6 +13,8 @@ import {
   GameContainer
 } from './index'
 import {attemptCapture} from './actions/capture'
+import {BoardContainer} from './renderers/board'
+import {scaleContainer} from './scaling-tools'
 
 const socket = io(window.location.origin)
 
@@ -59,7 +61,9 @@ socket.on('startGame', (roomObj, playerName) => {
   console.log('roomObj', roomObj)
   unrender()
   renderGame(roomObj, playerName)
-  scaleGameContainer()
+  GameContainer.pivot.x = GameContainer.width / 2
+  GameContainer.pivot.y = GameContainer.height / 2
+  scaleContainer(GameContainer)
 
   console.log('game starting!')
   takeTurn()
