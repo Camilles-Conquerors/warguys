@@ -82,11 +82,22 @@ const canvas = document.getElementById('mycanvas')
 const app = new PIXI.Application({
   view: canvas,
   width: window.outerWidth,
-  height: window.outerHeight
+  height: window.outerHeight,
+  resizeTo: window
 })
+
+// we're setting these so that the renderer fits to the window size upon start
+// we have a style tag in index.html setting the padding and margins for all html elements to 0
+// this way, we can get rid of the white lines along the edges
+//? maybe we'll implement dynamic resizing later but for now this should do
+app.renderer.view.style.position = 'absolute'
+app.renderer.view.style.display = 'block'
+app.renderer.autoResize = true
+app.renderer.resize(window.innerWidth, window.innerHeight)
 
 //create GameContainer and append it to PIXI app
 export let GameContainer = new PIXI.Container()
+
 app.stage.addChild(GameContainer)
 
 // function to remove a view so that we can render the next view
