@@ -63,11 +63,9 @@ module.exports = io => {
         // if room exists and the game has already started
         socket.emit('roomFull', 'that room is already full')
       }
-      console.log('rooms after join attempt', rooms)
 
       socket.to(socket.roomName).on('setPointsToWin', pointsToWin => {
         rooms[roomName].pointsToWin = pointsToWin
-        console.log('after setting pointsToWin', rooms[roomName])
       })
 
       socket.to(socket.roomName).on('updateUnits', (actionType, unit) => {
@@ -85,7 +83,6 @@ module.exports = io => {
       // ask them to confirm if they wanna leave page
       // if they leave the other player wins the game by default
       socket.to(socket.roomName).on('disconnect', () => {
-        //console.log(`Connection ${socket.id} has left the building`)
         let winner = ''
         if (rooms[roomName] && rooms[roomName].inProgress) {
           // hnadle players leaving after game has started
@@ -100,7 +97,6 @@ module.exports = io => {
           }
           console.log('the winner by default is:', winner)
           io.to(socket.roomName).emit('gameOver', winner)
-          console.log(rooms)
           delete rooms[roomName]
           console.log('rooms after someone leaves:', rooms)
         } else if (rooms[roomName] && !rooms[roomName].inProgress) {

@@ -59,12 +59,15 @@ export function setPointsToWin(pointsToWin) {
 }
 
 export function updateSelectedUnit(newObject) {
+  //allows us to properly unrender and remove any info about a previously selected unit (if it exists)
   if (selectedUnit.data) {
     selectedUnit.data.toggleSelected(false)
   }
 
+  //updates selectedUnit to equal newObject
   selectedUnit = newObject
 
+  //properly renders and updates newly selected object (if it exists)
   if (selectedUnit.data) {
     selectedUnit.data.toggleSelected(true)
     getActionTiles(selectedUnit.data)
@@ -99,11 +102,9 @@ app.renderer.resize(window.innerWidth, window.innerHeight)
 //create GameContainer and append it to PIXI app
 export let GameContainer = new PIXI.Container()
 // console.log(GameContainer.pivot)
-console.log(GameContainer.width, ', ', GameContainer.height)
 
 app.stage.addChild(GameContainer)
 //scaleContainer(GameContainer)
-console.log(GameContainer.width, ', ', GameContainer.height)
 
 // function to remove a view so that we can render the next view
 export function unrender() {
@@ -116,7 +117,6 @@ export function unrender() {
 export function renderSplash() {
   // create SplashContainer
   let SplashContainer = new PIXI.Container()
-  console.log(GameContainer.width, ', ', GameContainer.height)
   GameContainer.addChild(SplashContainer)
 
   // create logo sprite and add it to SplashContainer
@@ -125,7 +125,6 @@ export function renderSplash() {
   logoSprite.x = 100
   logoSprite.y = 50
   SplashContainer.addChild(logoSprite)
-  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // create text obj and add it to SplashContainer
   let text = new PIXI.Text(
@@ -140,7 +139,6 @@ export function renderSplash() {
   text.x = 100
   text.y = 200
   SplashContainer.addChild(text)
-  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // create an input field to enter room code, add to SplashContainer
   let inputRoomCode = new TextInput({
@@ -172,7 +170,6 @@ export function renderSplash() {
   // inputRoomCode.pivot.x = inputRoomCode.width / 2
   // inputRoomCode.pivot.y = inputRoomCode.height / 2
   SplashContainer.addChild(inputRoomCode)
-  console.log(GameContainer.width, ', ', GameContainer.height)
 
   renderSplashButtons(SplashContainer, inputRoomCode)
 }
@@ -185,7 +182,6 @@ export function renderSplashButtons(SplashContainer, inputRoomCode) {
   playButtonSprite.x = 100
   playButtonSprite.y = 400
   SplashContainer.addChild(playButtonSprite)
-  console.log(GameContainer.width, ', ', GameContainer.height)
 
   // on click event for clicking join room
   playButtonSprite.interactive = true
@@ -207,7 +203,6 @@ export function renderSplashButtons(SplashContainer, inputRoomCode) {
       emptyRoomNameErr.x = 100
       emptyRoomNameErr.y = 250
       SplashContainer.addChild(emptyRoomNameErr)
-      console.log(GameContainer.width, ', ', GameContainer.height)
     }
   })
 
@@ -334,8 +329,6 @@ export function takeTurn() {
 
   // sets default unit interaction for beginning of a turn
   unitSprites.forEach(unitSprite => {
-    //remove unitSprite from BoardContainer
-    BoardContainer.removeChild(unitSprite)
     // if it is your turn, you can click on your units to begin a turn
     if (
       gameState.currentTurn === gameState.me &&
@@ -348,8 +341,6 @@ export function takeTurn() {
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }
-
-    BoardContainer.addChild(unitSprite)
 
     updateCurrentTurnDisplay(
       sidebarDisplays.currentTurnPlayerDisplay,

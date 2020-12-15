@@ -77,11 +77,12 @@ export function renderBoard(gameboard) {
       tileSprite.y = y * SCALE
 
       //tinting based on tile type and colorblind mode
-      if (gameState.colorblindMode) {
-        tintColorblindTiles(tileSprite, gameboard.board[y][x].type)
-      } else {
-        tintNonColorblindTiles(tileSprite, gameboard.board[y][x].type)
-      }
+      // if (gameState.colorblindMode) {
+      //   tintColorblindTiles(tileSprite, gameboard.board[y][x].type)
+      // } else {
+      //   tintNonColorblindTiles(tileSprite, gameboard.board[y][x].type)
+      // }
+      tileSprite.tint = 0x000000
 
       //setting event handlers
       tileSprite.interactive = true

@@ -21,15 +21,46 @@ const health2 = PIXI.Texture.from('/images/two.png')
 const health1 = PIXI.Texture.from('/images/one.png')
 const healthTextures = [null, health1, health2, health3, health4, health5]
 
+const miss = PIXI.Texture.from('images/miss.png')
+const hit = PIXI.Texture.from('images/hit.png')
+const shootTextures = [miss, hit]
+
 export function renderHealthSprite(unitSprite) {
-  unitSprite.removeChild(unitSprite.children[0])
-  console.log('us.data', unitSprite.data)
   let healthSprite = new PIXI.Sprite(healthTextures[unitSprite.data.health])
   healthSprite.x = unitSprite.width - 15
   healthSprite.y = unitSprite.height - 25
   healthSprite.height = SCALE / 2.5
   healthSprite.width = SCALE / 2.5
   unitSprite.addChild(healthSprite)
+}
+
+export function renderHit(unitSprite) {
+  //removes healthSprite
+  unitSprite.removeChild(unitSprite.children[0])
+  let hitSprite = new PIXI.Sprite(hit)
+  hitSprite.x = 75
+  hitSprite.y = -30
+  unitSprite.addChild(hitSprite)
+  // removes hit animation after 2 secs and renders healthSprite
+  setTimeout(function() {
+    unitSprite.removeChild(hitSprite)
+    renderHealthSprite(unitSprite)
+  }, 2000)
+}
+
+export function renderMiss(unitSprite) {
+  //removes healthSprite
+  unitSprite.removeChild(unitSprite.children[0])
+  let missSprite = new PIXI.Sprite(miss)
+  missSprite.x = 75
+  missSprite.y = -30
+  unitSprite.addChild(missSprite)
+  // removes miss animation after 2 secs and renders healthSprite
+  setTimeout(function() {
+    console.log('remove miss')
+    unitSprite.removeChild(missSprite)
+    renderHealthSprite(unitSprite)
+  }, 2000)
 }
 
 //stores rendered unitSprites added to gameboard
@@ -45,10 +76,8 @@ export function removeSprite(sprite) {
 //enables interactive and buttonMode on all unitSprites including enemies
 function makeClickable() {
   unitSprites.forEach(unitSprite => {
-    //BoardContainer.removeChild(unitSprite)
     unitSprite.interactive = true
     unitSprite.buttonMode = true
-    //BoardContainer.addChild(unitSprite)
   })
 }
 
@@ -57,7 +86,6 @@ function makeClickable() {
 //enemy cannot click any units
 export function disableEnemyInteraction() {
   unitSprites.forEach(unitSprite => {
-    //BoardContainer.removeChild(unitSprite)
     if (
       gameState.currentTurn === gameState.me &&
       gameState.currentTurn === unitSprite.data.player.playerName
@@ -68,8 +96,6 @@ export function disableEnemyInteraction() {
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }
-
-    //BoardContainer.addChild(unitSprite)
   })
 }
 
@@ -86,8 +112,7 @@ export function disableEnemyInteraction() {
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function renderUnits(unitArr) {
-  console.log('renderer ua', unitArr)
-  unitArr.forEach(unit => {
+  return unitArr.map(unit => {
     let offset = getOffset(unit.currentTile.coordinates.y)
 
     let unitSprite = {}
@@ -104,18 +129,15 @@ export function renderUnits(unitArr) {
     unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
     unitSprite.y = unit.currentTile.coordinates.y * SCALE
 
+
     unitSprite.height = SCALE
     unitSprite.width = SCALE
-
-    // unitSprite.height = SCALE / 1.5
-    // unitSprite.width = SCALE / 1.5
-    console.log('height x width', unitSprite.height, unitSprite.width)
 
     unitSprite.type = 'unit'
 
     renderHealthSprite(unitSprite)
 
-    BoardContainer.addChild(unitSprite)
+    //renderHit(unitSprite)
     unitSprites.push(unitSprite)
 
     //setting events
@@ -148,5 +170,6 @@ export function renderUnits(unitArr) {
         }
       }
     })
+    return unitSprite
   })
 }

@@ -17,12 +17,14 @@ export const MOVE = 'MOVE'
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function handleMove(unitSprite, newTile) {
-  // update coords on unitSprite
+  //previousCoordinates helps deal with tile occupancy in updateUnits
+  let previousCoordinates = {...unitSprite.data.currentTile.coordinates}
   if (unitSprite.data.move(newTile)) {
     //update sprite's x amd y position on view
+    let priorCoordinates = previousCoordinates
     let coordinates = unitSprite.data.currentTile.coordinates
     let name = unitSprite.data.name
-    let unit = {coordinates, name}
+    let unit = {coordinates, name, priorCoordinates}
 
     //sends move to socket server
     socket.emit('updateUnits', MOVE, unit)
@@ -49,9 +51,24 @@ export function updateUnits(unit) {
   })
 
   unitSprite = unitSprite[0]
-  unitSprite.data.currentTile = gameboard.findTileByCoordinates(
-    unit.coordinates
-  )
+
+  let prevTile = gameboard.findTileByCoordinates(unit.priorCoordinates)
+
+  let tile = gameboard.findTileByCoordinates(unit.coordinates)
+
+  //update previous tile occupied status
+  //! I don't know why, but if we don't remove unit from both places we get an error. investigate later
+  tile.removeUnit()
+  prevTile.removeUnit()
+
+  //set unitSprite's currentTile to tile
+  unitSprite.data.currentTile = tile
+  //set occupiedBy on tile to unitSprite
+  tile.setUnit(unitSprite.data)
+
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE
+
+  // update fog of war for moved sprite
+  unitSprite.data.toggleSelected(false)
 }

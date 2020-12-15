@@ -34,7 +34,6 @@ export default class Gameboard {
 
   pointsToWin(pointsToWin) {
     socket.emit('setPointsToWin', pointsToWin)
-    console.log('gameboard sets p2w', pointsToWin)
     setPointsToWin(pointsToWin)
   }
 

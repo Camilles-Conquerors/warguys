@@ -26,6 +26,8 @@ export default class Unit {
 
   toggleSelected(selected = !this.Selecter) {
     this.isSelected = selected
+    console.log('possible moves', this.possibleMoves)
+    console.log('objectKeys', Object.keys(this.possibleMoves))
     if (Object.keys(this.possibleMoves).length < 1) this.findMovementRange()
     if (Object.keys(this.tilesInView).length < 1)
       this.tilesInView = this.findVisibleTiles()
@@ -139,7 +141,7 @@ export default class Unit {
   }
 
   move(newTile) {
-    if (this.possibleMoves[newTile.id]) {
+    if (this.possibleMoves[newTile.id] && newTile.isEmpty()) {
       this.currentTile = newTile
       this.possibleMoves = {}
       this.tilesInView = {}
@@ -150,7 +152,12 @@ export default class Unit {
       return true
     }
 
-    console.log('this is an invalid move')
+    console.log(
+      'this is an invalid move',
+      newTile.id,
+      newTile,
+      newTile.isEmpty()
+    )
     this.isSelected = false
     return false
   }
@@ -158,14 +165,10 @@ export default class Unit {
   checkAccuracy(chosenUnit) {
     const targetDistance = this.tilesInView[chosenUnit.currentTile.id].distance
     const accuracy = this.accuracy
-    console.log('distance to target is', targetDistance)
-    console.log('your accuracy is', accuracy)
 
     const chanceToHit = accuracy - targetDistance * 5
-    console.log('the chance to hit is', chanceToHit)
 
     const attackRoll = Math.floor(Math.random() * 100 + 1)
-    console.log('attackRoll to check against', attackRoll)
 
     // check d100 roll against target unit's accuracy subtracted by 5x its distance
     // return true if roll result is less than chance to hit, else return false

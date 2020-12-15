@@ -9,13 +9,11 @@ import {
   renderGameOver,
   renderRoomFull,
   takeTurn,
-  scaleGameContainer,
-  GameContainer
+  gameState
 } from './index'
 import {attemptCapture} from './actions/capture'
-import {BoardContainer} from './renderers/board'
-import {scaleContainer} from './scaling-tools'
-import {updateVisualizer, visualize} from './pixiDebugTools'
+import {getFogTiles, initializeFogTiles} from './renderers/fog-of-war'
+import {unitSprites} from './renderers/units'
 
 const socket = io(window.location.origin)
 
@@ -36,6 +34,15 @@ socket.on('actionBroadcast', (actionType, unit) => {
     case MOVE:
       updateUnits(unit)
       attemptCapture(unit)
+      //resets view radius around each unit for fog of war
+      initializeFogTiles()
+      unitSprites.forEach(unitSprite => {
+        //update unfogged tiles around units belonging to a player
+        if (unitSprite.data.player.playerName === gameState.me) {
+          unitSprite.data.toggleSelected(false)
+          getFogTiles(unitSprite.data)
+        }
+      })
       break
     case ATTACK:
       updateUnitsHealth(unit)
@@ -43,7 +50,6 @@ socket.on('actionBroadcast', (actionType, unit) => {
     default:
       console.log('error, invalid action recieved')
   }
-
   takeTurn()
   console.log(`recieved a(n) ${actionType} action`)
 })
