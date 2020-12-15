@@ -95,7 +95,7 @@ export function restoreColorblindTiles(tile) {
   // use these colors for colorblind mode ON
   if (tile.data.type === 'plain') newTint = 0xc9cba3
   else if (tile.data.type === 'mountain') newTint = 0x627264
-  else if (tile.data.type === 'point') newTint = 0xffd700
+  else if (tile.data.type === 'point') newTint = 0xc9cba3
   tile.tint = newTint
 }
 
@@ -104,6 +104,6 @@ export function restoreNonColorblindTiles(tile) {
   // use these colors for colorblind mode OFF
   if (tile.data.type === 'plain') newTint = 0x80af49
   else if (tile.data.type === 'mountain') newTint = 0x733818
-  else if (tile.data.type === 'point') newTint = 0xffd700
+  else if (tile.data.type === 'point') newTint = 0x80af49
   tile.tint = newTint
 }

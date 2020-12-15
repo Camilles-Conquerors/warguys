@@ -18,6 +18,8 @@ const tileTextures = {
   point: plainTile
 }
 
+const flagTexture = PIXI.Texture.from('/images/point_flag1.png')
+
 //stores rendered sprites added to gameboard
 export let tileSprites = []
 
@@ -48,10 +50,18 @@ export function renderBoard(gameboard) {
     //going through each column of current row
     for (let x = 0; x < gameboard.board[y].length; x++) {
       //make a new sprite
-
-      //console.log(gameboard.board[y][x].value.name)
-
       let tileSprite = new PIXI.Sprite(tileTextures[gameboard.board[y][x].type])
+
+      // if this is a point tile, render a flag sprite attached to the tile
+      if (gameboard.board[y][x].type === 'point') {
+        const flagSprite = new PIXI.Sprite(flagTexture)
+        gameboard.board[y][x].flag = flagSprite
+        // assign this flag as a prop to the tile, so we can tint it on capture
+        // when a point gets captured, tile.setOwner will take in the flag sprite as arg
+        // then it tints based on the playerName of its newOwner
+
+        tileSprite.addChild(flagSprite)
+      }
 
       //pass reference to tile into sprite
       // TYPES
@@ -107,7 +117,7 @@ export function tintColorblindTiles(tileSprite, tileType) {
       break
     case 'point':
       console.log('tinting ')
-      tileSprite.tint = 0xffd700
+      tileSprite.tint = 0xc9cba3
       break
     default:
       console.log('hey, homie, idk what tile this is. I cant color it properly')
@@ -125,7 +135,7 @@ export function tintNonColorblindTiles(tileSprite, tileType) {
       break
     case 'point':
       console.log('tinting ')
-      tileSprite.tint = 0xffd700
+      tileSprite.tint = 0x80af49
       break
     default:
       console.log('hey, homie, idk what tile this is. I cant color it properly')

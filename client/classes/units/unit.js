@@ -227,7 +227,7 @@ export default class Unit {
 
     //if we don't already own this, capture it
     if (!isOwned) {
-      tile.setOwner(this.player)
+      tile.setOwner(this.player, tile.flag)
       this.player.addOwnedTile(tile)
     }
   }
