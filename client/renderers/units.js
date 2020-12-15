@@ -25,10 +25,10 @@ export function renderHealthSprite(unitSprite) {
   unitSprite.removeChild(unitSprite.children[0])
   console.log('us.data', unitSprite.data)
   let healthSprite = new PIXI.Sprite(healthTextures[unitSprite.data.health])
-  healthSprite.x = 95
-  healthSprite.y = 10
-  healthSprite.height = SCALE / 1.3
-  healthSprite.width = SCALE / 1.3
+  healthSprite.x = unitSprite.width - 15
+  healthSprite.y = unitSprite.height - 25
+  healthSprite.height = SCALE / 2.5
+  healthSprite.width = SCALE / 2.5
   unitSprite.addChild(healthSprite)
 }
 
@@ -104,8 +104,11 @@ export function renderUnits(unitArr) {
     unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
     unitSprite.y = unit.currentTile.coordinates.y * SCALE
 
-    unitSprite.height = SCALE / 1.5
-    unitSprite.width = SCALE / 1.5
+    unitSprite.height = SCALE
+    unitSprite.width = SCALE
+
+    // unitSprite.height = SCALE / 1.5
+    // unitSprite.width = SCALE / 1.5
     console.log('height x width', unitSprite.height, unitSprite.width)
 
     unitSprite.type = 'unit'
