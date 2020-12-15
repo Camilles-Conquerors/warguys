@@ -19,7 +19,7 @@ export default class Point extends TileNode {
     this.owner = {} //owner is player OBJ who captured this tile
   }
 
-  setOwner(newOwner) {
+  setOwner(newOwner, flagSprite) {
     console.log('trying to set new owner')
     if (this.owner.playerName) {
       console.log('This tile already has an owner!: ', this.owner.playerName)
@@ -27,6 +27,17 @@ export default class Point extends TileNode {
     }
     this.owner = newOwner
     console.log('new owner!: ', this.owner)
+
+    switch (this.owner.playerName) {
+      case 'player1':
+        flagSprite.tint = 0x2caf15
+        break
+      case 'player2':
+        flagSprite.tint = 0x4f8bc1
+        break
+      default:
+        flagSprite.tint = 0xffffff
+    }
   }
 
   removeOwner() {
