@@ -1,17 +1,25 @@
 import socket from '../socket'
-import {removeSprite, unitSprites, renderHealthSprite} from '../renderers/units'
+import {
+  removeSprite,
+  unitSprites,
+  renderHealthSprite,
+  renderHit,
+  renderMiss
+} from '../renderers/units'
 import {BoardContainer} from '../renderers/board'
 
 export const ATTACK = 'ATTACK'
 
 export function handleAttack(attacker, defender) {
   console.log('trying to attack: ', defender, '!')
+  let previousHealth = defender.health
   if (attacker.shoot(defender)) {
     // call shoot method from attacker unit
     // if shoot returns true, update all of this
     let name = defender.name
     let health = defender.health
-    let unit = {name, health}
+    let priorHealth = previousHealth
+    let unit = {name, health, priorHealth}
 
     attacker.toggleSelected(false)
 
@@ -26,11 +34,18 @@ export function updateUnitsHealth(unit) {
     return unitsprite.data.name === unit.name
   })
 
-  console.log('unitSprite destructured', unitSprite)
+  console.log('previousHealth', unit.priorHealth)
+  console.log('updatedHealth', unit.health)
+
+  if (unit.priorHealth === unit.health) {
+    renderMiss(unitSprite)
+  } else if (unit.priorHealth > unit.health) {
+    renderHit(unitSprite)
+  }
 
   unitSprite.data.health = unit.health //update health
 
-  renderHealthSprite(unitSprite)
+  //renderHealthSprite(unitSprite)
 
   console.log('unitSprites health: ', unitSprite.data.health)
   if (unitSprite.data.health <= 0) {

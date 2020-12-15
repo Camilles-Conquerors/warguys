@@ -143,10 +143,10 @@ export default class Unit {
   move(newTile) {
     if (this.possibleMoves[newTile.id] && newTile.isEmpty()) {
       //this.currentTile.removeUnit();
-      //console.log('currentTile has been updated', this.currentTile)
+      console.log('currentTile has been updated', this.currentTile)
       this.currentTile = newTile
       //newTile.setUnit(this)
-      //console.log('new Tile occupied by:', newTile)
+      console.log('new Tile occupied by:', newTile)
       this.possibleMoves = {}
       this.tilesInView = {}
       this.isSelected = false

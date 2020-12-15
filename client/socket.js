@@ -35,7 +35,7 @@ socket.on('actionBroadcast', (actionType, unit) => {
       updateUnits(unit)
       attemptCapture(unit)
       //updates each sprite's view radius for fog of war
-      //unrenderFogTiles()
+      unrenderFogTiles()
       unitSprites.forEach(unitSprite => {
         //update unfogged tiles if moved player belongs to me
         if (

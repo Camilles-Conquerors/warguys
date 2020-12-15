@@ -5,6 +5,7 @@ import {unitSprites} from './units'
 const {tileSprites, BoardContainer} = require('./board')
 
 let fogTiles = []
+let visibleEnemySprites = []
 
 export function getFogTiles(unit) {
   //sets fogTiles array equal to tilesInView
@@ -49,6 +50,7 @@ function renderFogTiles() {
       let [enemySprite] = unitSprites.filter(unitSprite => {
         return unitSprite.data === enemyUnit
       })
+      //visibleEnemySprites.push(enemySprite);
       // setting position
       enemySprite.x =
         enemyUnit.currentTile.coordinates.x * SCALE +
@@ -62,8 +64,13 @@ function renderFogTiles() {
   })
 }
 export function unrenderFogTiles() {
-  fogTiles.forEach(sprite => {
+  tileSprites.forEach(sprite => {
     console.log('unrendering sprite', sprite)
     sprite.tint = 0x000000
   })
+  // unitSprites.forEach(unitSprite => {
+  //   if(gameState.me !== unitSprite.data.player.playerName){
+  //     BoardContainer.removeChild(unitSprite)
+  //   }
+  // })
 }

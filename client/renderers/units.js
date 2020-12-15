@@ -21,15 +21,49 @@ const health2 = PIXI.Texture.from('/images/two.png')
 const health1 = PIXI.Texture.from('/images/one.png')
 const healthTextures = [null, health1, health2, health3, health4, health5]
 
+const miss = PIXI.Texture.from('images/miss.png')
+const hit = PIXI.Texture.from('images/hit.png')
+const shootTextures = [miss, hit]
+
 export function renderHealthSprite(unitSprite) {
-  unitSprite.removeChild(unitSprite.children[0])
-  console.log('us.data', unitSprite.data)
   let healthSprite = new PIXI.Sprite(healthTextures[unitSprite.data.health])
   healthSprite.x = 95
   healthSprite.y = 10
   healthSprite.height = SCALE / 1.3
   healthSprite.width = SCALE / 1.3
   unitSprite.addChild(healthSprite)
+}
+
+export function renderHit(unitSprite) {
+  console.log('remove healthSprite')
+  unitSprite.removeChild(unitSprite.children[0])
+  let hitSprite = new PIXI.Sprite(hit)
+  hitSprite.x = 75
+  hitSprite.y = -30
+  console.log('add hitSprite')
+  unitSprite.addChild(hitSprite)
+
+  setTimeout(function() {
+    console.log('remove hit')
+    unitSprite.removeChild(hitSprite)
+    renderHealthSprite(unitSprite)
+  }, 2000)
+}
+
+export function renderMiss(unitSprite) {
+  console.log('remove healthSprite')
+  unitSprite.removeChild(unitSprite.children[0])
+  let missSprite = new PIXI.Sprite(miss)
+  missSprite.x = 75
+  missSprite.y = -30
+  console.log('add missSprite')
+  unitSprite.addChild(missSprite)
+
+  setTimeout(function() {
+    console.log('remove miss')
+    unitSprite.removeChild(missSprite)
+    renderHealthSprite(unitSprite)
+  }, 2000)
 }
 
 //stores rendered unitSprites added to gameboard
@@ -81,7 +115,6 @@ export function disableEnemyInteraction() {
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function renderUnits(unitArr) {
-  console.log('renderer ua', unitArr)
   return unitArr.map(unit => {
     let offset = getOffset(unit.currentTile.coordinates.y)
 
@@ -101,11 +134,12 @@ export function renderUnits(unitArr) {
 
     unitSprite.height = SCALE / 1.5
     unitSprite.width = SCALE / 1.5
-    console.log('height x width', unitSprite.height, unitSprite.width)
 
     unitSprite.type = 'unit'
 
     renderHealthSprite(unitSprite)
+
+    //renderHit(unitSprite)
     unitSprites.push(unitSprite)
 
     //setting events
