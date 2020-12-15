@@ -27,10 +27,10 @@ const shootTextures = [miss, hit]
 
 export function renderHealthSprite(unitSprite) {
   let healthSprite = new PIXI.Sprite(healthTextures[unitSprite.data.health])
-  healthSprite.x = unitSprite.width - 15
-  healthSprite.y = unitSprite.height - 25
-  healthSprite.height = SCALE / 2.5
-  healthSprite.width = SCALE / 2.5
+  healthSprite.x = 67
+  healthSprite.y = 61
+  healthSprite.height = SCALE / 1.75
+  healthSprite.width = SCALE / 1.75
   unitSprite.addChild(healthSprite)
 }
 
@@ -128,7 +128,6 @@ export function renderUnits(unitArr) {
     // setting position
     unitSprite.x = unit.currentTile.coordinates.x * SCALE + offset
     unitSprite.y = unit.currentTile.coordinates.y * SCALE
-
 
     unitSprite.height = SCALE
     unitSprite.width = SCALE

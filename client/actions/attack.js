@@ -55,6 +55,8 @@ export function updateUnitsHealth(unit) {
       )}AM`
     )
 
+    unitSprite.data.currentTile.removeUnit()
+
     //updating unitSprites to get rid of dead unit reference
     removeSprite(unitSprite)
 
