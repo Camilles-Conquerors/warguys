@@ -18,11 +18,14 @@ export const MOVE = 'MOVE'
 */
 export function handleMove(unitSprite, newTile) {
   // update coords on unitSprite
+  let previousCoordinates = {...unitSprite.data.currentTile.coordinates}
+  console.log(previousCoordinates)
   if (unitSprite.data.move(newTile)) {
     //update sprite's x amd y position on view
+    let priorCoordinates = previousCoordinates
     let coordinates = unitSprite.data.currentTile.coordinates
     let name = unitSprite.data.name
-    let unit = {coordinates, name}
+    let unit = {coordinates, name, priorCoordinates}
 
     //sends move to socket server
     socket.emit('updateUnits', MOVE, unit)
@@ -50,12 +53,18 @@ export function updateUnits(unit) {
 
   unitSprite = unitSprite[0]
 
+  let prevTile = gameboard.findTileByCoordinates(unit.priorCoordinates)
+
   let tile = gameboard.findTileByCoordinates(unit.coordinates)
+
   //update previous tile occupied status
-  unitSprite.data.currentTile.removeUnit()
+  tile.removeUnit()
+  prevTile.removeUnit()
   console.log(
-    '-------->>>>>>>>>>>>>removed tile occupation:',
-    unitSprite.data.currentTile.occupiedBy
+    '-------->>>>>>>>>>>>>removed tile occupation from previous tile:',
+    tile.occupiedBy,
+    unitSprite.data.currentTile.occupiedBy,
+    prevTile.occupiedBy
   )
   //set unitSprite's currentTile to tile
   unitSprite.data.currentTile = tile
@@ -65,6 +74,10 @@ export function updateUnits(unit) {
     '-------->>>>>>>>>>>>>added tile occupation:',
     tile.occupiedBy,
     unitSprite.data.currentTile.occupiedBy
+  )
+  console.log(
+    'prev tile occupation',
+    gameboard.findTileByCoordinates({x: 3, y: 1})
   )
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE

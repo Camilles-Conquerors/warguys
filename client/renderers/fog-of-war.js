@@ -65,7 +65,7 @@ function renderFogTiles() {
 }
 export function unrenderFogTiles() {
   tileSprites.forEach(sprite => {
-    console.log('unrendering sprite', sprite)
+    //console.log('unrendering sprite', sprite)
     sprite.tint = 0x000000
   })
   // unitSprites.forEach(unitSprite => {

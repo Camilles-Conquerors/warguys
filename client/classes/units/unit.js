@@ -156,7 +156,12 @@ export default class Unit {
       return true
     }
 
-    console.log('this is an invalid move')
+    console.log(
+      'this is an invalid move',
+      newTile.id,
+      newTile,
+      newTile.isEmpty()
+    )
     this.isSelected = false
     return false
   }
