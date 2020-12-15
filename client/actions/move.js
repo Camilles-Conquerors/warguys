@@ -17,9 +17,8 @@ export const MOVE = 'MOVE'
 * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 export function handleMove(unitSprite, newTile) {
-  // update coords on unitSprite
+  //previousCoordinates helps deal with tile occupancy in updateUnits
   let previousCoordinates = {...unitSprite.data.currentTile.coordinates}
-  console.log(previousCoordinates)
   if (unitSprite.data.move(newTile)) {
     //update sprite's x amd y position on view
     let priorCoordinates = previousCoordinates
@@ -58,27 +57,15 @@ export function updateUnits(unit) {
   let tile = gameboard.findTileByCoordinates(unit.coordinates)
 
   //update previous tile occupied status
+  //! I don't know why, but if we don't remove unit from both places we get an error. investigate later
   tile.removeUnit()
   prevTile.removeUnit()
-  console.log(
-    '-------->>>>>>>>>>>>>removed tile occupation from previous tile:',
-    tile.occupiedBy,
-    unitSprite.data.currentTile.occupiedBy,
-    prevTile.occupiedBy
-  )
+
   //set unitSprite's currentTile to tile
   unitSprite.data.currentTile = tile
   //set occupiedBy on tile to unitSprite
   tile.setUnit(unitSprite.data)
-  console.log(
-    '-------->>>>>>>>>>>>>added tile occupation:',
-    tile.occupiedBy,
-    unitSprite.data.currentTile.occupiedBy
-  )
-  console.log(
-    'prev tile occupation',
-    gameboard.findTileByCoordinates({x: 3, y: 1})
-  )
+
   unitSprite.x = unit.coordinates.x * SCALE + offset
   unitSprite.y = unit.coordinates.y * SCALE
 

@@ -142,11 +142,7 @@ export default class Unit {
 
   move(newTile) {
     if (this.possibleMoves[newTile.id] && newTile.isEmpty()) {
-      //this.currentTile.removeUnit();
-      console.log('currentTile has been updated', this.currentTile)
       this.currentTile = newTile
-      //newTile.setUnit(this)
-      console.log('new Tile occupied by:', newTile)
       this.possibleMoves = {}
       this.tilesInView = {}
       this.isSelected = false
@@ -169,14 +165,10 @@ export default class Unit {
   checkAccuracy(chosenUnit) {
     const targetDistance = this.tilesInView[chosenUnit.currentTile.id].distance
     const accuracy = this.accuracy
-    console.log('distance to target is', targetDistance)
-    console.log('your accuracy is', accuracy)
 
     const chanceToHit = accuracy - targetDistance * 5
-    console.log('the chance to hit is', chanceToHit)
 
     const attackRoll = Math.floor(Math.random() * 100 + 1)
-    console.log('attackRoll to check against', attackRoll)
 
     // check d100 roll against target unit's accuracy subtracted by 5x its distance
     // return true if roll result is less than chance to hit, else return false

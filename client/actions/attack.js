@@ -2,7 +2,6 @@ import socket from '../socket'
 import {
   removeSprite,
   unitSprites,
-  renderHealthSprite,
   renderHit,
   renderMiss
 } from '../renderers/units'
@@ -12,6 +11,7 @@ export const ATTACK = 'ATTACK'
 
 export function handleAttack(attacker, defender) {
   console.log('trying to attack: ', defender, '!')
+  //previousHealth syncs health info so both players get the same hit/miss animation
   let previousHealth = defender.health
   if (attacker.shoot(defender)) {
     // call shoot method from attacker unit
@@ -34,28 +34,26 @@ export function updateUnitsHealth(unit) {
     return unitsprite.data.name === unit.name
   })
 
-  console.log('previousHealth', unit.priorHealth)
-  console.log('updatedHealth', unit.health)
-
-  if (unit.priorHealth === unit.health) {
-    renderMiss(unitSprite)
-  } else if (unit.priorHealth > unit.health) {
-    renderHit(unitSprite)
+  //will show miss/hit animations and update healthSprite
+  if (unit.health > 0) {
+    if (unit.priorHealth === unit.health) {
+      renderMiss(unitSprite)
+    } else if (unit.priorHealth > unit.health) {
+      renderHit(unitSprite)
+    }
   }
 
-  unitSprite.data.health = unit.health //update health
-
-  //renderHealthSprite(unitSprite)
-
+  //update health on unitSprite
+  unitSprite.data.health = unit.health
   console.log('unitSprites health: ', unitSprite.data.health)
+
+  //handle unit death
   if (unitSprite.data.health <= 0) {
     console.log(
       `console has logged ${unit.name}'s death at ${Math.floor(
         Math.random() * 13
       )}AM`
     )
-    console.log('unitSprit.parent', unitSprite.parent)
-    console.log('BoardContainer', BoardContainer)
 
     //updating unitSprites to get rid of dead unit reference
     removeSprite(unitSprite)

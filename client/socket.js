@@ -12,7 +12,7 @@ import {
   gameState
 } from './index'
 import {attemptCapture} from './actions/capture'
-import {getFogTiles, unrenderFogTiles} from './renderers/fog-of-war'
+import {getFogTiles, initializeFogTiles} from './renderers/fog-of-war'
 import {unitSprites} from './renderers/units'
 
 const socket = io(window.location.origin)
@@ -34,26 +34,15 @@ socket.on('actionBroadcast', (actionType, unit) => {
     case MOVE:
       updateUnits(unit)
       attemptCapture(unit)
-      //updates each sprite's view radius for fog of war
-      unrenderFogTiles()
+      //resets view radius around each unit for fog of war
+      initializeFogTiles()
       unitSprites.forEach(unitSprite => {
-        //update unfogged tiles if moved player belongs to me
-        if (
-          //gameState.currentTurn === gameState.me &&
-          unitSprite.data.player.playerName === gameState.me
-        ) {
+        //update unfogged tiles around units belonging to a player
+        if (unitSprite.data.player.playerName === gameState.me) {
           unitSprite.data.toggleSelected(false)
           getFogTiles(unitSprite.data)
-        } else if (gameState.me !== unitSprite.data.player.playerName) {
-          //and it the enemy is in view
-          console.log('buildiong...')
         }
       })
-
-      console.log(
-        'player obj for most recent turn',
-        gameState.currentPlayers[gameState.currentTurn]
-      )
       break
     case ATTACK:
       updateUnitsHealth(unit)

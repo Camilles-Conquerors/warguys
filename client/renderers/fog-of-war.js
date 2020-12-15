@@ -1,15 +1,17 @@
 import {gameState, SCALE, getOffset} from '..'
 import {restoreColorblindTiles, restoreNonColorblindTiles} from './action-tiles'
 import {unitSprites} from './units'
+import {tileSprites, BoardContainer} from './board'
 
-const {tileSprites, BoardContainer} = require('./board')
-
+// array of visible tiles around each unit
 let fogTiles = []
+
+// array of enemies in view
+// remove any enemy units with health of 0
 let visibleEnemySprites = []
 
 export function getFogTiles(unit) {
   //sets fogTiles array equal to tilesInView
-  //! we can make it possible to see 1 or two tiles past shot ability
   fogTiles = tileSprites.filter(sprite => {
     if (unit.tilesInView[sprite.data.id]) {
       return true
@@ -19,58 +21,62 @@ export function getFogTiles(unit) {
   //render them
   renderFogTiles()
 }
-
+//render visible tiles around each unit
 function renderFogTiles() {
   if (!fogTiles.length) {
     console.warn('woops! no Action Tiles queued for rendering')
     return false
   }
 
-  //render visible tiles
   fogTiles.forEach(sprite => {
-    //console.log('fog sprite', sprite)
+    //render tint based on color blind mode
     if (gameState.colorblindMode) {
       restoreColorblindTiles(sprite)
     } else {
       restoreNonColorblindTiles(sprite)
     }
-    if (!sprite.data.isEmpty()) {
-      console.log(
-        'other unit in view (team dont matter)',
-        sprite.data.occupiedBy
-      )
-    }
+
+    //checks if tile in view is occupied with an enemy unit
     if (
       !sprite.data.isEmpty() &&
       sprite.data.occupiedBy.player.playerName !== gameState.me
     ) {
-      console.log('enemy unit in view', sprite.data.occupiedBy)
-      //renderUnit
+      //get enemy sprite based off enemy unit name where unit health > 0
       let enemyUnit = sprite.data.occupiedBy
-      let [enemySprite] = unitSprites.filter(unitSprite => {
-        return unitSprite.data === enemyUnit
+      let enemySprite = unitSprites.filter(unitSprite => {
+        if (unitSprite.data.health > 0) {
+          return unitSprite.data === enemyUnit
+        }
       })
-      //visibleEnemySprites.push(enemySprite);
-      // setting position
-      enemySprite.x =
-        enemyUnit.currentTile.coordinates.x * SCALE +
-        getOffset(enemyUnit.currentTile.coordinates.y)
-      enemySprite.y = enemyUnit.currentTile.coordinates.y * SCALE
-      BoardContainer.addChild(enemySprite)
-      //! check to make sure in view units are enemies
+      //add enemy sprite to view
+      if (enemySprite.length > 0) {
+        const offset = getOffset(enemyUnit.currentTile.coordinates.y)
+        sprite = enemySprite[0]
 
-      //BoardContainer.addChild()
+        // assign x and y coordinates of enemySprite
+        sprite.x = enemyUnit.currentTile.coordinates.x * SCALE + offset
+        sprite.y = enemyUnit.currentTile.coordinates.y * SCALE
+
+        //push enemy Sprite to BoardContainer and visible enemy array
+        visibleEnemySprites.push(sprite)
+        BoardContainer.addChild(sprite)
+      }
     }
   })
 }
-export function unrenderFogTiles() {
+
+// sets all tiles to black tint
+// removes enemies from view
+// removes enemies from visible enemies array
+// run this function immediately before renderFogTiles
+export function initializeFogTiles() {
   tileSprites.forEach(sprite => {
-    //console.log('unrendering sprite', sprite)
     sprite.tint = 0x000000
+    if (sprite.type === 'point') sprite.tint = 0xffd700
   })
-  // unitSprites.forEach(unitSprite => {
-  //   if(gameState.me !== unitSprite.data.player.playerName){
-  //     BoardContainer.removeChild(unitSprite)
-  //   }
-  // })
+  visibleEnemySprites.forEach(enemySprite => {
+    BoardContainer.removeChild(enemySprite)
+  })
+
+  visibleEnemySprites = []
 }

@@ -35,30 +35,27 @@ export function renderHealthSprite(unitSprite) {
 }
 
 export function renderHit(unitSprite) {
-  console.log('remove healthSprite')
+  //removes healthSprite
   unitSprite.removeChild(unitSprite.children[0])
   let hitSprite = new PIXI.Sprite(hit)
   hitSprite.x = 75
   hitSprite.y = -30
-  console.log('add hitSprite')
   unitSprite.addChild(hitSprite)
-
+  // removes hit animation after 2 secs and renders healthSprite
   setTimeout(function() {
-    console.log('remove hit')
     unitSprite.removeChild(hitSprite)
     renderHealthSprite(unitSprite)
   }, 2000)
 }
 
 export function renderMiss(unitSprite) {
-  console.log('remove healthSprite')
+  //removes healthSprite
   unitSprite.removeChild(unitSprite.children[0])
   let missSprite = new PIXI.Sprite(miss)
   missSprite.x = 75
   missSprite.y = -30
-  console.log('add missSprite')
   unitSprite.addChild(missSprite)
-
+  // removes miss animation after 2 secs and renders healthSprite
   setTimeout(function() {
     console.log('remove miss')
     unitSprite.removeChild(missSprite)
