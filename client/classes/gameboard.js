@@ -16,19 +16,38 @@ export default class Gameboard {
     this.board = this.generateBoard(map)
     this.assignNeighbors(this.board)
     this.pointsToWin(pointsToWin)
+    ////1,3   15,13
+    //1,5   15,11
+    //2,1   14,15
+    //0,7   16,9
+    //2,8   14,8
     this.defaultUnits = [
-      {playerName: 'player1', unitName: 'billy', currentTile: this.board[1][3]},
-      {playerName: 'player1', unitName: 'bobby', currentTile: this.board[3][2]},
+      {playerName: 'player1', unitName: 'Jack', currentTile: this.board[1][3]},
+      {playerName: 'player1', unitName: 'Henry', currentTile: this.board[1][5]},
+      {playerName: 'player1', unitName: 'Joey', currentTile: this.board[2][1]},
+      {playerName: 'player1', unitName: 'Rob', currentTile: this.board[0][7]},
+      {playerName: 'player1', unitName: 'Mike', currentTile: this.board[2][8]},
       {
         playerName: 'player2',
-        unitName: 'henry',
-        currentTile: this.board[13][11]
+        unitName: 'John',
+        currentTile: this.board[15][13]
       },
       {
         playerName: 'player2',
-        unitName: 'heinrek',
-        currentTile: this.board[11][12]
-      }
+        unitName: 'Dave',
+        currentTile: this.board[15][11]
+      },
+      {
+        playerName: 'player2',
+        unitName: 'Buck',
+        currentTile: this.board[14][15]
+      },
+      {
+        playerName: 'player2',
+        unitName: 'Tommy',
+        currentTile: this.board[16][9]
+      },
+      {playerName: 'player2', unitName: 'Luke', currentTile: this.board[14][8]}
     ]
   }
 

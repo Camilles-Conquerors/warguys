@@ -274,7 +274,7 @@ export function renderGame(roomObj, playerName) {
   const player2 = roomObj.currentPlayers.player2
 
   // create the gameboard using the hardcoded testBoard
-  gameboard = new Gameboard(testBoard, 5)
+  gameboard = new Gameboard(testBoard, 10)
   // sets tile width and height
   SCALE = app.renderer.screen.height / gameboard.board.length
 
