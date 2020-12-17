@@ -29,6 +29,7 @@ export function handleMove(unitSprite, newTile) {
     gameState.actionsRemaining -= 1
     //dont need to send this over socket because opponent never controls enemy units anyways
     unitSprite.data.spendAction()
+
     console.log('actions remaining before emit', gameState.actionsRemaining)
 
     //sends move to socket server
@@ -56,6 +57,11 @@ export function updateUnits(unit) {
   })
 
   unitSprite = unitSprite[0]
+
+  if (!unitSprite.data.active) {
+    unitSprite.interactive = false
+    unitSprite.buttonMode = false
+  }
 
   let prevTile = gameboard.findTileByCoordinates(unit.priorCoordinates)
 
