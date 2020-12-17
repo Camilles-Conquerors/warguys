@@ -326,6 +326,18 @@ export function takeTurn() {
       ]
     socket.emit('victory', winner.faction)
   }
+  const unitsRemaining = gameState.currentPlayers[
+    gameState.currentTurn
+  ].units.filter(unit => unit.health > 0)
+  if (unitsRemaining.length < 3) {
+    gameState.actionsRemaining = unitsRemaining.length
+    console.log(
+      `-->you have ${unitsRemaining.length} actions to start your turn`
+    )
+  } else {
+    console.log('you have 3 actions to start your turn')
+    gameState.actionsRemaining = 3
+  }
 
   // sets default unit interaction for beginning of a turn
   unitSprites.forEach(unitSprite => {
@@ -336,6 +348,8 @@ export function takeTurn() {
     ) {
       unitSprite.interactive = true
       unitSprite.buttonMode = true
+      //reset action points for current player's turn
+      unitSprite.data.activate()
     } else {
       // if not your turn, you cannot click on anything
       unitSprite.interactive = false

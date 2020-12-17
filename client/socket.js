@@ -27,7 +27,7 @@ socket.on('connect', () => {
   console.log('Connected!')
 })
 
-socket.on('actionBroadcast', (actionType, unit) => {
+socket.on('actionBroadcast', (actionType, unit, actionsRemaining) => {
   console.log('bcast recieved from server:', unit)
 
   switch (actionType) {
@@ -50,7 +50,10 @@ socket.on('actionBroadcast', (actionType, unit) => {
     default:
       console.log('error, invalid action recieved')
   }
-  takeTurn()
+  //check if current player has any actions remaining
+  gameState.actionsRemaining = actionsRemaining
+  console.log('actions remaining', gameState.actionsRemaining)
+  if (gameState.actionsRemaining < 1) takeTurn()
   console.log(`recieved a(n) ${actionType} action`)
 })
 

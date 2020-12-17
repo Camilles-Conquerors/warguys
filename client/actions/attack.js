@@ -6,6 +6,7 @@ import {
   renderMiss
 } from '../renderers/units'
 import {BoardContainer} from '../renderers/board'
+import {gameState} from '..'
 
 export const ATTACK = 'ATTACK'
 
@@ -22,8 +23,14 @@ export function handleAttack(attacker, defender) {
     let unit = {name, health, priorHealth}
 
     attacker.toggleSelected(false)
+    //check player's actions remaining & if
+    gameState.actionsRemaining -= 1
+    //dont need to send this over socket because opponent never controls enemy units anyways
+    attacker.spendAction()
 
-    socket.emit('updateUnits', ATTACK, unit)
+    console.log('actions remaining before emit', gameState.actionsRemaining)
+
+    socket.emit('updateUnits', ATTACK, unit, gameState.actionsRemaining)
   }
 }
 
