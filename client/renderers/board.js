@@ -8,6 +8,7 @@ import {
   gameState
 } from '../index'
 import {handleMove} from '../actions/move'
+import {disableEnemyInteraction} from './units'
 
 //Making texture from image files
 const plainTile = PIXI.Texture.from('/images/terrain_plains.png')
@@ -93,6 +94,7 @@ export function renderBoard(gameboard) {
           handleMove(selectedUnit, tileSprite.data)
           //sets selectedUnit to an empty array
           updateSelectedUnit({})
+          disableEnemyInteraction()
         }
       })
 

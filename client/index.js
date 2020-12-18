@@ -12,7 +12,8 @@ import {
   renderSidebar,
   updateCurrentTurnDisplay,
   sidebarDisplays,
-  updatePointsDisplays
+  updatePointsDisplays,
+  updateActionsLeftDisplay
 } from './renderers/sidebar'
 import {scaleContainer} from './scaling-tools'
 
@@ -49,6 +50,7 @@ export let gameboard = {}
 
 export let gameState = {
   currentTurn: 'player2',
+  actionsRemaining: 0,
   pointsToWin: 0,
   currentPlayers: {},
   colorblindMode: false
@@ -254,16 +256,22 @@ export function renderLobby(roomName) {
   GameContainer.addChild(LobbyContainer)
 
   // create text obj and add it to LobbyContainer
-  let text = new PIXI.Text(
-    `Your room code is ${roomName} \n Waiting for an opponent to join...`,
-    {
-      fontFamily: 'Arial',
-      fontSize: 24,
-      fill: 0xffffff,
-      align: 'center'
-    }
-  )
-  LobbyContainer.addChild(text)
+  let text1 = new PIXI.Text(`Your room code is ${roomName}`, {
+    fontFamily: 'Arial',
+    fontSize: 48,
+    fill: 0xffffff,
+    align: 'left'
+  })
+  LobbyContainer.addChild(text1)
+
+  let text2 = new PIXI.Text('Waiting for an opponent to join...', {
+    fontFamily: 'Arial',
+    fontSize: 32,
+    fill: 0xffffff,
+    align: 'left'
+  })
+  text2.y = 50
+  LobbyContainer.addChild(text2)
 }
 
 // renderLobby()
@@ -274,7 +282,7 @@ export function renderGame(roomObj, playerName) {
   const player2 = roomObj.currentPlayers.player2
 
   // create the gameboard using the hardcoded testBoard
-  gameboard = new Gameboard(testBoard, 10)
+  gameboard = new Gameboard(testBoard, 15)
   // sets tile width and height
   SCALE = app.renderer.screen.height / gameboard.board.length
 
@@ -326,17 +334,20 @@ export function takeTurn() {
       ]
     socket.emit('victory', winner.faction)
   }
+
   const unitsRemaining = gameState.currentPlayers[
     gameState.currentTurn
   ].units.filter(unit => unit.health > 0)
   if (unitsRemaining.length < 3) {
-    gameState.actionsRemaining = unitsRemaining.length
     console.log(
       `-->you have ${unitsRemaining.length} actions to start your turn`
     )
+    gameState.actionsRemaining = unitsRemaining.length
+    updateActionsLeftDisplay()
   } else {
     console.log('you have 3 actions to start your turn')
     gameState.actionsRemaining = 3
+    updateActionsLeftDisplay()
   }
 
   // sets default unit interaction for beginning of a turn
@@ -440,7 +451,7 @@ export function renderGameOver(winner) {
 
   const text4 = new PIXI.Text('Refresh the page to play again!', {
     fontFamily: 'Arial',
-    fontSize: 24,
+    fontSize: 32,
     fill: 0xffffff,
     align: 'center'
   })

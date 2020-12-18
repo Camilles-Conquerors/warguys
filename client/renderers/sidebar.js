@@ -9,10 +9,11 @@ import {GameContainer, gameState} from '../index'
 // sidebarContainer structure
 // sidebarContainer
 // - gameInfoContainer
+//   - pointsToWinDisplay
 //   - CurrentTurnContainer
 //     - currentTurnPlayerDisplay
 //     - currentTurnDisplay
-//     - pointsToWinDisplay
+//     - actionsLeftDisplay
 // - Player1InfoContainer
 //   - Player1NameContainer
 //     - player1IconSprite
@@ -36,7 +37,7 @@ export const sidebarDisplays = {}
 export function renderSidebar(roomObj) {
   let roomCodeDisplay = new PIXI.Text(`Room Code: ${roomObj.name}`, {
     fontFamily: 'Arial',
-    fontSize: 48,
+    fontSize: 36,
     fill: 0xffffff,
     align: 'left'
   })
@@ -64,46 +65,61 @@ export function renderGameInfo() {
   // render game state info
   const GameInfoContainer = new PIXI.Container()
 
+  const pointsToWinDisplay = new PIXI.Text(
+    `VP Threshold: ${gameState.pointsToWin}`,
+    {
+      fontFamily: 'Arial',
+      fontSize: 36,
+      fill: 0xffffff,
+      align: 'left'
+    }
+  )
+  pointsToWinDisplay.y = 38
+  sidebarDisplays.pointsToWinDisplay = pointsToWinDisplay
+  GameInfoContainer.addChild(pointsToWinDisplay)
+
   const CurrentTurnContainer = new PIXI.Container()
 
   const currentTurnPlayerDisplay = new PIXI.Text(
     `${gameState.currentPlayers[gameState.currentTurn].faction}`,
     {
       fontFamily: 'Arial',
-      fontSize: 48,
+      fontSize: 36,
       fill: 0xffffff,
       align: 'left'
     }
   )
-  currentTurnPlayerDisplay.y = 50
+  currentTurnPlayerDisplay.y = 76
   sidebarDisplays.currentTurnPlayerDisplay = currentTurnPlayerDisplay
   CurrentTurnContainer.addChild(currentTurnPlayerDisplay)
 
   const currentTurnDisplay = new PIXI.Text(`'s Turn`, {
     fontFamily: 'Arial',
-    fontSize: 48,
+    fontSize: 36,
     fill: 0xffffff,
     align: 'left'
   })
   sidebarDisplays.currentTurnDisplay = currentTurnDisplay
   currentTurnDisplay.x = currentTurnPlayerDisplay.width
-  currentTurnDisplay.y = 50
+  currentTurnDisplay.y = 76
   CurrentTurnContainer.addChild(currentTurnDisplay)
 
   GameInfoContainer.addChild(CurrentTurnContainer)
 
-  const pointsToWinDisplay = new PIXI.Text(
-    `VP Threshold: ${gameState.pointsToWin}`,
+  const actionsLeftDisplay = new PIXI.Text(
+    `Actions Left: ${gameState.actionsRemaining}`,
     {
       fontFamily: 'Arial',
-      fontSize: 48,
+      fontSize: 36,
       fill: 0xffffff,
       align: 'left'
     }
   )
-  pointsToWinDisplay.y = 100
-  sidebarDisplays.pointsToWinDisplay = pointsToWinDisplay
-  GameInfoContainer.addChild(pointsToWinDisplay)
+  sidebarDisplays.actionsLeftDisplay = actionsLeftDisplay
+  actionsLeftDisplay.y = 114
+  CurrentTurnContainer.addChild(actionsLeftDisplay)
+
+  GameInfoContainer.addChild(CurrentTurnContainer)
 
   SidebarContainer.addChild(GameInfoContainer)
 }
@@ -118,24 +134,24 @@ export function renderPlayer1Info() {
     }`,
     {
       fontFamily: 'Arial',
-      fontSize: 48,
+      fontSize: 36,
       fill: 0xffffff,
       align: 'left'
     }
   )
   player1PointsDisplay.x = 50
-  player1PointsDisplay.y = 200
+  player1PointsDisplay.y = 190
   sidebarDisplays.player1PointsDisplay = player1PointsDisplay
   Player1InfoContainer.addChild(player1PointsDisplay)
 
   const player1PerTurnDisplay = new PIXI.Text(`VP / Turn: 0`, {
     fontFamily: 'Arial',
-    fontSize: 48,
+    fontSize: 36,
     fill: 0xffffff,
     align: 'left'
   })
   player1PerTurnDisplay.x = 50
-  player1PerTurnDisplay.y = 250
+  player1PerTurnDisplay.y = 228
   sidebarDisplays.player1PerTurnDisplay = player1PerTurnDisplay
   Player1InfoContainer.addChild(player1PerTurnDisplay)
 
@@ -152,29 +168,29 @@ export function renderPlayer1Name(Player1InfoContainer) {
   const player1IconSprite = new PIXI.Sprite(player1IconTexture)
   player1IconSprite.width = 50
   player1IconSprite.height = 50
-  player1IconSprite.y = 150
+  player1IconSprite.y = 152
   Player1NameContainer.addChild(player1IconSprite)
 
   const player1NameDisplay = new PIXI.Text('Federation', {
     fontFamily: 'Arial',
-    fontSize: 48,
+    fontSize: 36,
     fill: 0x0f7001,
     align: 'left'
   })
   player1NameDisplay.x = player1IconSprite.width
-  player1NameDisplay.y = 150
+  player1NameDisplay.y = 152
   sidebarDisplays.player1NameDisplay = player1NameDisplay
   Player1NameContainer.addChild(player1NameDisplay)
 
   if (gameState.me === 'player1') {
     const player1Indicator = new PIXI.Text(' (You)', {
       fontFamily: 'Arial',
-      fontSize: 48,
+      fontSize: 36,
       fill: 0xffffff,
       align: 'left'
     })
     player1Indicator.x = player1IconSprite.width + player1NameDisplay.width
-    player1Indicator.y = 150
+    player1Indicator.y = 152
     sidebarDisplays.player1Indicator = player1Indicator
     Player1NameContainer.addChild(player1Indicator)
   }
@@ -192,24 +208,24 @@ export function renderPlayer2Info() {
     }`,
     {
       fontFamily: 'Arial',
-      fontSize: 48,
+      fontSize: 36,
       fill: 0xffffff,
       align: 'left'
     }
   )
   Player2PointsDisplay.x = 50
-  Player2PointsDisplay.y = 350
+  Player2PointsDisplay.y = 298
   sidebarDisplays.player2PointsDisplay = Player2PointsDisplay
   Player2InfoContainer.addChild(Player2PointsDisplay)
 
   const player2PerTurnDisplay = new PIXI.Text(`VP / Turn: 0`, {
     fontFamily: 'Arial',
-    fontSize: 48,
+    fontSize: 36,
     fill: 0xffffff,
     align: 'left'
   })
   player2PerTurnDisplay.x = 50
-  player2PerTurnDisplay.y = 400
+  player2PerTurnDisplay.y = 340
   sidebarDisplays.player2PerTurnDisplay = player2PerTurnDisplay
   Player2InfoContainer.addChild(player2PerTurnDisplay)
 
@@ -226,29 +242,29 @@ export function renderPlayer2Name(Player2InfoContainer) {
   const player2IconSprite = new PIXI.Sprite(player2IconTexture)
   player2IconSprite.width = 50
   player2IconSprite.height = 50
-  player2IconSprite.y = 300
+  player2IconSprite.y = 266
   Player2NameContainer.addChild(player2IconSprite)
 
   const player2NameDisplay = new PIXI.Text('Empire', {
     fontFamily: 'Arial',
-    fontSize: 48,
+    fontSize: 36,
     fill: 0x0000fe,
     align: 'left'
   })
   player2NameDisplay.x = player2IconSprite.width
-  player2NameDisplay.y = 300
+  player2NameDisplay.y = 266
   sidebarDisplays.player2NameDisplay = player2NameDisplay
   Player2NameContainer.addChild(player2NameDisplay)
 
   if (gameState.me === 'player2') {
     const player2Indicator = new PIXI.Text(' (You)', {
       fontFamily: 'Arial',
-      fontSize: 48,
+      fontSize: 36,
       fill: 0xffffff,
       align: 'left'
     })
     player2Indicator.x = player2IconSprite.width + player2NameDisplay.width
-    player2Indicator.y = 300
+    player2Indicator.y = 266
     sidebarDisplays.player2Indicator = player2Indicator
     Player2NameContainer.addChild(player2Indicator)
   }
@@ -313,4 +329,11 @@ export function updatePerTurnDisplay(playerName, ownedTiles) {
     default:
       console.log('did not update perTurnDisplay')
   }
+}
+
+// called in TakeTurn in index.js, handleAttack in actions/attack.js, handleMove in actions/move.js
+export function updateActionsLeftDisplay() {
+  sidebarDisplays.actionsLeftDisplay.text = `Actions Left: ${
+    gameState.actionsRemaining
+  }`
 }

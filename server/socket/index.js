@@ -32,6 +32,7 @@ module.exports = io => {
           name: roomName,
           inProgress: false,
           currentTurn: 'player1',
+          actionsRemaining: 0,
           currentPlayers: {
             //initializes player1 object in room object
             player1: {
@@ -75,7 +76,13 @@ module.exports = io => {
 
           io
             .to(socket.roomName)
-            .emit('actionBroadcast', actionType, unit, actionsRemaining)
+            .emit(
+              'actionBroadcast',
+              actionType,
+              unit,
+              actionsRemaining,
+              rooms[roomName]
+            )
           //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
         })
 

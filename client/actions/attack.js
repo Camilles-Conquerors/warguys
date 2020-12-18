@@ -5,6 +5,7 @@ import {
   renderHit,
   renderMiss
 } from '../renderers/units'
+import {updateActionsLeftDisplay} from '../renderers/sidebar'
 import {BoardContainer} from '../renderers/board'
 import {gameState} from '..'
 
@@ -25,6 +26,7 @@ export function handleAttack(attacker, defender) {
     attacker.toggleSelected(false)
     //check player's actions remaining
     gameState.actionsRemaining -= 1
+    updateActionsLeftDisplay()
     //update spend action for unit
     //dont need to send this over socket because opponent never controls enemy units anyways
     attacker.spendAction()

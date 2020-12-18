@@ -1,6 +1,7 @@
 import socket from '../socket'
 import {unitSprites, disableEnemyInteraction} from '../renderers/units'
 import {SCALE, getOffset, gameboard, gameState} from '../index'
+import {updateActionsLeftDisplay} from '../renderers/sidebar'
 
 //ACTION TYPES
 export const MOVE = 'MOVE'
@@ -27,6 +28,7 @@ export function handleMove(unitSprite, newTile) {
     let unit = {coordinates, name, priorCoordinates}
 
     gameState.actionsRemaining -= 1
+    updateActionsLeftDisplay()
     //dont need to send this over socket because opponent never controls enemy units anyways
     unitSprite.data.spendAction()
 
