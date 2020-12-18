@@ -29,25 +29,29 @@ export default class Gameboard {
       {playerName: 'player1', unitName: 'Mike', currentTile: this.board[2][8]},
       {
         playerName: 'player2',
-        unitName: 'John',
+        unitName: 'Helmut',
         currentTile: this.board[15][13]
       },
       {
         playerName: 'player2',
-        unitName: 'Dave',
+        unitName: 'Karl',
         currentTile: this.board[15][11]
       },
       {
         playerName: 'player2',
-        unitName: 'Buck',
+        unitName: 'Uwe',
         currentTile: this.board[14][15]
       },
       {
         playerName: 'player2',
-        unitName: 'Tommy',
+        unitName: 'Holger',
         currentTile: this.board[16][9]
       },
-      {playerName: 'player2', unitName: 'Luke', currentTile: this.board[14][8]}
+      {
+        playerName: 'player2',
+        unitName: 'Friedrich',
+        currentTile: this.board[14][8]
+      }
     ]
   }
 
