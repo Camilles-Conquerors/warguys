@@ -1,6 +1,7 @@
 import socket from '../socket'
 import {unitSprites, disableEnemyInteraction} from '../renderers/units'
-import {SCALE, getOffset, gameboard} from '../index'
+import {SCALE, getOffset, gameboard, gameState} from '../index'
+import {updateActionsLeftDisplay} from '../renderers/sidebar'
 
 //ACTION TYPES
 export const MOVE = 'MOVE'
@@ -26,8 +27,21 @@ export function handleMove(unitSprite, newTile) {
     let name = unitSprite.data.name
     let unit = {coordinates, name, priorCoordinates}
 
+    gameState.actionsRemaining -= 1
+    updateActionsLeftDisplay()
+    //dont need to send this over socket because opponent never controls enemy units anyways
+    unitSprite.data.spendAction()
+
+    if (!unitSprite.data.active) {
+      unitSprite.interactive = false
+      unitSprite.buttonMode = false
+      unitSprite.tint = 0x333333
+    }
+
+    console.log('actions remaining before emit', gameState.actionsRemaining)
+
     //sends move to socket server
-    socket.emit('updateUnits', MOVE, unit)
+    socket.emit('updateUnits', MOVE, unit, gameState.actionsRemaining)
   } else {
     disableEnemyInteraction()
   }
@@ -46,11 +60,9 @@ export function updateUnits(unit) {
   let offset = getOffset(unit.coordinates.y)
 
   // filters unitSprites array returning the unitSprite with a matching name
-  let unitSprite = unitSprites.filter(unitsprite => {
+  let [unitSprite] = unitSprites.filter(unitsprite => {
     return unitsprite.data.name === unit.name
   })
-
-  unitSprite = unitSprite[0]
 
   let prevTile = gameboard.findTileByCoordinates(unit.priorCoordinates)
 

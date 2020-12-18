@@ -243,7 +243,16 @@ export default class Unit {
     }
   }
 
-  Activate() {
+  //to start turn activate all units
+  //only able to click active units - done
+  //take action with unit
+  //update unit actionPoints - if less than allowed deactivate unit for round
+  //decrement actions remaining for player
+  //- if actions are greater than lowest action cost --keep playing
+  //- else end turn
+
+  activate() {
+    this.actionPoints = 1
     this.active = true
   }
 }

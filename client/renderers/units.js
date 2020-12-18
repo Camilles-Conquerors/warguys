@@ -38,8 +38,8 @@ export function renderHit(unitSprite) {
   //removes healthSprite
   unitSprite.removeChild(unitSprite.children[0])
   let hitSprite = new PIXI.Sprite(hit)
-  hitSprite.x = 75
-  hitSprite.y = -30
+  // hitSprite.x = 75
+  // hitSprite.y = -30
   unitSprite.addChild(hitSprite)
   // removes hit animation after 2 secs and renders healthSprite
   setTimeout(function() {
@@ -52,8 +52,8 @@ export function renderMiss(unitSprite) {
   //removes healthSprite
   unitSprite.removeChild(unitSprite.children[0])
   let missSprite = new PIXI.Sprite(miss)
-  missSprite.x = 75
-  missSprite.y = -30
+  // missSprite.x = 75
+  // missSprite.y = -30
   unitSprite.addChild(missSprite)
   // removes miss animation after 2 secs and renders healthSprite
   setTimeout(function() {
@@ -76,12 +76,28 @@ export function removeSprite(sprite) {
 //enables interactive and buttonMode on all unitSprites including enemies
 function makeClickable() {
   unitSprites.forEach(unitSprite => {
-    unitSprite.interactive = true
-    unitSprite.buttonMode = true
+    //if unit belongs to current player
+    if (gameState.currentTurn === unitSprite.data.player.playerName) {
+      console.log('unitSprite')
+      if (unitSprite.data.active) {
+        //if active make clickable
+        unitSprite.interactive = true
+        unitSprite.buttonMode = true
+      } else {
+        // if unactive make unclickable
+        unitSprite.interactive = false
+        unitSprite.buttonMode = false
+        // unitSprite.tint = 0x333333;
+      }
+    } else {
+      //if enemy unit make clickable
+      unitSprite.interactive = true
+      unitSprite.buttonMode = true
+    }
   })
 }
 
-//player can click their own units
+//player can click their own active units
 //player cannot click their enemy's units
 //enemy cannot click any units
 export function disableEnemyInteraction() {
@@ -90,9 +106,17 @@ export function disableEnemyInteraction() {
       gameState.currentTurn === gameState.me &&
       gameState.currentTurn === unitSprite.data.player.playerName
     ) {
-      unitSprite.interactive = true
-      unitSprite.buttonMode = true
+      if (unitSprite.data.active) {
+        //if active make clickable
+        unitSprite.interactive = true
+        unitSprite.buttonMode = true
+      } else {
+        // if unactive make unclickable
+        unitSprite.interactive = false
+        unitSprite.buttonMode = false
+      }
     } else {
+      // if enemy make unclickable
       unitSprite.interactive = false
       unitSprite.buttonMode = false
     }

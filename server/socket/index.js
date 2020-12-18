@@ -32,6 +32,7 @@ module.exports = io => {
           name: roomName,
           inProgress: false,
           currentTurn: 'player1',
+          actionsRemaining: 0,
           currentPlayers: {
             //initializes player1 object in room object
             player1: {
@@ -68,12 +69,22 @@ module.exports = io => {
         rooms[roomName].pointsToWin = pointsToWin
       })
 
-      socket.to(socket.roomName).on('updateUnits', (actionType, unit) => {
-        console.log(`${roomName.currentTurn} has acted!: `, unit)
+      socket
+        .to(socket.roomName)
+        .on('updateUnits', (actionType, unit, actionsRemaining) => {
+          console.log(`${roomName.currentTurn} has acted!: `, unit)
 
-        io.to(socket.roomName).emit('actionBroadcast', actionType, unit)
-        //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
-      })
+          io
+            .to(socket.roomName)
+            .emit(
+              'actionBroadcast',
+              actionType,
+              unit,
+              actionsRemaining,
+              rooms[roomName]
+            )
+          //socket.to(socket.id).emit('actionBroadcast', unit, room, socket.myName )
+        })
 
       socket.to(socket.roomName).on('victory', winningFaction => {
         io.to(socket.roomName).emit('gameOver', winningFaction)

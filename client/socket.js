@@ -14,6 +14,7 @@ import {
 import {attemptCapture} from './actions/capture'
 import {getFogTiles, initializeFogTiles} from './renderers/fog-of-war'
 import {unitSprites} from './renderers/units'
+import {updateActionsLeftDisplay} from './renderers/sidebar'
 
 const socket = io(window.location.origin)
 
@@ -27,7 +28,7 @@ socket.on('connect', () => {
   console.log('Connected!')
 })
 
-socket.on('actionBroadcast', (actionType, unit) => {
+socket.on('actionBroadcast', (actionType, unit, actionsRemaining, roomObj) => {
   console.log('bcast recieved from server:', unit)
 
   switch (actionType) {
@@ -50,8 +51,21 @@ socket.on('actionBroadcast', (actionType, unit) => {
     default:
       console.log('error, invalid action recieved')
   }
-  takeTurn()
-  console.log(`recieved a(n) ${actionType} action`)
+  //update gameState to match actionsRemaining passed via socket
+  roomObj.actionsRemaining = actionsRemaining
+
+  gameState.actionsRemaining = actionsRemaining
+
+  updateActionsLeftDisplay()
+
+  //check if current player has no actions remaining pass turn
+  if (gameState.actionsRemaining < 1) {
+    unitSprites.forEach(unitSprite => {
+      //clears inactive tint from units
+      unitSprite.tint = 0xffffff
+    })
+    takeTurn()
+  }
 })
 
 socket.on('createLobby', roomName => {

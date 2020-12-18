@@ -5,7 +5,9 @@ import {
   renderHit,
   renderMiss
 } from '../renderers/units'
+import {updateActionsLeftDisplay} from '../renderers/sidebar'
 import {BoardContainer} from '../renderers/board'
+import {gameState} from '..'
 
 export const ATTACK = 'ATTACK'
 
@@ -22,8 +24,24 @@ export function handleAttack(attacker, defender) {
     let unit = {name, health, priorHealth}
 
     attacker.toggleSelected(false)
-
-    socket.emit('updateUnits', ATTACK, unit)
+    //check player's actions remaining
+    gameState.actionsRemaining -= 1
+    updateActionsLeftDisplay()
+    //update spend action for unit
+    //dont need to send this over socket because opponent never controls enemy units anyways
+    attacker.spendAction()
+    //get unitSprite for attacker
+    let [unitSprite] = unitSprites.filter(unitsprite => {
+      return unitsprite.data.name === attacker.name
+    })
+    //if unit has taken action, it no longer is clickable and appears gray to player.
+    if (!unitSprite.data.active) {
+      unitSprite.interactive = false
+      unitSprite.buttonMode = false
+      unitSprite.tint = 0x333333
+    }
+    //send data to server
+    socket.emit('updateUnits', ATTACK, unit, gameState.actionsRemaining)
   }
 }
 
