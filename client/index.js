@@ -130,12 +130,12 @@ export function renderSplash() {
 
   // create text obj and add it to SplashContainer
   let text = new PIXI.Text(
-    'Welcome! Enter a room code to create or join a game.',
+    "Welcome! Enter a room code to create or join a game. \n If you're new, click on How to Play to get started!",
     {
       fontFamily: 'Arial',
       fontSize: 24,
       fill: 0xffffff,
-      align: 'center'
+      align: 'left'
     }
   )
   text.x = 100
@@ -177,6 +177,14 @@ export function renderSplash() {
 }
 
 export function renderSplashButtons(SplashContainer, inputRoomCode) {
+  renderPlayButton(SplashContainer, inputRoomCode)
+
+  renderInstructionsButton(SplashContainer)
+
+  renderColorblindButton(SplashContainer)
+}
+
+export function renderPlayButton(SplashContainer, inputRoomCode) {
   // add play button texture and create sprite from it
   const playButton = PIXI.Texture.from('/images/play_button.png')
   const buttonTextures = [playButton]
@@ -203,11 +211,31 @@ export function renderSplashButtons(SplashContainer, inputRoomCode) {
         align: 'center'
       })
       emptyRoomNameErr.x = 100
-      emptyRoomNameErr.y = 250
+      emptyRoomNameErr.y = 260
       SplashContainer.addChild(emptyRoomNameErr)
     }
   })
+}
 
+export function renderInstructionsButton(SplashContainer) {
+  // add how to play button
+  const instructionsButton = PIXI.Texture.from('/images/how_to_play_button.png')
+  const instructionsButtonTextures = [instructionsButton]
+  let instructionsButtonSprite = new PIXI.Sprite(instructionsButtonTextures[0])
+  instructionsButtonSprite.x = 264
+  instructionsButtonSprite.y = 400
+  SplashContainer.addChild(instructionsButtonSprite)
+
+  // on click event for clicking instructions button
+  instructionsButtonSprite.interactive = true
+  instructionsButtonSprite.buttonMode = true
+  instructionsButtonSprite.on('click', () => {
+    unrender()
+    renderInstructions()
+  })
+}
+
+export function renderColorblindButton(SplashContainer) {
   // add colorblind button textures and create sprite from it
   const colorblindButtonOff = PIXI.Texture.from(
     '/images/colorblind_button_off.png'
@@ -249,6 +277,35 @@ export function renderSplashButtons(SplashContainer, inputRoomCode) {
 }
 
 // renderSplash()
+
+export function renderInstructions() {
+  let InstructionsContainer = new PIXI.Container()
+  GameContainer.addChild(InstructionsContainer)
+
+  const instructionsTexture = PIXI.Texture.from('/images/instructions.png')
+  const instructionsSprite = new PIXI.Sprite(instructionsTexture)
+  InstructionsContainer.addChild(instructionsSprite)
+
+  renderInstructionsButtons(InstructionsContainer)
+}
+
+export function renderInstructionsButtons(InstructionsContainer) {
+  // add back button
+  const backButton = PIXI.Texture.from('/images/back_button.png')
+  const backButtonTextures = [backButton]
+  let backButtonSprite = new PIXI.Sprite(backButtonTextures[0])
+  backButtonSprite.x = 375
+  backButtonSprite.y = 810
+  InstructionsContainer.addChild(backButtonSprite)
+
+  // on click event for clicking back button
+  backButtonSprite.interactive = true
+  backButtonSprite.buttonMode = true
+  backButtonSprite.on('click', () => {
+    unrender()
+    renderSplash()
+  })
+}
 
 export function renderLobby(roomName) {
   // create LobbyContainer
