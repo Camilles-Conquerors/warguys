@@ -87,6 +87,7 @@ function makeClickable() {
         // if unactive make unclickable
         unitSprite.interactive = false
         unitSprite.buttonMode = false
+        // unitSprite.tint = 0x333333;
       }
     } else {
       //if enemy unit make clickable

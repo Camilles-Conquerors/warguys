@@ -23,13 +23,22 @@ export function handleAttack(attacker, defender) {
     let unit = {name, health, priorHealth}
 
     attacker.toggleSelected(false)
-    //check player's actions remaining & if
+    //check player's actions remaining
     gameState.actionsRemaining -= 1
+    //update spend action for unit
     //dont need to send this over socket because opponent never controls enemy units anyways
     attacker.spendAction()
-
-    console.log('actions remaining before emit', gameState.actionsRemaining)
-
+    //get unitSprite for attacker
+    let [unitSprite] = unitSprites.filter(unitsprite => {
+      return unitsprite.data.name === attacker.name
+    })
+    //if unit has taken action, it no longer is clickable and appears gray to player.
+    if (!unitSprite.data.active) {
+      unitSprite.interactive = false
+      unitSprite.buttonMode = false
+      unitSprite.tint = 0x333333
+    }
+    //send data to server
     socket.emit('updateUnits', ATTACK, unit, gameState.actionsRemaining)
   }
 }

@@ -19,7 +19,6 @@ export default class Player {
     this.ownedTiles = []
     this.victoryPoints = 0 //points accumulated towards winning during game play
     this.turnDone = false
-    this.actionsRemaining = 3
     this.initializeDefaultUnits()
     this.renderUnits()
   }
